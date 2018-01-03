@@ -20,6 +20,28 @@ const readStream = (s, n) => tslib_1.__awaiter(this, void 0, void 0, function* (
         s.on("error", reject);
     });
 });
+function supports(lcp, _linkHref, linkPropertiesEncrypted) {
+    if (!lcp) {
+        return false;
+    }
+    if (!lcp.isReady()) {
+        debug("LCP not ready!");
+        return false;
+    }
+    const check = linkPropertiesEncrypted.Scheme === "http://readium.org/2014/01/lcp"
+        && (linkPropertiesEncrypted.Profile === "http://readium.org/lcp/basic-profile" ||
+            linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0")
+        && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+    if (!check) {
+        debug("Incorrect resource LCP fields.");
+        debug(linkPropertiesEncrypted.Scheme);
+        debug(linkPropertiesEncrypted.Profile);
+        debug(linkPropertiesEncrypted.Algorithm);
+        return false;
+    }
+    return true;
+}
+exports.supports = supports;
 function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         let plainTextSize = -1;
