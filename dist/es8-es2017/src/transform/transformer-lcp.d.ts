@@ -1,0 +1,9 @@
+import { Encrypted } from "../models/metadata-encrypted";
+import { LCP } from "../parser/epub/lcp";
+import { IStreamAndLength } from "r2-utils-js/dist/es8-es2017/src/_utils/zip/zip";
+export interface ICryptoInfo {
+    length: number;
+    padding: number;
+}
+export declare function transformStream(lcp: LCP, linkHref: string, linkPropertiesEncrypted: Encrypted, stream: IStreamAndLength, isPartialByteRangeRequest: boolean, partialByteBegin: number, partialByteEnd: number): Promise<IStreamAndLength>;
+export declare function getDecryptedSizeStream(lcp: LCP, stream: IStreamAndLength): Promise<ICryptoInfo>;
