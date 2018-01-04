@@ -1,0 +1,1 @@
+{"version":3,"file":"deviceid-manager.js","sourceRoot":"","sources":["../../../../src/lsd/deviceid-manager.ts"],"names":[],"mappings":"","sourcesContent":["export interface IDeviceIDManager {\n    getDeviceNAME(): string;\n\n    getDeviceID(): string;\n\n    checkDeviceID(key: string): string | undefined;\n\n    recordDeviceID(key: string): void;\n}\n"]}
