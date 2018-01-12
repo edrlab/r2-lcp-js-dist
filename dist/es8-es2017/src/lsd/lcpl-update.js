@@ -32,22 +32,7 @@ async function lsdLcpUpdate(lsdJson, lcp) {
                             debug(header + " => " + response.headers[header]);
                         });
                         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                            if (licenseLink.href.indexOf("/licenses/") > 0) {
-                                licenseLink.href = licenseLink.href.replace("/licenses/", "/api/v1/purchases/license/");
-                                debug("TRYING AGAIN: " + licenseLink.href);
-                                let newRes;
-                                try {
-                                    newRes = await lsdLcpUpdate(lsdJson, lcp);
-                                }
-                                catch (err) {
-                                    failure(err);
-                                    return;
-                                }
-                                resolve(newRes);
-                            }
-                            else {
-                                failure("HTTP CODE " + response.statusCode);
-                            }
+                            failure("HTTP CODE " + response.statusCode);
                             return;
                         }
                         let responseData;

@@ -38,47 +38,29 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                 reject(err);
                                             };
                                             success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                                var newRes, err_2, responseData, err_3, lcplStr;
+                                                var responseData, err_2, lcplStr;
                                                 return tslib_1.__generator(this, function (_a) {
                                                     switch (_a.label) {
                                                         case 0:
                                                             Object.keys(response.headers).forEach(function (header) {
                                                                 debug(header + " => " + response.headers[header]);
                                                             });
-                                                            if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 7];
-                                                            if (!(licenseLink_1.href.indexOf("/licenses/") > 0)) return [3, 5];
-                                                            licenseLink_1.href = licenseLink_1.href.replace("/licenses/", "/api/v1/purchases/license/");
-                                                            debug("TRYING AGAIN: " + licenseLink_1.href);
-                                                            newRes = void 0;
+                                                            if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
+                                                                failure("HTTP CODE " + response.statusCode);
+                                                                return [2];
+                                                            }
                                                             _a.label = 1;
                                                         case 1:
                                                             _a.trys.push([1, 3, , 4]);
-                                                            return [4, lsdLcpUpdate(lsdJson, lcp)];
+                                                            return [4, BufferUtils_1.streamToBufferPromise(response)];
                                                         case 2:
-                                                            newRes = _a.sent();
+                                                            responseData = _a.sent();
                                                             return [3, 4];
                                                         case 3:
                                                             err_2 = _a.sent();
-                                                            failure(err_2);
+                                                            reject(err_2);
                                                             return [2];
                                                         case 4:
-                                                            resolve(newRes);
-                                                            return [3, 6];
-                                                        case 5:
-                                                            failure("HTTP CODE " + response.statusCode);
-                                                            _a.label = 6;
-                                                        case 6: return [2];
-                                                        case 7:
-                                                            _a.trys.push([7, 9, , 10]);
-                                                            return [4, BufferUtils_1.streamToBufferPromise(response)];
-                                                        case 8:
-                                                            responseData = _a.sent();
-                                                            return [3, 10];
-                                                        case 9:
-                                                            err_3 = _a.sent();
-                                                            reject(err_3);
-                                                            return [2];
-                                                        case 10:
                                                             if (!responseData) {
                                                                 return [2];
                                                             }
