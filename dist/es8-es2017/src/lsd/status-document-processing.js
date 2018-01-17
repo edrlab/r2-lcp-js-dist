@@ -56,7 +56,8 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
             return;
         }
         const responseStr = responseData.toString("utf8");
-        if (response.headers["content-type"] === "application/vnd.readium.license.status.v1.0+json" ||
+        const mime = "application/vnd.readium.license.status.v1.0+json";
+        if (response.headers["content-type"] === mime ||
             response.headers["content-type"] === "application/json") {
             debug(responseStr);
         }

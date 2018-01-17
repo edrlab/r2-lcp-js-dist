@@ -38,7 +38,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                         }
                     };
                     success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                        var responseData, err_2, responseStr, lsdJson, licenseUpdateResponseJson, err_3, registerResponseJson, err_4;
+                        var responseData, err_2, responseStr, mime, lsdJson, licenseUpdateResponseJson, err_3, registerResponseJson, err_4;
                         return tslib_1.__generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -71,7 +71,8 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                         return [2];
                                     }
                                     responseStr = responseData.toString("utf8");
-                                    if (response.headers["content-type"] === "application/vnd.readium.license.status.v1.0+json" ||
+                                    mime = "application/vnd.readium.license.status.v1.0+json";
+                                    if (response.headers["content-type"] === mime ||
                                         response.headers["content-type"] === "application/json") {
                                         debug(responseStr);
                                     }
