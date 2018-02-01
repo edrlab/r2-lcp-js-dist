@@ -6,5 +6,5 @@ export declare class Encrypted {
     OriginalLength: number;
     DecryptedLengthBeforeInflate: number;
     CypherBlockPadding: number;
-    CypherBlockIV: string;
+    CypherBlockIV: string | undefined;
 }
