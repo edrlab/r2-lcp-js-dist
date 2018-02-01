@@ -61,9 +61,6 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                             reject(err_2);
                                                             return [2];
                                                         case 4:
-                                                            if (!responseData) {
-                                                                return [2];
-                                                            }
                                                             lcplStr = responseData.toString("utf8");
                                                             debug(lcplStr);
                                                             resolve(lcplStr);

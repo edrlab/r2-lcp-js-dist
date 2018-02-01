@@ -51,12 +51,6 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                 }
                 return;
             }
-            if (!responseData) {
-                if (onStatusDocumentProcessingComplete) {
-                    onStatusDocumentProcessingComplete(undefined);
-                }
-                return;
-            }
             const responseStr = responseData.toString("utf8");
             const mime = "application/vnd.readium.license.status.v1.0+json";
             if (response.headers["content-type"] === mime ||

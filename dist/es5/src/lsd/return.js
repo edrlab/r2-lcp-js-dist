@@ -62,9 +62,6 @@ function lsdReturn(lsdJson, deviceIDManager) {
                                                 reject(err_2);
                                                 return [2];
                                             case 4:
-                                                if (!responseData) {
-                                                    return [2];
-                                                }
                                                 responseStr = responseData.toString("utf8");
                                                 debug(responseStr);
                                                 responseJson = global.JSON.parse(responseStr);

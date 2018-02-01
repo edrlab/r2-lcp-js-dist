@@ -64,12 +64,6 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     }
                                     return [2];
                                 case 4:
-                                    if (!responseData) {
-                                        if (onStatusDocumentProcessingComplete) {
-                                            onStatusDocumentProcessingComplete(undefined);
-                                        }
-                                        return [2];
-                                    }
                                     responseStr = responseData.toString("utf8");
                                     mime = "application/vnd.readium.license.status.v1.0+json";
                                     if (response.headers["content-type"] === mime ||

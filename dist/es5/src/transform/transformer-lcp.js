@@ -213,11 +213,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                                         err_6 = _a.sent();
                                         debug(err_6);
                                         return [2, Promise.reject(err_6)];
-                                    case 3:
-                                        if (!resetedStream) {
-                                            return [2, Promise.reject("??")];
-                                        }
-                                        return [2, transformStream(lcp, linkHref, linkPropertiesEncrypted, resetedStream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd)];
+                                    case 3: return [2, transformStream(lcp, linkHref, linkPropertiesEncrypted, resetedStream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd)];
                                 }
                             });
                         }); },

@@ -179,9 +179,6 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                     debug(err);
                     return Promise.reject(err);
                 }
-                if (!resetedStream) {
-                    return Promise.reject("??");
-                }
                 return transformStream(lcp, linkHref, linkPropertiesEncrypted, resetedStream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd);
             }),
             stream: destStream,
