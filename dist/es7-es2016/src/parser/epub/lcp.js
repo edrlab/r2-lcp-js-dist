@@ -72,7 +72,7 @@ let LCP = class LCP {
                 return Promise.reject("direct decrypt buffer only for native plugin");
             }
             if (!this._lcpContext) {
-                return Promise.reject("LCP context not initialized (needs setUserPassphrase)");
+                return Promise.reject("LCP context not initialized (call tryUserKeys())");
             }
             return new Promise((resolve, reject) => {
                 this._lcpNative.decrypt(this._lcpContext, encryptedContent, (er, decryptedContent) => {
@@ -88,13 +88,9 @@ let LCP = class LCP {
             });
         });
     }
-    setUserPassphrase(pass) {
+    tryUserKeys(lcpUserKeys) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             this.init();
-            this.userPassphraseHex = pass;
-            if (!this.userPassphraseHex) {
-                return false;
-            }
             const check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
                 || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0")
                 && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
@@ -104,74 +100,85 @@ let LCP = class LCP {
                 debug(this.Encryption.Profile);
                 debug(this.Encryption.ContentKey.Algorithm);
                 debug(this.Encryption.UserKey.Algorithm);
-                return false;
+                return Promise.reject("Incorrect LCP fields.");
             }
             if (this._usesNativeNodePlugin) {
-                return new Promise((resolve, _reject) => {
-                    this._lcpNative.findOneValidPassphrase(this.JsonSource, [this.userPassphraseHex], (err, validHashedPassphrase) => {
+                return new Promise((resolve, reject) => {
+                    this._lcpNative.findOneValidPassphrase(this.JsonSource, lcpUserKeys, (err, validHashedPassphrase) => {
                         if (err) {
                             debug(err);
-                            resolve(false);
+                            reject(err);
+                            return;
                         }
-                        else {
-                            this._lcpNative.createContext(this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, (erro, context) => {
-                                if (erro) {
-                                    debug(erro);
-                                    resolve(false);
-                                    return;
-                                }
-                                this._lcpContext = context;
-                                resolve(true);
-                            });
-                        }
+                        this._lcpNative.createContext(this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, (erro, context) => {
+                            if (erro) {
+                                debug(erro);
+                                reject(err);
+                                return;
+                            }
+                            this._lcpContext = context;
+                            resolve({ okay: true });
+                        });
                     });
                 });
             }
-            else {
-                const userKey = new Buffer(this.userPassphraseHex, "hex");
-                const keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
-                const encryptedLicenseID = keyCheck;
-                const iv = encryptedLicenseID.slice(0, AES_BLOCK_SIZE);
-                const encrypted = encryptedLicenseID.slice(AES_BLOCK_SIZE);
-                const decrypteds = [];
-                const decryptStream = crypto.createDecipheriv("aes-256-cbc", userKey, iv);
-                decryptStream.setAutoPadding(false);
-                const buff1 = decryptStream.update(encrypted);
-                if (buff1) {
-                    decrypteds.push(buff1);
+            for (const lcpUserKey of lcpUserKeys) {
+                let res;
+                try {
+                    res = yield this.tryUserKey(lcpUserKey);
+                    return Promise.resolve(res);
                 }
-                const buff2 = decryptStream.final();
-                if (buff2) {
-                    decrypteds.push(buff2);
+                catch (err) {
                 }
-                const decrypted = Buffer.concat(decrypteds);
-                const nPaddingBytes = decrypted[decrypted.length - 1];
-                const size = encrypted.length - nPaddingBytes;
-                const decryptedOut = decrypted.slice(0, size).toString("utf8");
-                if (this.ID !== decryptedOut) {
-                    debug("Failed LCP ID check.");
-                    return false;
-                }
-                const encryptedContentKey = new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
-                const iv2 = encryptedContentKey.slice(0, AES_BLOCK_SIZE);
-                const encrypted2 = encryptedContentKey.slice(AES_BLOCK_SIZE);
-                const decrypteds2 = [];
-                const decryptStream2 = crypto.createDecipheriv("aes-256-cbc", userKey, iv2);
-                decryptStream2.setAutoPadding(false);
-                const buff1_ = decryptStream2.update(encrypted2);
-                if (buff1_) {
-                    decrypteds2.push(buff1_);
-                }
-                const buff2_ = decryptStream2.final();
-                if (buff2_) {
-                    decrypteds2.push(buff2_);
-                }
-                const decrypted2 = Buffer.concat(decrypteds2);
-                const nPaddingBytes2 = decrypted2[decrypted2.length - 1];
-                const size2 = encrypted2.length - nPaddingBytes2;
-                this.ContentKey = decrypted2.slice(0, size2);
             }
-            return true;
+            return Promise.reject("Pass fail.");
+        });
+    }
+    tryUserKey(lcpUserKey) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const userKey = new Buffer(lcpUserKey, "hex");
+            const keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
+            const encryptedLicenseID = keyCheck;
+            const iv = encryptedLicenseID.slice(0, AES_BLOCK_SIZE);
+            const encrypted = encryptedLicenseID.slice(AES_BLOCK_SIZE);
+            const decrypteds = [];
+            const decryptStream = crypto.createDecipheriv("aes-256-cbc", userKey, iv);
+            decryptStream.setAutoPadding(false);
+            const buff1 = decryptStream.update(encrypted);
+            if (buff1) {
+                decrypteds.push(buff1);
+            }
+            const buff2 = decryptStream.final();
+            if (buff2) {
+                decrypteds.push(buff2);
+            }
+            const decrypted = Buffer.concat(decrypteds);
+            const nPaddingBytes = decrypted[decrypted.length - 1];
+            const size = encrypted.length - nPaddingBytes;
+            const decryptedOut = decrypted.slice(0, size).toString("utf8");
+            if (this.ID !== decryptedOut) {
+                debug("Failed LCP ID check.");
+                return Promise.reject("Failed LCP ID check.");
+            }
+            const encryptedContentKey = new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
+            const iv2 = encryptedContentKey.slice(0, AES_BLOCK_SIZE);
+            const encrypted2 = encryptedContentKey.slice(AES_BLOCK_SIZE);
+            const decrypteds2 = [];
+            const decryptStream2 = crypto.createDecipheriv("aes-256-cbc", userKey, iv2);
+            decryptStream2.setAutoPadding(false);
+            const buff1_ = decryptStream2.update(encrypted2);
+            if (buff1_) {
+                decrypteds2.push(buff1_);
+            }
+            const buff2_ = decryptStream2.final();
+            if (buff2_) {
+                decrypteds2.push(buff2_);
+            }
+            const decrypted2 = Buffer.concat(decrypteds2);
+            const nPaddingBytes2 = decrypted2[decrypted2.length - 1];
+            const size2 = encrypted2.length - nPaddingBytes2;
+            this.ContentKey = decrypted2.slice(0, size2);
+            return Promise.resolve({ okay: true });
         });
     }
 };

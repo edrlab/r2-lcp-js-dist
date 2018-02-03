@@ -74,7 +74,7 @@ var LCP = (function () {
                     return [2, Promise.reject("direct decrypt buffer only for native plugin")];
                 }
                 if (!this._lcpContext) {
-                    return [2, Promise.reject("LCP context not initialized (needs setUserPassphrase)")];
+                    return [2, Promise.reject("LCP context not initialized (call tryUserKeys())")];
                 }
                 return [2, new Promise(function (resolve, reject) {
                         _this._lcpNative.decrypt(_this._lcpContext, encryptedContent, function (er, decryptedContent) {
@@ -91,93 +91,116 @@ var LCP = (function () {
             });
         });
     };
-    LCP.prototype.setUserPassphrase = function (pass) {
+    LCP.prototype.tryUserKeys = function (lcpUserKeys) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _this = this;
-            var check, userKey, keyCheck, encryptedLicenseID, iv, encrypted, decrypteds, decryptStream, buff1, buff2, decrypted, nPaddingBytes, size, decryptedOut, encryptedContentKey, iv2, encrypted2, decrypteds2, decryptStream2, buff1_, buff2_, decrypted2, nPaddingBytes2, size2;
+            var check, _i, lcpUserKeys_1, lcpUserKey, res, err_1;
             return tslib_1.__generator(this, function (_a) {
-                this.init();
-                this.userPassphraseHex = pass;
-                if (!this.userPassphraseHex) {
-                    return [2, false];
-                }
-                check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
-                    || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0")
-                    && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
-                    && this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
-                if (!check) {
-                    debug("Incorrect LCP fields.");
-                    debug(this.Encryption.Profile);
-                    debug(this.Encryption.ContentKey.Algorithm);
-                    debug(this.Encryption.UserKey.Algorithm);
-                    return [2, false];
-                }
-                if (this._usesNativeNodePlugin) {
-                    return [2, new Promise(function (resolve, _reject) {
-                            _this._lcpNative.findOneValidPassphrase(_this.JsonSource, [_this.userPassphraseHex], function (err, validHashedPassphrase) {
-                                if (err) {
-                                    debug(err);
-                                    resolve(false);
-                                }
-                                else {
-                                    _this._lcpNative.createContext(_this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, function (erro, context) {
-                                        if (erro) {
-                                            debug(erro);
-                                            resolve(false);
+                switch (_a.label) {
+                    case 0:
+                        this.init();
+                        check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
+                            || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0")
+                            && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
+                            && this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+                        if (!check) {
+                            debug("Incorrect LCP fields.");
+                            debug(this.Encryption.Profile);
+                            debug(this.Encryption.ContentKey.Algorithm);
+                            debug(this.Encryption.UserKey.Algorithm);
+                            return [2, Promise.reject("Incorrect LCP fields.")];
+                        }
+                        if (this._usesNativeNodePlugin) {
+                            return [2, new Promise(function (resolve, reject) {
+                                    _this._lcpNative.findOneValidPassphrase(_this.JsonSource, lcpUserKeys, function (err, validHashedPassphrase) {
+                                        if (err) {
+                                            debug(err);
+                                            reject(err);
                                             return;
                                         }
-                                        _this._lcpContext = context;
-                                        resolve(true);
+                                        _this._lcpNative.createContext(_this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, function (erro, context) {
+                                            if (erro) {
+                                                debug(erro);
+                                                reject(err);
+                                                return;
+                                            }
+                                            _this._lcpContext = context;
+                                            resolve({ okay: true });
+                                        });
                                     });
-                                }
-                            });
-                        })];
+                                })];
+                        }
+                        _i = 0, lcpUserKeys_1 = lcpUserKeys;
+                        _a.label = 1;
+                    case 1:
+                        if (!(_i < lcpUserKeys_1.length)) return [3, 6];
+                        lcpUserKey = lcpUserKeys_1[_i];
+                        res = void 0;
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
+                        return [4, this.tryUserKey(lcpUserKey)];
+                    case 3:
+                        res = _a.sent();
+                        return [2, Promise.resolve(res)];
+                    case 4:
+                        err_1 = _a.sent();
+                        return [3, 5];
+                    case 5:
+                        _i++;
+                        return [3, 1];
+                    case 6: return [2, Promise.reject("Pass fail.")];
                 }
-                else {
-                    userKey = new Buffer(this.userPassphraseHex, "hex");
-                    keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
-                    encryptedLicenseID = keyCheck;
-                    iv = encryptedLicenseID.slice(0, AES_BLOCK_SIZE);
-                    encrypted = encryptedLicenseID.slice(AES_BLOCK_SIZE);
-                    decrypteds = [];
-                    decryptStream = crypto.createDecipheriv("aes-256-cbc", userKey, iv);
-                    decryptStream.setAutoPadding(false);
-                    buff1 = decryptStream.update(encrypted);
-                    if (buff1) {
-                        decrypteds.push(buff1);
-                    }
-                    buff2 = decryptStream.final();
-                    if (buff2) {
-                        decrypteds.push(buff2);
-                    }
-                    decrypted = Buffer.concat(decrypteds);
-                    nPaddingBytes = decrypted[decrypted.length - 1];
-                    size = encrypted.length - nPaddingBytes;
-                    decryptedOut = decrypted.slice(0, size).toString("utf8");
-                    if (this.ID !== decryptedOut) {
-                        debug("Failed LCP ID check.");
-                        return [2, false];
-                    }
-                    encryptedContentKey = new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
-                    iv2 = encryptedContentKey.slice(0, AES_BLOCK_SIZE);
-                    encrypted2 = encryptedContentKey.slice(AES_BLOCK_SIZE);
-                    decrypteds2 = [];
-                    decryptStream2 = crypto.createDecipheriv("aes-256-cbc", userKey, iv2);
-                    decryptStream2.setAutoPadding(false);
-                    buff1_ = decryptStream2.update(encrypted2);
-                    if (buff1_) {
-                        decrypteds2.push(buff1_);
-                    }
-                    buff2_ = decryptStream2.final();
-                    if (buff2_) {
-                        decrypteds2.push(buff2_);
-                    }
-                    decrypted2 = Buffer.concat(decrypteds2);
-                    nPaddingBytes2 = decrypted2[decrypted2.length - 1];
-                    size2 = encrypted2.length - nPaddingBytes2;
-                    this.ContentKey = decrypted2.slice(0, size2);
+            });
+        });
+    };
+    LCP.prototype.tryUserKey = function (lcpUserKey) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var userKey, keyCheck, encryptedLicenseID, iv, encrypted, decrypteds, decryptStream, buff1, buff2, decrypted, nPaddingBytes, size, decryptedOut, encryptedContentKey, iv2, encrypted2, decrypteds2, decryptStream2, buff1_, buff2_, decrypted2, nPaddingBytes2, size2;
+            return tslib_1.__generator(this, function (_a) {
+                userKey = new Buffer(lcpUserKey, "hex");
+                keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
+                encryptedLicenseID = keyCheck;
+                iv = encryptedLicenseID.slice(0, AES_BLOCK_SIZE);
+                encrypted = encryptedLicenseID.slice(AES_BLOCK_SIZE);
+                decrypteds = [];
+                decryptStream = crypto.createDecipheriv("aes-256-cbc", userKey, iv);
+                decryptStream.setAutoPadding(false);
+                buff1 = decryptStream.update(encrypted);
+                if (buff1) {
+                    decrypteds.push(buff1);
                 }
-                return [2, true];
+                buff2 = decryptStream.final();
+                if (buff2) {
+                    decrypteds.push(buff2);
+                }
+                decrypted = Buffer.concat(decrypteds);
+                nPaddingBytes = decrypted[decrypted.length - 1];
+                size = encrypted.length - nPaddingBytes;
+                decryptedOut = decrypted.slice(0, size).toString("utf8");
+                if (this.ID !== decryptedOut) {
+                    debug("Failed LCP ID check.");
+                    return [2, Promise.reject("Failed LCP ID check.")];
+                }
+                encryptedContentKey = new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
+                iv2 = encryptedContentKey.slice(0, AES_BLOCK_SIZE);
+                encrypted2 = encryptedContentKey.slice(AES_BLOCK_SIZE);
+                decrypteds2 = [];
+                decryptStream2 = crypto.createDecipheriv("aes-256-cbc", userKey, iv2);
+                decryptStream2.setAutoPadding(false);
+                buff1_ = decryptStream2.update(encrypted2);
+                if (buff1_) {
+                    decrypteds2.push(buff1_);
+                }
+                buff2_ = decryptStream2.final();
+                if (buff2_) {
+                    decrypteds2.push(buff2_);
+                }
+                decrypted2 = Buffer.concat(decrypteds2);
+                nPaddingBytes2 = decrypted2[decrypted2.length - 1];
+                size2 = encrypted2.length - nPaddingBytes2;
+                this.ContentKey = decrypted2.slice(0, size2);
+                return [2, Promise.resolve({ okay: true })];
             });
         });
     };
