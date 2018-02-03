@@ -76,6 +76,7 @@ let LCP = class LCP {
         return new Promise((resolve, reject) => {
             this._lcpNative.decrypt(this._lcpContext, encryptedContent, (er, decryptedContent) => {
                 if (er) {
+                    debug("decrypt ERROR");
                     debug(er);
                     reject(er);
                     return;
@@ -103,12 +104,14 @@ let LCP = class LCP {
             return new Promise((resolve, reject) => {
                 this._lcpNative.findOneValidPassphrase(this.JsonSource, lcpUserKeys, (err, validHashedPassphrase) => {
                     if (err) {
+                        debug("findOneValidPassphrase ERROR");
                         debug(err);
                         reject(err);
                         return;
                     }
                     this._lcpNative.createContext(this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, (erro, context) => {
                         if (erro) {
+                            debug("createContext ERROR");
                             debug(erro);
                             reject(err);
                             return;
@@ -128,7 +131,7 @@ let LCP = class LCP {
             catch (err) {
             }
         }
-        return Promise.reject("Pass fail.");
+        return Promise.reject(1);
     }
     async tryUserKey(lcpUserKey) {
         const userKey = new Buffer(lcpUserKey, "hex");

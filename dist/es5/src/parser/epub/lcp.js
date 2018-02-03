@@ -79,6 +79,7 @@ var LCP = (function () {
                 return [2, new Promise(function (resolve, reject) {
                         _this._lcpNative.decrypt(_this._lcpContext, encryptedContent, function (er, decryptedContent) {
                             if (er) {
+                                debug("decrypt ERROR");
                                 debug(er);
                                 reject(er);
                                 return;
@@ -114,12 +115,14 @@ var LCP = (function () {
                             return [2, new Promise(function (resolve, reject) {
                                     _this._lcpNative.findOneValidPassphrase(_this.JsonSource, lcpUserKeys, function (err, validHashedPassphrase) {
                                         if (err) {
+                                            debug("findOneValidPassphrase ERROR");
                                             debug(err);
                                             reject(err);
                                             return;
                                         }
                                         _this._lcpNative.createContext(_this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, function (erro, context) {
                                             if (erro) {
+                                                debug("createContext ERROR");
                                                 debug(erro);
                                                 reject(err);
                                                 return;
@@ -149,7 +152,7 @@ var LCP = (function () {
                     case 5:
                         _i++;
                         return [3, 1];
-                    case 6: return [2, Promise.reject("Pass fail.")];
+                    case 6: return [2, Promise.reject(1)];
                 }
             });
         });
