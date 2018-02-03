@@ -6,7 +6,7 @@ const debug_ = require("debug");
 const moment = require("moment");
 const request = require("request");
 const requestPromise = require("request-promise-native");
-const debug = debug_("r2:lcp:lsd:lcpl-update");
+const debug = debug_("r2:lcp#lsd/lcpl-update");
 function lsdLcpUpdate(lsdJson, lcp) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         if (lsdJson.updated && lsdJson.updated.license &&

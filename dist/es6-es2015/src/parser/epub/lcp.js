@@ -14,7 +14,7 @@ const lcp_rights_1 = require("./lcp-rights");
 const lcp_signature_1 = require("./lcp-signature");
 const lcp_user_1 = require("./lcp-user");
 const AES_BLOCK_SIZE = 16;
-const debug = debug_("r2:publication:lcp");
+const debug = debug_("r2:lcp#parser/epub/lcp");
 let LCP_NATIVE_PLUGIN_PATH = path.join(process.cwd(), "LCP", "lcp.node");
 function setLcpNativePluginPath(filepath) {
     LCP_NATIVE_PLUGIN_PATH = filepath;
@@ -116,7 +116,7 @@ let LCP = class LCP {
                             if (erro) {
                                 debug("createContext ERROR");
                                 debug(erro);
-                                reject(err);
+                                reject(erro);
                                 return;
                             }
                             this._lcpContext = context;

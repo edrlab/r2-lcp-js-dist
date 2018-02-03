@@ -6,7 +6,7 @@ const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
 const URITemplate = require("urijs/src/URITemplate");
-const debug = debug_("r2:electron:main:lsd");
+const debug = debug_("r2:lcp#lsd/return");
 function lsdReturn(lsdJson, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         if (!lsdJson.links) {

@@ -7,7 +7,7 @@ var request = require("request");
 var requestPromise = require("request-promise-native");
 var lcpl_update_1 = require("./lcpl-update");
 var register_1 = require("./register");
-var debug = debug_("r2:lcp:lsd:processing");
+var debug = debug_("r2:lcp#lsd/status-document-processing");
 function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var _this = this;

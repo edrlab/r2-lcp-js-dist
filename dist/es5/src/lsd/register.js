@@ -6,7 +6,7 @@ var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
 var URITemplate = require("urijs/src/URITemplate");
-var debug = debug_("r2:lcp:lsd:register");
+var debug = debug_("r2:lcp#lsd/register");
 function lsdRegister(lsdJson, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var _this = this;

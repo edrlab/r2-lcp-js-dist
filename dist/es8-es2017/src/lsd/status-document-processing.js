@@ -6,7 +6,7 @@ const request = require("request");
 const requestPromise = require("request-promise-native");
 const lcpl_update_1 = require("./lcpl-update");
 const register_1 = require("./register");
-const debug = debug_("r2:lcp:lsd:processing");
+const debug = debug_("r2:lcp#lsd/status-document-processing");
 async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete) {
     if (!lcp || !lcp.Links) {
         if (onStatusDocumentProcessingComplete) {

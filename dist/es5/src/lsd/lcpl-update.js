@@ -6,7 +6,7 @@ var debug_ = require("debug");
 var moment = require("moment");
 var request = require("request");
 var requestPromise = require("request-promise-native");
-var debug = debug_("r2:lcp:lsd:lcpl-update");
+var debug = debug_("r2:lcp#lsd/lcpl-update");
 function lsdLcpUpdate(lsdJson, lcp) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var _this = this;

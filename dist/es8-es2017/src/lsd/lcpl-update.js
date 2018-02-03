@@ -5,7 +5,7 @@ const debug_ = require("debug");
 const moment = require("moment");
 const request = require("request");
 const requestPromise = require("request-promise-native");
-const debug = debug_("r2:lcp:lsd:lcpl-update");
+const debug = debug_("r2:lcp#lsd/lcpl-update");
 async function lsdLcpUpdate(lsdJson, lcp) {
     if (lsdJson.updated && lsdJson.updated.license &&
         (lcp.Updated || lcp.Issued)) {

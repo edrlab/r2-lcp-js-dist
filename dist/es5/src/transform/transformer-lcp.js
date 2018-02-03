@@ -7,7 +7,7 @@ var zlib = require("zlib");
 var RangeStream_1 = require("r2-utils-js/dist/es5/src/_utils/stream/RangeStream");
 var debug_ = require("debug");
 var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
-var debug = debug_("r2:transformer:lcp");
+var debug = debug_("r2:lcp#transform/transformer-lcp");
 var AES_BLOCK_SIZE = 16;
 var readStream = function (s, n) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
     return tslib_1.__generator(this, function (_a) {

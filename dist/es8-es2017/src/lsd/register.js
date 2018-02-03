@@ -5,7 +5,7 @@ const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
 const URITemplate = require("urijs/src/URITemplate");
-const debug = debug_("r2:lcp:lsd:register");
+const debug = debug_("r2:lcp#lsd/register");
 async function lsdRegister(lsdJson, deviceIDManager) {
     if (!lsdJson.links) {
         return Promise.reject("No LSD links!");

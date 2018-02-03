@@ -7,7 +7,7 @@ var request = require("request");
 var requestPromise = require("request-promise-native");
 var URI = require("urijs");
 var URITemplate = require("urijs/src/URITemplate");
-var debug = debug_("r2:electron:main:lsd");
+var debug = debug_("r2:lcp#lsd/renew");
 function lsdRenew(end, lsdJson, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var _this = this;

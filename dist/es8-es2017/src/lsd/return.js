@@ -5,7 +5,7 @@ const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
 const URITemplate = require("urijs/src/URITemplate");
-const debug = debug_("r2:electron:main:lsd");
+const debug = debug_("r2:lcp#lsd/return");
 async function lsdReturn(lsdJson, deviceIDManager) {
     if (!lsdJson.links) {
         return Promise.reject("No LSD links!");

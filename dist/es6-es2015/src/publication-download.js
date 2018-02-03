@@ -9,7 +9,7 @@ const request = require("request");
 const requestPromise = require("request-promise-native");
 const ta_json_1 = require("ta-json");
 const lcp_1 = require("./parser/epub/lcp");
-const debug = debug_("r2:lcp:epub-download");
+const debug = debug_("r2:lcp#publication-download");
 function downloadEPUBFromLCPL(filePath, dir, destFileName) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
