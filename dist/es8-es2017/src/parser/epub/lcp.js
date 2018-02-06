@@ -117,23 +117,23 @@ let LCP = class LCP {
                             return;
                         }
                         this._lcpContext = context;
-                        resolve({ okay: true });
+                        resolve();
                     });
                 });
             });
         }
         for (const lcpUserKey of lcpUserKeys) {
-            let res;
             try {
-                res = await this.tryUserKey(lcpUserKey);
-                return Promise.resolve(res);
+                if (this.tryUserKey(lcpUserKey)) {
+                    return Promise.resolve();
+                }
             }
             catch (err) {
             }
         }
         return Promise.reject(1);
     }
-    async tryUserKey(lcpUserKey) {
+    tryUserKey(lcpUserKey) {
         const userKey = new Buffer(lcpUserKey, "hex");
         const keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
         const encryptedLicenseID = keyCheck;
@@ -156,7 +156,7 @@ let LCP = class LCP {
         const decryptedOut = decrypted.slice(0, size).toString("utf8");
         if (this.ID !== decryptedOut) {
             debug("Failed LCP ID check.");
-            return Promise.reject("Failed LCP ID check.");
+            return false;
         }
         const encryptedContentKey = new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
         const iv2 = encryptedContentKey.slice(0, AES_BLOCK_SIZE);
@@ -176,7 +176,7 @@ let LCP = class LCP {
         const nPaddingBytes2 = decrypted2[decrypted2.length - 1];
         const size2 = encrypted2.length - nPaddingBytes2;
         this.ContentKey = decrypted2.slice(0, size2);
-        return Promise.resolve({ okay: true });
+        return true;
     }
 };
 tslib_1.__decorate([

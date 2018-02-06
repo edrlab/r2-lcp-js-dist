@@ -5,9 +5,6 @@ import { Rights } from "./lcp-rights";
 import { Signature } from "./lcp-signature";
 import { User } from "./lcp-user";
 export declare function setLcpNativePluginPath(filepath: string): boolean;
-export interface ITryLcpUserKeyResult {
-    okay: boolean;
-}
 export declare class LCP {
     ID: string;
     Provider: string;
@@ -29,6 +26,6 @@ export declare class LCP {
     isReady(): boolean;
     init(): void;
     decrypt(encryptedContent: Buffer): Promise<Buffer>;
-    tryUserKeys(lcpUserKeys: string[]): Promise<ITryLcpUserKeyResult>;
+    tryUserKeys(lcpUserKeys: string[]): Promise<void | {}>;
     private tryUserKey(lcpUserKey);
 }
