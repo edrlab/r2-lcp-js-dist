@@ -17,8 +17,22 @@ async function lsdRenew(end, lsdJson, deviceIDManager) {
     if (!licenseRenew) {
         return Promise.reject("No LSD renew link!");
     }
-    const deviceID = deviceIDManager.getDeviceID();
-    const deviceNAME = deviceIDManager.getDeviceNAME();
+    let deviceID;
+    try {
+        deviceID = await deviceIDManager.getDeviceID();
+    }
+    catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device ID !?");
+    }
+    let deviceNAME;
+    try {
+        deviceNAME = await deviceIDManager.getDeviceNAME();
+    }
+    catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device NAME !?");
+    }
     let renewURL = licenseRenew.href;
     if (licenseRenew.templated === true || licenseRenew.templated === "true") {
         const urlTemplate = new URITemplate(renewURL);

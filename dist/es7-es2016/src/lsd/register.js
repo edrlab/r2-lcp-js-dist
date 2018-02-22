@@ -18,14 +18,34 @@ function lsdRegister(lsdJson, deviceIDManager) {
         if (!licenseRegister) {
             return Promise.reject("No LSD register link!");
         }
-        const deviceID = deviceIDManager.getDeviceID();
-        const deviceNAME = deviceIDManager.getDeviceNAME();
+        let deviceID;
+        try {
+            deviceID = yield deviceIDManager.getDeviceID();
+        }
+        catch (err) {
+            debug(err);
+            return Promise.reject("Problem getting Device ID !?");
+        }
+        let deviceNAME;
+        try {
+            deviceNAME = yield deviceIDManager.getDeviceNAME();
+        }
+        catch (err) {
+            debug(err);
+            return Promise.reject("Problem getting Device NAME !?");
+        }
         let doRegister = false;
         if (lsdJson.status === "ready") {
             doRegister = true;
         }
         else if (lsdJson.status === "active") {
-            const deviceIDForStatusDoc = deviceIDManager.checkDeviceID(lsdJson.id);
+            let deviceIDForStatusDoc;
+            try {
+                deviceIDForStatusDoc = yield deviceIDManager.checkDeviceID(lsdJson.id);
+            }
+            catch (err) {
+                debug(err);
+            }
             if (!deviceIDForStatusDoc) {
                 doRegister = true;
             }
@@ -68,7 +88,12 @@ function lsdRegister(lsdJson, deviceIDManager) {
                 const responseJson = global.JSON.parse(responseStr);
                 debug(responseJson);
                 if (responseJson.status === "active") {
-                    deviceIDManager.recordDeviceID(responseJson.id);
+                    try {
+                        yield deviceIDManager.recordDeviceID(responseJson.id);
+                    }
+                    catch (err) {
+                        debug(err);
+                    }
                 }
                 resolve(responseJson);
             });

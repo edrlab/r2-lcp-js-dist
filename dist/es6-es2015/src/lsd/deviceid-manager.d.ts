@@ -1,6 +1,6 @@
 export interface IDeviceIDManager {
-    getDeviceNAME(): string;
-    getDeviceID(): string;
-    checkDeviceID(key: string): string | undefined;
-    recordDeviceID(key: string): void;
+    getDeviceNAME(): Promise<string>;
+    getDeviceID(): Promise<string>;
+    checkDeviceID(key: string): Promise<string | undefined>;
+    recordDeviceID(key: string): Promise<void>;
 }
