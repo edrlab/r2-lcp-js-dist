@@ -9,8 +9,8 @@ var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/register");
 function lsdRegister(lsdJson, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var _this = this;
         var licenseRegister, deviceID, err_1, deviceNAME, err_2, doRegister, deviceIDForStatusDoc, err_3, registerURL, urlTemplate;
+        var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -83,8 +83,8 @@ function lsdRegister(lsdJson, deviceIDManager) {
                     }
                     debug("REGISTER: " + registerURL);
                     return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            var _this = this;
                             var failure, success, headers, needsStreamingResponse, response, err_4;
+                            var _this = this;
                             return tslib_1.__generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:

@@ -47,8 +47,8 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
 exports.supports = supports;
 function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var _this = this;
         var plainTextSize, nativelyDecryptedStream, fullEncryptedBuffer, err_1, nativelyDecryptedBuffer, err_2, cryptoInfo, cypherBlockPadding, err_3, err_4, destStream, rawDecryptStream, ivBuffer, cypherRangeStream, err_5, decryptStream, cypherUnpaddedStream, inflateStream, l, rangeStream, sal;
+        var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:

@@ -15,8 +15,8 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                    var _this = this;
                     var lcplStr, lcplJson, lcpl, pubLink_1, destPathTMP_1, destPathFINAL_1, failure_1, success, needsStreamingResponse, response, err_1;
+                    var _this = this;
                     return tslib_1.__generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:

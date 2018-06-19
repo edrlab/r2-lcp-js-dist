@@ -10,8 +10,8 @@ var register_1 = require("./register");
 var debug = debug_("r2:lcp#lsd/status-document-processing");
 function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var _this = this;
         var linkStatus, failure, success, headers, needsStreamingResponse, response, err_1;
+        var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:

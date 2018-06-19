@@ -94,8 +94,8 @@ var LCP = (function () {
     };
     LCP.prototype.tryUserKeys = function (lcpUserKeys) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var _this = this;
             var check, _i, lcpUserKeys_1, lcpUserKey;
+            var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 this.init();
                 check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"

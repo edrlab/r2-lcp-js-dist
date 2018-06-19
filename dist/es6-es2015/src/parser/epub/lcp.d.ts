@@ -27,5 +27,5 @@ export declare class LCP {
     init(): void;
     decrypt(encryptedContent: Buffer): Promise<Buffer>;
     tryUserKeys(lcpUserKeys: string[]): Promise<void | {}>;
-    private tryUserKey(lcpUserKey);
+    private tryUserKey;
 }

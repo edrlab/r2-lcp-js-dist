@@ -10,8 +10,8 @@ var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/renew");
 function lsdRenew(end, lsdJson, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var _this = this;
         var licenseRenew, deviceID, err_1, deviceNAME, err_2, renewURL, urlTemplate, renewURI;
+        var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -58,8 +58,8 @@ function lsdRenew(end, lsdJson, deviceIDManager) {
                     }
                     debug("RENEW: " + renewURL);
                     return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            var _this = this;
                             var failure, success, headers, needsStreamingResponse, response, err_3;
+                            var _this = this;
                             return tslib_1.__generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:

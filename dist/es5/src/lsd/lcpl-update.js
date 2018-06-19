@@ -9,8 +9,8 @@ var requestPromise = require("request-promise-native");
 var debug = debug_("r2:lcp#lsd/lcpl-update");
 function lsdLcpUpdate(lsdJson, lcp) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var _this = this;
         var updatedLicenseLSD, updatedLicense, forceUpdate, licenseLink_1;
+        var _this = this;
         return tslib_1.__generator(this, function (_a) {
             if (lsdJson.updated && lsdJson.updated.license &&
                 (lcp.Updated || lcp.Issued)) {
@@ -29,8 +29,8 @@ function lsdLcpUpdate(lsdJson, lcp) {
                         }
                         debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink_1.href);
                         return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                var _this = this;
                                 var failure, success, headers, needsStreamingResponse, response, err_1;
+                                var _this = this;
                                 return tslib_1.__generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
