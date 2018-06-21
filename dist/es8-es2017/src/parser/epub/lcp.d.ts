@@ -5,6 +5,10 @@ import { Rights } from "./lcp-rights";
 import { Signature } from "./lcp-signature";
 import { User } from "./lcp-user";
 export declare function setLcpNativePluginPath(filepath: string): boolean;
+export interface IDecryptedBuffer {
+    buffer: Buffer;
+    inflated: boolean;
+}
 export declare class LCP {
     ID: string;
     Provider: string;
@@ -25,7 +29,7 @@ export declare class LCP {
     isNativeNodePlugin(): boolean;
     isReady(): boolean;
     init(): void;
-    decrypt(encryptedContent: Buffer): Promise<Buffer>;
+    decrypt(encryptedContent: Buffer, linkHref: string, needsInflating: boolean): Promise<IDecryptedBuffer>;
     tryUserKeys(lcpUserKeys: string[]): Promise<void | {}>;
     private tryUserKey;
 }

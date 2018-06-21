@@ -66,7 +66,7 @@ let LCP = class LCP {
             this._lcpNative = undefined;
         }
     }
-    async decrypt(encryptedContent) {
+    async decrypt(encryptedContent, linkHref, needsInflating) {
         if (!this.isNativeNodePlugin()) {
             return Promise.reject("direct decrypt buffer only for native plugin");
         }
@@ -74,17 +74,23 @@ let LCP = class LCP {
             return Promise.reject("LCP context not initialized (call tryUserKeys())");
         }
         return new Promise((resolve, reject) => {
-            this._lcpNative.decrypt(this._lcpContext, encryptedContent, (er, decryptedContent) => {
+            this._lcpNative.decrypt(this._lcpContext, encryptedContent, (er, decryptedContent, inflated) => {
                 if (er) {
                     debug("decrypt ERROR");
                     debug(er);
                     reject(er);
                     return;
                 }
-                const padding = decryptedContent[decryptedContent.length - 1];
-                const buff = decryptedContent.slice(0, decryptedContent.length - padding);
-                resolve(buff);
-            });
+                let buff = decryptedContent;
+                if (!inflated) {
+                    const padding = decryptedContent[decryptedContent.length - 1];
+                    buff = decryptedContent.slice(0, decryptedContent.length - padding);
+                }
+                resolve({
+                    buffer: buff,
+                    inflated: inflated ? true : false,
+                });
+            }, this.JsonSource, linkHref, needsInflating);
         });
     }
     async tryUserKeys(lcpUserKeys) {

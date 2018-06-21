@@ -42,8 +42,11 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
 }
 exports.supports = supports;
 async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd) {
+    const isCompressionNone = linkPropertiesEncrypted.Compression === "none";
+    const isCompressionDeflate = linkPropertiesEncrypted.Compression === "deflate";
     let plainTextSize = -1;
     let nativelyDecryptedStream;
+    let nativelyInflated = false;
     if (lcp.isNativeNodePlugin()) {
         debug("DECRYPT: " + linkHref);
         let fullEncryptedBuffer;
@@ -54,18 +57,21 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
             debug(err);
             return Promise.reject("OUCH!");
         }
-        let nativelyDecryptedBuffer;
+        let res;
         try {
-            nativelyDecryptedBuffer = await lcp.decrypt(fullEncryptedBuffer);
+            res = await lcp.decrypt(fullEncryptedBuffer, linkHref, isCompressionDeflate);
         }
         catch (err) {
             debug(err);
             return Promise.reject("OUCH!");
         }
+        const nativelyDecryptedBuffer = res.buffer;
+        nativelyInflated = res.inflated;
         plainTextSize = nativelyDecryptedBuffer.length;
         linkPropertiesEncrypted.DecryptedLengthBeforeInflate = plainTextSize;
-        if (linkPropertiesEncrypted.OriginalLength &&
-            linkPropertiesEncrypted.Compression === "none" &&
+        if (!nativelyInflated &&
+            linkPropertiesEncrypted.OriginalLength &&
+            isCompressionNone &&
             linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
             debug(`############### ` +
                 `LCP transformStream() LENGTH NOT MATCH ` +
@@ -101,7 +107,7 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
                 return Promise.reject(err);
             }
             if (linkPropertiesEncrypted.OriginalLength &&
-                linkPropertiesEncrypted.Compression === "none" &&
+                isCompressionNone &&
                 linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
                 debug(`############### ` +
                     `LCP transformStream() LENGTH NOT MATCH ` +
@@ -154,12 +160,12 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
             destStream = cypherUnpaddedStream;
         }
     }
-    if (linkPropertiesEncrypted.Compression === "deflate") {
+    if (!nativelyInflated && isCompressionDeflate) {
         const inflateStream = zlib.createInflateRaw();
         destStream.pipe(inflateStream);
         destStream = inflateStream;
     }
-    const l = linkPropertiesEncrypted.OriginalLength ?
+    const l = (!nativelyInflated && linkPropertiesEncrypted.OriginalLength) ?
         linkPropertiesEncrypted.OriginalLength : plainTextSize;
     if (isPartialByteRangeRequest) {
         const rangeStream = new RangeStream_1.RangeStream(partialByteBegin, partialByteEnd, l);
