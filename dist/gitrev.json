@@ -1,9 +1,9 @@
 {
-  "short": "8091496",
-  "long": "8091496de41ea0d59b2666d181d2e58a78e51ea4",
+  "short": "5df9402",
+  "long": "5df9402bf683908b45311439aa96b0a5c2da449e",
   "branch": "develop",
-  "date": "2018-08-29T23:58:44.000Z",
+  "date": "2018-08-30T15:56:30.000Z",
   "dirty": true,
-  "urlHistory": "https://github.com/edrlab/r2-lcp-js/commits/8091496de41ea0d59b2666d181d2e58a78e51ea4",
-  "urlDiff": "https://github.com/edrlab/r2-lcp-js/compare/8091496de41ea0d59b2666d181d2e58a78e51ea4...develop"
+  "urlHistory": "https://github.com/readium/r2-lcp-js/commits/5df9402bf683908b45311439aa96b0a5c2da449e",
+  "urlDiff": "https://github.com/readium/r2-lcp-js/compare/5df9402bf683908b45311439aa96b0a5c2da449e...develop"
 }
