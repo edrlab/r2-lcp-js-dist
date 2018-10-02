@@ -7,7 +7,7 @@ const zipInjector_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/zip/zipInj
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
-const ta_json_1 = require("ta-json");
+const ta_json_x_1 = require("ta-json-x");
 const lcp_1 = require("./parser/epub/lcp");
 const debug = debug_("r2:lcp#publication-download");
 function downloadEPUBFromLCPL(filePath, dir, destFileName) {
@@ -15,7 +15,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
         return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
             const lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
             const lcplJson = global.JSON.parse(lcplStr);
-            const lcpl = ta_json_1.JSON.deserialize(lcplJson, lcp_1.LCP);
+            const lcpl = ta_json_x_1.JSON.deserialize(lcplJson, lcp_1.LCP);
             if (lcpl.Links) {
                 const pubLink = lcpl.Links.find((link) => {
                     return link.Rel === "publication";

@@ -7,7 +7,7 @@ var zipInjector_1 = require("r2-utils-js/dist/es5/src/_utils/zip/zipInjector");
 var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
-var ta_json_1 = require("ta-json");
+var ta_json_x_1 = require("ta-json-x");
 var lcp_1 = require("./parser/epub/lcp");
 var debug = debug_("r2:lcp#publication-download");
 function downloadEPUBFromLCPL(filePath, dir, destFileName) {
@@ -22,7 +22,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                             case 0:
                                 lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
                                 lcplJson = global.JSON.parse(lcplStr);
-                                lcpl = ta_json_1.JSON.deserialize(lcplJson, lcp_1.LCP);
+                                lcpl = ta_json_x_1.JSON.deserialize(lcplJson, lcp_1.LCP);
                                 if (!lcpl.Links) return [3, 7];
                                 pubLink_1 = lcpl.Links.find(function (link) {
                                     return link.Rel === "publication";
