@@ -1,11 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var bind = require("bindings");
 var crypto = require("crypto");
 var fs = require("fs");
 var path = require("path");
+var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
+var bind = require("bindings");
 var debug_ = require("debug");
+var request = require("request");
+var requestPromise = require("request-promise-native");
 var ta_json_x_1 = require("ta-json-x");
 var lcp_certificate_1 = require("./lcp-certificate");
 var lcp_encryption_1 = require("./lcp-encryption");
@@ -100,54 +103,159 @@ var LCP = (function () {
     };
     LCP.prototype.tryUserKeys = function (lcpUserKeys) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var check, _i, lcpUserKeys_1, lcpUserKey;
+            var check, crlPem_1, _i, lcpUserKeys_1, lcpUserKey;
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
-                this.init();
-                check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
-                    || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0")
-                    && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
-                    && this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
-                if (!check) {
-                    debug("Incorrect LCP fields.");
-                    debug(this.Encryption.Profile);
-                    debug(this.Encryption.ContentKey.Algorithm);
-                    debug(this.Encryption.UserKey.Algorithm);
-                    return [2, Promise.reject("Incorrect LCP fields.")];
-                }
-                if (this._usesNativeNodePlugin) {
-                    return [2, new Promise(function (resolve, reject) {
-                            _this._lcpNative.findOneValidPassphrase(_this.JsonSource, lcpUserKeys, function (err, validHashedPassphrase) {
-                                if (err) {
-                                    debug("findOneValidPassphrase ERROR");
-                                    debug(err);
-                                    reject(err);
-                                    return;
-                                }
-                                _this._lcpNative.createContext(_this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, function (erro, context) {
-                                    if (erro) {
-                                        debug("createContext ERROR");
-                                        debug(erro);
-                                        reject(erro);
+                switch (_a.label) {
+                    case 0:
+                        this.init();
+                        check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
+                            || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0")
+                            && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
+                            && this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+                        if (!check) {
+                            debug("Incorrect LCP fields.");
+                            debug(this.Encryption.Profile);
+                            debug(this.Encryption.ContentKey.Algorithm);
+                            debug(this.Encryption.UserKey.Algorithm);
+                            return [2, Promise.reject("Incorrect LCP fields.")];
+                        }
+                        if (!this._usesNativeNodePlugin) return [3, 2];
+                        return [4, this.getCRLPem()];
+                    case 1:
+                        crlPem_1 = _a.sent();
+                        return [2, new Promise(function (resolve, reject) {
+                                _this._lcpNative.findOneValidPassphrase(_this.JsonSource, lcpUserKeys, function (err, validHashedPassphrase) {
+                                    if (err) {
+                                        debug("findOneValidPassphrase ERROR");
+                                        debug(err);
+                                        reject(err);
                                         return;
                                     }
-                                    _this._lcpContext = context;
-                                    resolve();
+                                    _this._lcpNative.createContext(_this.JsonSource, validHashedPassphrase, crlPem_1, function (erro, context) {
+                                        if (erro) {
+                                            debug("createContext ERROR");
+                                            debug(erro);
+                                            reject(erro);
+                                            return;
+                                        }
+                                        _this._lcpContext = context;
+                                        resolve();
+                                    });
                                 });
-                            });
-                        })];
-                }
-                for (_i = 0, lcpUserKeys_1 = lcpUserKeys; _i < lcpUserKeys_1.length; _i++) {
-                    lcpUserKey = lcpUserKeys_1[_i];
-                    try {
-                        if (this.tryUserKey(lcpUserKey)) {
-                            return [2, Promise.resolve()];
+                            })];
+                    case 2:
+                        for (_i = 0, lcpUserKeys_1 = lcpUserKeys; _i < lcpUserKeys_1.length; _i++) {
+                            lcpUserKey = lcpUserKeys_1[_i];
+                            try {
+                                if (this.tryUserKey(lcpUserKey)) {
+                                    return [2, Promise.resolve()];
+                                }
+                            }
+                            catch (err) {
+                            }
                         }
-                    }
-                    catch (err) {
-                    }
+                        return [2, Promise.reject(1)];
                 }
-                return [2, Promise.reject(1)];
+            });
+        });
+    };
+    LCP.prototype.getCRLPem = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return tslib_1.__generator(this, function (_a) {
+                return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                        var crlURL, failure, success, headers, needsStreamingResponse, response, err_1;
+                        var _this = this;
+                        return tslib_1.__generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    crlURL = lcp_certificate_1.CRL_URL;
+                                    failure = function (err) {
+                                        debug(err);
+                                        resolve(lcp_certificate_1.DUMMY_CRL);
+                                    };
+                                    success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                        var d, err_2, s, responseData, err_3, lcplStr;
+                                        return tslib_1.__generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0:
+                                                    Object.keys(response.headers).forEach(function (header) {
+                                                        debug(header + " => " + response.headers[header]);
+                                                    });
+                                                    if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
+                                                    failure("HTTP CODE " + response.statusCode);
+                                                    d = void 0;
+                                                    _a.label = 1;
+                                                case 1:
+                                                    _a.trys.push([1, 3, , 4]);
+                                                    return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                case 2:
+                                                    d = _a.sent();
+                                                    return [3, 4];
+                                                case 3:
+                                                    err_2 = _a.sent();
+                                                    return [2];
+                                                case 4:
+                                                    s = d.toString("utf8");
+                                                    debug(s);
+                                                    return [2];
+                                                case 5:
+                                                    _a.trys.push([5, 7, , 8]);
+                                                    return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                case 6:
+                                                    responseData = _a.sent();
+                                                    return [3, 8];
+                                                case 7:
+                                                    err_3 = _a.sent();
+                                                    reject(err_3);
+                                                    return [2];
+                                                case 8:
+                                                    lcplStr = "-----BEGIN X509 CRL-----\n" +
+                                                        responseData.toString("base64") + "\n-----END X509 CRL-----";
+                                                    debug(lcplStr);
+                                                    resolve(lcplStr);
+                                                    return [2];
+                                            }
+                                        });
+                                    }); };
+                                    headers = {};
+                                    needsStreamingResponse = true;
+                                    if (!needsStreamingResponse) return [3, 1];
+                                    request.get({
+                                        headers: headers,
+                                        method: "GET",
+                                        uri: crlURL,
+                                    })
+                                        .on("response", success)
+                                        .on("error", failure);
+                                    return [3, 7];
+                                case 1:
+                                    response = void 0;
+                                    _a.label = 2;
+                                case 2:
+                                    _a.trys.push([2, 4, , 5]);
+                                    return [4, requestPromise({
+                                            headers: headers,
+                                            method: "GET",
+                                            resolveWithFullResponse: true,
+                                            uri: crlURL,
+                                        })];
+                                case 3:
+                                    response = _a.sent();
+                                    return [3, 5];
+                                case 4:
+                                    err_1 = _a.sent();
+                                    failure(err_1);
+                                    return [2];
+                                case 5: return [4, success(response)];
+                                case 6:
+                                    _a.sent();
+                                    _a.label = 7;
+                                case 7: return [2];
+                            }
+                        });
+                    }); })];
             });
         });
     };

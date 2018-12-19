@@ -33,6 +33,15 @@ async function lsdLcpUpdate(lsdJson, lcp) {
                         });
                         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                             failure("HTTP CODE " + response.statusCode);
+                            let d;
+                            try {
+                                d = await BufferUtils_1.streamToBufferPromise(response);
+                            }
+                            catch (err) {
+                                return;
+                            }
+                            const s = d.toString("utf8");
+                            debug(s);
                             return;
                         }
                         let responseData;

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
+const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/BufferUtils");
 const zipInjector_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/zip/zipInjector");
 const debug_ = require("debug");
 const request = require("request");
@@ -31,6 +32,15 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                     });
                     if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                         failure("HTTP CODE " + response.statusCode);
+                        let d;
+                        try {
+                            d = await BufferUtils_1.streamToBufferPromise(response);
+                        }
+                        catch (err) {
+                            return;
+                        }
+                        const s = d.toString("utf8");
+                        debug(s);
                         return;
                     }
                     const destStreamTMP = fs.createWriteStream(destPathTMP);

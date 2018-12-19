@@ -1,11 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const bind = require("bindings");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const BufferUtils_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/BufferUtils");
+const bind = require("bindings");
 const debug_ = require("debug");
+const request = require("request");
+const requestPromise = require("request-promise-native");
 const ta_json_x_1 = require("ta-json-x");
 const lcp_certificate_1 = require("./lcp-certificate");
 const lcp_encryption_1 = require("./lcp-encryption");
@@ -110,6 +113,7 @@ let LCP = class LCP {
                 return Promise.reject("Incorrect LCP fields.");
             }
             if (this._usesNativeNodePlugin) {
+                const crlPem = yield this.getCRLPem();
                 return new Promise((resolve, reject) => {
                     this._lcpNative.findOneValidPassphrase(this.JsonSource, lcpUserKeys, (err, validHashedPassphrase) => {
                         if (err) {
@@ -118,7 +122,7 @@ let LCP = class LCP {
                             reject(err);
                             return;
                         }
-                        this._lcpNative.createContext(this.JsonSource, validHashedPassphrase, lcp_certificate_1.DUMMY_CRL, (erro, context) => {
+                        this._lcpNative.createContext(this.JsonSource, validHashedPassphrase, crlPem, (erro, context) => {
                             if (erro) {
                                 debug("createContext ERROR");
                                 debug(erro);
@@ -141,6 +145,74 @@ let LCP = class LCP {
                 }
             }
             return Promise.reject(1);
+        });
+    }
+    getCRLPem() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                const crlURL = lcp_certificate_1.CRL_URL;
+                const failure = (err) => {
+                    debug(err);
+                    resolve(lcp_certificate_1.DUMMY_CRL);
+                };
+                const success = (response) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                    Object.keys(response.headers).forEach((header) => {
+                        debug(header + " => " + response.headers[header]);
+                    });
+                    if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
+                        failure("HTTP CODE " + response.statusCode);
+                        let d;
+                        try {
+                            d = yield BufferUtils_1.streamToBufferPromise(response);
+                        }
+                        catch (err) {
+                            return;
+                        }
+                        const s = d.toString("utf8");
+                        debug(s);
+                        return;
+                    }
+                    let responseData;
+                    try {
+                        responseData = yield BufferUtils_1.streamToBufferPromise(response);
+                    }
+                    catch (err) {
+                        reject(err);
+                        return;
+                    }
+                    const lcplStr = "-----BEGIN X509 CRL-----\n" +
+                        responseData.toString("base64") + "\n-----END X509 CRL-----";
+                    debug(lcplStr);
+                    resolve(lcplStr);
+                });
+                const headers = {};
+                const needsStreamingResponse = true;
+                if (needsStreamingResponse) {
+                    request.get({
+                        headers,
+                        method: "GET",
+                        uri: crlURL,
+                    })
+                        .on("response", success)
+                        .on("error", failure);
+                }
+                else {
+                    let response;
+                    try {
+                        response = yield requestPromise({
+                            headers,
+                            method: "GET",
+                            resolveWithFullResponse: true,
+                            uri: crlURL,
+                        });
+                    }
+                    catch (err) {
+                        failure(err);
+                        return;
+                    }
+                    yield success(response);
+                }
+            }));
         });
     }
     tryUserKey(lcpUserKey) {

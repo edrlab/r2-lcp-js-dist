@@ -50,7 +50,7 @@ function lsdRegister(lsdJson, deviceIDManager) {
                 doRegister = true;
             }
             else if (deviceIDForStatusDoc !== deviceID) {
-                debug("LSD registered device ID is different?");
+                debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
                 doRegister = true;
             }
         }
@@ -73,6 +73,15 @@ function lsdRegister(lsdJson, deviceIDManager) {
                 });
                 if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                     failure("HTTP CODE " + response.statusCode);
+                    let d;
+                    try {
+                        d = yield BufferUtils_1.streamToBufferPromise(response);
+                    }
+                    catch (err) {
+                        return;
+                    }
+                    const s = d.toString("utf8");
+                    debug(s);
                     return;
                 }
                 let responseData;
@@ -87,6 +96,7 @@ function lsdRegister(lsdJson, deviceIDManager) {
                 debug(responseStr);
                 const responseJson = global.JSON.parse(responseStr);
                 debug(responseJson);
+                debug(responseJson.status);
                 if (responseJson.status === "active") {
                     try {
                         yield deviceIDManager.recordDeviceID(responseJson.id);

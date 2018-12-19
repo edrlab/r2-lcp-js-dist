@@ -68,7 +68,7 @@ function lsdRegister(lsdJson, deviceIDManager) {
                         doRegister = true;
                     }
                     else if (deviceIDForStatusDoc !== deviceID) {
-                        debug("LSD registered device ID is different?");
+                        debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
                         doRegister = true;
                     }
                     _a.label = 13;
@@ -92,46 +92,59 @@ function lsdRegister(lsdJson, deviceIDManager) {
                                             reject(err);
                                         };
                                         success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                            var responseData, err_5, responseStr, responseJson, err_6;
+                                            var d, err_5, s, responseData, err_6, responseStr, responseJson, err_7;
                                             return tslib_1.__generator(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
                                                         Object.keys(response.headers).forEach(function (header) {
                                                             debug(header + " => " + response.headers[header]);
                                                         });
-                                                        if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                                                            failure("HTTP CODE " + response.statusCode);
-                                                            return [2];
-                                                        }
+                                                        if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
+                                                        failure("HTTP CODE " + response.statusCode);
+                                                        d = void 0;
                                                         _a.label = 1;
                                                     case 1:
                                                         _a.trys.push([1, 3, , 4]);
                                                         return [4, BufferUtils_1.streamToBufferPromise(response)];
                                                     case 2:
-                                                        responseData = _a.sent();
+                                                        d = _a.sent();
                                                         return [3, 4];
                                                     case 3:
                                                         err_5 = _a.sent();
-                                                        reject(err_5);
                                                         return [2];
                                                     case 4:
+                                                        s = d.toString("utf8");
+                                                        debug(s);
+                                                        return [2];
+                                                    case 5:
+                                                        _a.trys.push([5, 7, , 8]);
+                                                        return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                    case 6:
+                                                        responseData = _a.sent();
+                                                        return [3, 8];
+                                                    case 7:
+                                                        err_6 = _a.sent();
+                                                        reject(err_6);
+                                                        return [2];
+                                                    case 8:
                                                         responseStr = responseData.toString("utf8");
                                                         debug(responseStr);
                                                         responseJson = global.JSON.parse(responseStr);
                                                         debug(responseJson);
-                                                        if (!(responseJson.status === "active")) return [3, 8];
-                                                        _a.label = 5;
-                                                    case 5:
-                                                        _a.trys.push([5, 7, , 8]);
+                                                        debug(responseJson.status);
+                                                        if (!(responseJson.status === "active")) return [3, 12];
+                                                        _a.label = 9;
+                                                    case 9:
+                                                        _a.trys.push([9, 11, , 12]);
                                                         return [4, deviceIDManager.recordDeviceID(responseJson.id)];
-                                                    case 6:
+                                                    case 10:
                                                         _a.sent();
-                                                        return [3, 8];
-                                                    case 7:
-                                                        err_6 = _a.sent();
-                                                        debug(err_6);
-                                                        return [3, 8];
-                                                    case 8:
+                                                        return [3, 12];
+                                                    case 11:
+                                                        err_7 = _a.sent();
+                                                        debug(err_7);
+                                                        return [3, 12];
+                                                    case 12:
                                                         resolve(responseJson);
                                                         return [2];
                                                 }

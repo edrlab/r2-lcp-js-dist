@@ -38,29 +38,41 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                 reject(err);
                                             };
                                             success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                                var responseData, err_2, lcplStr;
+                                                var d, err_2, s, responseData, err_3, lcplStr;
                                                 return tslib_1.__generator(this, function (_a) {
                                                     switch (_a.label) {
                                                         case 0:
                                                             Object.keys(response.headers).forEach(function (header) {
                                                                 debug(header + " => " + response.headers[header]);
                                                             });
-                                                            if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                                                                failure("HTTP CODE " + response.statusCode);
-                                                                return [2];
-                                                            }
+                                                            if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
+                                                            failure("HTTP CODE " + response.statusCode);
+                                                            d = void 0;
                                                             _a.label = 1;
                                                         case 1:
                                                             _a.trys.push([1, 3, , 4]);
                                                             return [4, BufferUtils_1.streamToBufferPromise(response)];
                                                         case 2:
-                                                            responseData = _a.sent();
+                                                            d = _a.sent();
                                                             return [3, 4];
                                                         case 3:
                                                             err_2 = _a.sent();
-                                                            reject(err_2);
                                                             return [2];
                                                         case 4:
+                                                            s = d.toString("utf8");
+                                                            debug(s);
+                                                            return [2];
+                                                        case 5:
+                                                            _a.trys.push([5, 7, , 8]);
+                                                            return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                        case 6:
+                                                            responseData = _a.sent();
+                                                            return [3, 8];
+                                                        case 7:
+                                                            err_3 = _a.sent();
+                                                            reject(err_3);
+                                                            return [2];
+                                                        case 8:
                                                             lcplStr = responseData.toString("utf8");
                                                             debug(lcplStr);
                                                             resolve(lcplStr);

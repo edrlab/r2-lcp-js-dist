@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var fs = require("fs");
 var path = require("path");
+var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var zipInjector_1 = require("r2-utils-js/dist/es5/src/_utils/zip/zipInjector");
 var debug_ = require("debug");
 var request = require("request");
@@ -35,32 +36,49 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                     reject(pubLink_1.Href + " (" + err + ")");
                                 };
                                 success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                    var destStreamTMP;
+                                    var d, err_2, s, destStreamTMP;
                                     return tslib_1.__generator(this, function (_a) {
-                                        Object.keys(response.headers).forEach(function (header) {
-                                            debug(header + " => " + response.headers[header]);
-                                        });
-                                        if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                                            failure_1("HTTP CODE " + response.statusCode);
-                                            return [2];
+                                        switch (_a.label) {
+                                            case 0:
+                                                Object.keys(response.headers).forEach(function (header) {
+                                                    debug(header + " => " + response.headers[header]);
+                                                });
+                                                if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
+                                                failure_1("HTTP CODE " + response.statusCode);
+                                                d = void 0;
+                                                _a.label = 1;
+                                            case 1:
+                                                _a.trys.push([1, 3, , 4]);
+                                                return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                            case 2:
+                                                d = _a.sent();
+                                                return [3, 4];
+                                            case 3:
+                                                err_2 = _a.sent();
+                                                return [2];
+                                            case 4:
+                                                s = d.toString("utf8");
+                                                debug(s);
+                                                return [2];
+                                            case 5:
+                                                destStreamTMP = fs.createWriteStream(destPathTMP_1);
+                                                response.pipe(destStreamTMP);
+                                                destStreamTMP.on("finish", function () {
+                                                    var zipError = function (err) {
+                                                        debug(err);
+                                                        reject(destPathTMP_1 + " (" + err + ")");
+                                                    };
+                                                    var doneCallback = function () {
+                                                        setTimeout(function () {
+                                                            fs.unlinkSync(destPathTMP_1);
+                                                        }, 1000);
+                                                        resolve([destPathFINAL_1, pubLink_1.Href]);
+                                                    };
+                                                    var zipEntryPath = "META-INF/license.lcpl";
+                                                    zipInjector_1.injectFileInZip(destPathTMP_1, destPathFINAL_1, filePath, zipEntryPath, zipError, doneCallback);
+                                                });
+                                                return [2];
                                         }
-                                        destStreamTMP = fs.createWriteStream(destPathTMP_1);
-                                        response.pipe(destStreamTMP);
-                                        destStreamTMP.on("finish", function () {
-                                            var zipError = function (err) {
-                                                debug(err);
-                                                reject(destPathTMP_1 + " (" + err + ")");
-                                            };
-                                            var doneCallback = function () {
-                                                setTimeout(function () {
-                                                    fs.unlinkSync(destPathTMP_1);
-                                                }, 1000);
-                                                resolve([destPathFINAL_1, pubLink_1.Href]);
-                                            };
-                                            var zipEntryPath = "META-INF/license.lcpl";
-                                            zipInjector_1.injectFileInZip(destPathTMP_1, destPathFINAL_1, filePath, zipEntryPath, zipError, doneCallback);
-                                        });
-                                        return [2];
                                     });
                                 }); };
                                 needsStreamingResponse = true;

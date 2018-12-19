@@ -31,5 +31,6 @@ export declare class LCP {
     init(): void;
     decrypt(encryptedContent: Buffer, linkHref: string, needsInflating: boolean): Promise<IDecryptedBuffer>;
     tryUserKeys(lcpUserKeys: string[]): Promise<void | {}>;
+    private getCRLPem;
     private tryUserKey;
 }
