@@ -233,48 +233,79 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
 exports.transformStream = transformStream;
 function getDecryptedSizeStream(lcp, stream) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
+        var _this = this;
         return tslib_1.__generator(this, function (_a) {
-            return [2, new Promise(function (resolve, reject) {
-                    var TWO_AES_BLOCK_SIZE = 2 * AES_BLOCK_SIZE;
-                    if (stream.length < TWO_AES_BLOCK_SIZE) {
-                        reject("crypto err");
-                        return;
-                    }
-                    var readPos = stream.length - TWO_AES_BLOCK_SIZE;
-                    var cypherRangeStream = new RangeStream_1.RangeStream(readPos, readPos + TWO_AES_BLOCK_SIZE - 1, stream.length);
-                    stream.stream.pipe(cypherRangeStream);
-                    var decrypteds = [];
-                    cypherRangeStream.on("readable", function () {
-                        var ivBuffer = cypherRangeStream.read(AES_BLOCK_SIZE);
-                        if (!ivBuffer) {
-                            return;
-                        }
-                        var encrypted = cypherRangeStream.read(AES_BLOCK_SIZE);
-                        var decryptStream = crypto.createDecipheriv("aes-256-cbc", lcp.ContentKey, ivBuffer);
-                        decryptStream.setAutoPadding(false);
-                        var buff1 = decryptStream.update(encrypted);
-                        if (buff1) {
-                            decrypteds.push(buff1);
-                        }
-                        var buff2 = decryptStream.final();
-                        if (buff2) {
-                            decrypteds.push(buff2);
+            return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    var TWO_AES_BLOCK_SIZE, readPos, cypherRangeStream, decrypteds, handle, finished, finish, buf, err_7;
+                    return tslib_1.__generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                TWO_AES_BLOCK_SIZE = 2 * AES_BLOCK_SIZE;
+                                if (stream.length < TWO_AES_BLOCK_SIZE) {
+                                    reject("crypto err");
+                                    return [2];
+                                }
+                                readPos = stream.length - TWO_AES_BLOCK_SIZE;
+                                cypherRangeStream = new RangeStream_1.RangeStream(readPos, readPos + TWO_AES_BLOCK_SIZE - 1, stream.length);
+                                stream.stream.pipe(cypherRangeStream);
+                                decrypteds = [];
+                                handle = function (ivBuffer, encrypted) {
+                                    var decryptStream = crypto.createDecipheriv("aes-256-cbc", lcp.ContentKey, ivBuffer);
+                                    decryptStream.setAutoPadding(false);
+                                    var buff1 = decryptStream.update(encrypted);
+                                    if (buff1) {
+                                        decrypteds.push(buff1);
+                                    }
+                                    var buff2 = decryptStream.final();
+                                    if (buff2) {
+                                        decrypteds.push(buff2);
+                                    }
+                                    finish();
+                                };
+                                finished = false;
+                                finish = function () {
+                                    if (finished) {
+                                        return;
+                                    }
+                                    finished = true;
+                                    var decrypted = Buffer.concat(decrypteds);
+                                    if (decrypted.length !== AES_BLOCK_SIZE) {
+                                        reject("decrypted.length !== AES_BLOCK_SIZE");
+                                        return;
+                                    }
+                                    var nPaddingBytes = decrypted[AES_BLOCK_SIZE - 1];
+                                    var size = stream.length - AES_BLOCK_SIZE - nPaddingBytes;
+                                    var res = {
+                                        length: size,
+                                        padding: nPaddingBytes,
+                                    };
+                                    resolve(res);
+                                };
+                                _a.label = 1;
+                            case 1:
+                                _a.trys.push([1, 3, , 4]);
+                                return [4, readStream(cypherRangeStream, TWO_AES_BLOCK_SIZE)];
+                            case 2:
+                                buf = _a.sent();
+                                if (!buf) {
+                                    reject("!buf (end?)");
+                                    return [2];
+                                }
+                                if (buf.length !== TWO_AES_BLOCK_SIZE) {
+                                    reject("buf.length !== TWO_AES_BLOCK_SIZE");
+                                    return [2];
+                                }
+                                handle(buf.slice(0, AES_BLOCK_SIZE), buf.slice(AES_BLOCK_SIZE));
+                                return [3, 4];
+                            case 3:
+                                err_7 = _a.sent();
+                                debug(err_7);
+                                reject(err_7);
+                                return [2];
+                            case 4: return [2];
                         }
                     });
-                    cypherRangeStream.on("end", function () {
-                        var decrypted = Buffer.concat(decrypteds);
-                        var nPaddingBytes = decrypted[AES_BLOCK_SIZE - 1];
-                        var size = stream.length - AES_BLOCK_SIZE - nPaddingBytes;
-                        var res = {
-                            length: size,
-                            padding: nPaddingBytes,
-                        };
-                        resolve(res);
-                    });
-                    cypherRangeStream.on("error", function () {
-                        reject("DECRYPT err");
-                    });
-                })];
+                }); })];
         });
     });
 }
