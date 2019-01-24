@@ -18,12 +18,17 @@ const lcp_signature_1 = require("./lcp-signature");
 const lcp_user_1 = require("./lcp-user");
 const AES_BLOCK_SIZE = 16;
 const debug = debug_("r2:lcp#parser/epub/lcp");
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 let LCP_NATIVE_PLUGIN_PATH = path.join(process.cwd(), "LCP", "lcp.node");
 function setLcpNativePluginPath(filepath) {
     LCP_NATIVE_PLUGIN_PATH = filepath;
-    debug(LCP_NATIVE_PLUGIN_PATH);
+    if (IS_DEV) {
+        debug(LCP_NATIVE_PLUGIN_PATH);
+    }
     const exists = fs.existsSync(LCP_NATIVE_PLUGIN_PATH);
-    debug("LCP NATIVE PLUGIN: " + (exists ? "OKAY" : "MISSING"));
+    if (IS_DEV) {
+        debug("LCP NATIVE PLUGIN: " + (exists ? "OKAY" : "MISSING"));
+    }
     return exists;
 }
 exports.setLcpNativePluginPath = setLcpNativePluginPath;
@@ -48,11 +53,15 @@ let LCP = class LCP {
         this.ContentKey = undefined;
         this._lcpContext = undefined;
         if (fs.existsSync(LCP_NATIVE_PLUGIN_PATH)) {
-            debug("LCP _usesNativeNodePlugin");
+            if (IS_DEV) {
+                debug("LCP _usesNativeNodePlugin");
+            }
             const filePath = path.dirname(LCP_NATIVE_PLUGIN_PATH);
             const fileName = path.basename(LCP_NATIVE_PLUGIN_PATH);
-            debug(filePath);
-            debug(fileName);
+            if (IS_DEV) {
+                debug(filePath);
+                debug(fileName);
+            }
             this._usesNativeNodePlugin = true;
             this._lcpNative = bind({
                 bindings: fileName,
@@ -64,7 +73,9 @@ let LCP = class LCP {
             });
         }
         else {
-            debug("LCP JS impl");
+            if (IS_DEV) {
+                debug("LCP JS impl");
+            }
             this._usesNativeNodePlugin = false;
             this._lcpNative = undefined;
         }
@@ -151,20 +162,49 @@ let LCP = class LCP {
                 resolve(lcp_certificate_1.DUMMY_CRL);
             };
             const success = async (response) => {
-                Object.keys(response.headers).forEach((header) => {
-                    debug(header + " => " + response.headers[header]);
-                });
+                if (IS_DEV) {
+                    Object.keys(response.headers).forEach((header) => {
+                        debug(header + " => " + response.headers[header]);
+                    });
+                }
                 if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                    failure("HTTP CODE " + response.statusCode);
-                    let d;
+                    let failBuff;
                     try {
-                        d = await BufferUtils_1.streamToBufferPromise(response);
+                        failBuff = await BufferUtils_1.streamToBufferPromise(response);
                     }
-                    catch (err) {
+                    catch (buffErr) {
+                        if (IS_DEV) {
+                            debug(buffErr);
+                        }
+                        failure(response.statusCode);
                         return;
                     }
-                    const s = d.toString("utf8");
-                    debug(s);
+                    try {
+                        const failStr = failBuff.toString("utf8");
+                        if (IS_DEV) {
+                            debug(failStr);
+                        }
+                        try {
+                            const failJson = global.JSON.parse(failStr);
+                            if (IS_DEV) {
+                                debug(failJson);
+                            }
+                            failJson.httpStatusCode = response.statusCode;
+                            failure(failJson);
+                        }
+                        catch (jsonErr) {
+                            if (IS_DEV) {
+                                debug(jsonErr);
+                            }
+                            failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                        }
+                    }
+                    catch (strErr) {
+                        if (IS_DEV) {
+                            debug(strErr);
+                        }
+                        failure(response.statusCode);
+                    }
                     return;
                 }
                 let responseData;
@@ -177,7 +217,9 @@ let LCP = class LCP {
                 }
                 const lcplStr = "-----BEGIN X509 CRL-----\n" +
                     responseData.toString("base64") + "\n-----END X509 CRL-----";
-                debug(lcplStr);
+                if (IS_DEV) {
+                    debug(lcplStr);
+                }
                 resolve(lcplStr);
             };
             const headers = {};

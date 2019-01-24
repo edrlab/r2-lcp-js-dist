@@ -6,6 +6,7 @@ const request = require("request");
 const requestPromise = require("request-promise-native");
 const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/register");
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 async function lsdRegister(lsdJson, deviceIDManager) {
     if (!lsdJson.links) {
         return Promise.reject("No LSD links!");
@@ -48,7 +49,9 @@ async function lsdRegister(lsdJson, deviceIDManager) {
             doRegister = true;
         }
         else if (deviceIDForStatusDoc !== deviceID) {
-            debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+            if (IS_DEV) {
+                debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+            }
             doRegister = true;
         }
     }
@@ -60,26 +63,57 @@ async function lsdRegister(lsdJson, deviceIDManager) {
         const urlTemplate = new URITemplate(registerURL);
         registerURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
     }
-    debug("REGISTER: " + registerURL);
+    if (IS_DEV) {
+        debug("REGISTER: " + registerURL);
+    }
     return new Promise(async (resolve, reject) => {
         const failure = (err) => {
             reject(err);
         };
         const success = async (response) => {
-            Object.keys(response.headers).forEach((header) => {
-                debug(header + " => " + response.headers[header]);
-            });
+            if (IS_DEV) {
+                Object.keys(response.headers).forEach((header) => {
+                    debug(header + " => " + response.headers[header]);
+                });
+            }
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                failure("HTTP CODE " + response.statusCode);
-                let d;
+                let failBuff;
                 try {
-                    d = await BufferUtils_1.streamToBufferPromise(response);
+                    failBuff = await BufferUtils_1.streamToBufferPromise(response);
                 }
-                catch (err) {
+                catch (buffErr) {
+                    if (IS_DEV) {
+                        debug(buffErr);
+                    }
+                    failure(response.statusCode);
                     return;
                 }
-                const s = d.toString("utf8");
-                debug(s);
+                try {
+                    const failStr = failBuff.toString("utf8");
+                    if (IS_DEV) {
+                        debug(failStr);
+                    }
+                    try {
+                        const failJson = global.JSON.parse(failStr);
+                        if (IS_DEV) {
+                            debug(failJson);
+                        }
+                        failJson.httpStatusCode = response.statusCode;
+                        failure(failJson);
+                    }
+                    catch (jsonErr) {
+                        if (IS_DEV) {
+                            debug(jsonErr);
+                        }
+                        failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                    }
+                }
+                catch (strErr) {
+                    if (IS_DEV) {
+                        debug(strErr);
+                    }
+                    failure(response.statusCode);
+                }
                 return;
             }
             let responseData;
@@ -91,10 +125,14 @@ async function lsdRegister(lsdJson, deviceIDManager) {
                 return;
             }
             const responseStr = responseData.toString("utf8");
-            debug(responseStr);
+            if (IS_DEV) {
+                debug(responseStr);
+            }
             const responseJson = global.JSON.parse(responseStr);
-            debug(responseJson);
-            debug(responseJson.status);
+            if (IS_DEV) {
+                debug(responseJson);
+                debug(responseJson.status);
+            }
             if (responseJson.status === "active") {
                 try {
                     await deviceIDManager.recordDeviceID(responseJson.id);

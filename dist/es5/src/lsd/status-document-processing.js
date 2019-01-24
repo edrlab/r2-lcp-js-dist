@@ -8,6 +8,7 @@ var requestPromise = require("request-promise-native");
 var lcpl_update_1 = require("./lcpl-update");
 var register_1 = require("./register");
 var debug = debug_("r2:lcp#lsd/status-document-processing");
+var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var linkStatus, failure, success, headers, needsStreamingResponse, response, err_1;
@@ -30,7 +31,9 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                         }
                         return [2];
                     }
-                    debug(linkStatus);
+                    if (IS_DEV) {
+                        debug(linkStatus);
+                    }
                     failure = function (err) {
                         debug(err);
                         if (onStatusDocumentProcessingComplete) {
@@ -38,29 +41,58 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                         }
                     };
                     success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                        var d, err_2, s, responseData, err_3, responseStr, mime, lsdJson, licenseUpdateResponseJson, err_4, registerResponseJson, err_5;
+                        var failBuff, buffErr_1, failStr, failJson, responseData, err_2, responseStr, mime, lsdJson, licenseUpdateResponseJson, err_3, registerResponseJson, err_4;
                         return tslib_1.__generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    Object.keys(response.headers).forEach(function (header) {
-                                        debug(header + " => " + response.headers[header]);
-                                    });
+                                    if (IS_DEV) {
+                                        Object.keys(response.headers).forEach(function (header) {
+                                            debug(header + " => " + response.headers[header]);
+                                        });
+                                    }
                                     if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
-                                    failure("HTTP CODE " + response.statusCode);
-                                    d = void 0;
+                                    failBuff = void 0;
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 3, , 4]);
                                     return [4, BufferUtils_1.streamToBufferPromise(response)];
                                 case 2:
-                                    d = _a.sent();
+                                    failBuff = _a.sent();
                                     return [3, 4];
                                 case 3:
-                                    err_2 = _a.sent();
+                                    buffErr_1 = _a.sent();
+                                    if (IS_DEV) {
+                                        debug(buffErr_1);
+                                    }
+                                    failure(response.statusCode);
                                     return [2];
                                 case 4:
-                                    s = d.toString("utf8");
-                                    debug(s);
+                                    try {
+                                        failStr = failBuff.toString("utf8");
+                                        if (IS_DEV) {
+                                            debug(failStr);
+                                        }
+                                        try {
+                                            failJson = global.JSON.parse(failStr);
+                                            if (IS_DEV) {
+                                                debug(failJson);
+                                            }
+                                            failJson.httpStatusCode = response.statusCode;
+                                            failure(failJson);
+                                        }
+                                        catch (jsonErr) {
+                                            if (IS_DEV) {
+                                                debug(jsonErr);
+                                            }
+                                            failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                                        }
+                                    }
+                                    catch (strErr) {
+                                        if (IS_DEV) {
+                                            debug(strErr);
+                                        }
+                                        failure(response.statusCode);
+                                    }
                                     return [2];
                                 case 5:
                                     _a.trys.push([5, 7, , 8]);
@@ -69,8 +101,8 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     responseData = _a.sent();
                                     return [3, 8];
                                 case 7:
-                                    err_3 = _a.sent();
-                                    debug(err_3);
+                                    err_2 = _a.sent();
+                                    debug(err_2);
                                     if (onStatusDocumentProcessingComplete) {
                                         onStatusDocumentProcessingComplete(undefined);
                                     }
@@ -78,12 +110,16 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                 case 8:
                                     responseStr = responseData.toString("utf8");
                                     mime = "application/vnd.readium.license.status.v1.0+json";
-                                    if (response.headers["content-type"] === mime ||
-                                        response.headers["content-type"] === "application/json") {
-                                        debug(responseStr);
+                                    if (IS_DEV) {
+                                        if (response.headers["content-type"] === mime ||
+                                            response.headers["content-type"] === "application/json") {
+                                            debug(responseStr);
+                                        }
                                     }
                                     lsdJson = global.JSON.parse(responseStr);
-                                    debug(lsdJson);
+                                    if (IS_DEV) {
+                                        debug(lsdJson);
+                                    }
                                     lcp.LSDJson = lsdJson;
                                     _a.label = 9;
                                 case 9:
@@ -93,8 +129,8 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     licenseUpdateResponseJson = _a.sent();
                                     return [3, 12];
                                 case 11:
-                                    err_4 = _a.sent();
-                                    debug(err_4);
+                                    err_3 = _a.sent();
+                                    debug(err_3);
                                     return [3, 12];
                                 case 12:
                                     if (licenseUpdateResponseJson) {
@@ -122,8 +158,8 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     lcp.LSDJson = registerResponseJson;
                                     return [3, 16];
                                 case 15:
-                                    err_5 = _a.sent();
-                                    debug(err_5);
+                                    err_4 = _a.sent();
+                                    debug(err_4);
                                     return [3, 16];
                                 case 16:
                                     if (onStatusDocumentProcessingComplete) {

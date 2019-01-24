@@ -7,6 +7,7 @@ var request = require("request");
 var requestPromise = require("request-promise-native");
 var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/register");
+var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function lsdRegister(lsdJson, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var licenseRegister, deviceID, err_1, deviceNAME, err_2, doRegister, deviceIDForStatusDoc, err_3, registerURL, urlTemplate;
@@ -68,7 +69,9 @@ function lsdRegister(lsdJson, deviceIDManager) {
                         doRegister = true;
                     }
                     else if (deviceIDForStatusDoc !== deviceID) {
-                        debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+                        if (IS_DEV) {
+                            debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+                        }
                         doRegister = true;
                     }
                     _a.label = 13;
@@ -81,7 +84,9 @@ function lsdRegister(lsdJson, deviceIDManager) {
                         urlTemplate = new URITemplate(registerURL);
                         registerURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
                     }
-                    debug("REGISTER: " + registerURL);
+                    if (IS_DEV) {
+                        debug("REGISTER: " + registerURL);
+                    }
                     return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                             var failure, success, headers, needsStreamingResponse, response, err_4;
                             var _this = this;
@@ -92,29 +97,58 @@ function lsdRegister(lsdJson, deviceIDManager) {
                                             reject(err);
                                         };
                                         success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                            var d, err_5, s, responseData, err_6, responseStr, responseJson, err_7;
+                                            var failBuff, buffErr_1, failStr, failJson, responseData, err_5, responseStr, responseJson, err_6;
                                             return tslib_1.__generator(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
-                                                        Object.keys(response.headers).forEach(function (header) {
-                                                            debug(header + " => " + response.headers[header]);
-                                                        });
+                                                        if (IS_DEV) {
+                                                            Object.keys(response.headers).forEach(function (header) {
+                                                                debug(header + " => " + response.headers[header]);
+                                                            });
+                                                        }
                                                         if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
-                                                        failure("HTTP CODE " + response.statusCode);
-                                                        d = void 0;
+                                                        failBuff = void 0;
                                                         _a.label = 1;
                                                     case 1:
                                                         _a.trys.push([1, 3, , 4]);
                                                         return [4, BufferUtils_1.streamToBufferPromise(response)];
                                                     case 2:
-                                                        d = _a.sent();
+                                                        failBuff = _a.sent();
                                                         return [3, 4];
                                                     case 3:
-                                                        err_5 = _a.sent();
+                                                        buffErr_1 = _a.sent();
+                                                        if (IS_DEV) {
+                                                            debug(buffErr_1);
+                                                        }
+                                                        failure(response.statusCode);
                                                         return [2];
                                                     case 4:
-                                                        s = d.toString("utf8");
-                                                        debug(s);
+                                                        try {
+                                                            failStr = failBuff.toString("utf8");
+                                                            if (IS_DEV) {
+                                                                debug(failStr);
+                                                            }
+                                                            try {
+                                                                failJson = global.JSON.parse(failStr);
+                                                                if (IS_DEV) {
+                                                                    debug(failJson);
+                                                                }
+                                                                failJson.httpStatusCode = response.statusCode;
+                                                                failure(failJson);
+                                                            }
+                                                            catch (jsonErr) {
+                                                                if (IS_DEV) {
+                                                                    debug(jsonErr);
+                                                                }
+                                                                failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                                                            }
+                                                        }
+                                                        catch (strErr) {
+                                                            if (IS_DEV) {
+                                                                debug(strErr);
+                                                            }
+                                                            failure(response.statusCode);
+                                                        }
                                                         return [2];
                                                     case 5:
                                                         _a.trys.push([5, 7, , 8]);
@@ -123,15 +157,19 @@ function lsdRegister(lsdJson, deviceIDManager) {
                                                         responseData = _a.sent();
                                                         return [3, 8];
                                                     case 7:
-                                                        err_6 = _a.sent();
-                                                        reject(err_6);
+                                                        err_5 = _a.sent();
+                                                        reject(err_5);
                                                         return [2];
                                                     case 8:
                                                         responseStr = responseData.toString("utf8");
-                                                        debug(responseStr);
+                                                        if (IS_DEV) {
+                                                            debug(responseStr);
+                                                        }
                                                         responseJson = global.JSON.parse(responseStr);
-                                                        debug(responseJson);
-                                                        debug(responseJson.status);
+                                                        if (IS_DEV) {
+                                                            debug(responseJson);
+                                                            debug(responseJson.status);
+                                                        }
                                                         if (!(responseJson.status === "active")) return [3, 12];
                                                         _a.label = 9;
                                                     case 9:
@@ -141,8 +179,8 @@ function lsdRegister(lsdJson, deviceIDManager) {
                                                         _a.sent();
                                                         return [3, 12];
                                                     case 11:
-                                                        err_7 = _a.sent();
-                                                        debug(err_7);
+                                                        err_6 = _a.sent();
+                                                        debug(err_6);
                                                         return [3, 12];
                                                     case 12:
                                                         resolve(responseJson);

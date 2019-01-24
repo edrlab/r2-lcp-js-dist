@@ -8,6 +8,7 @@ var RangeStream_1 = require("r2-utils-js/dist/es5/src/_utils/stream/RangeStream"
 var debug_ = require("debug");
 var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var debug = debug_("r2:lcp#transform/transformer-lcp");
+var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 var AES_BLOCK_SIZE = 16;
 var readStream = function (s, n) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
     return tslib_1.__generator(this, function (_a) {
@@ -36,10 +37,6 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
             linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0")
         && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
     if (!check) {
-        debug("Incorrect resource LCP fields.");
-        debug(linkPropertiesEncrypted.Scheme);
-        debug(linkPropertiesEncrypted.Profile);
-        debug(linkPropertiesEncrypted.Algorithm);
         return false;
     }
     return true;
@@ -57,7 +54,9 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                     plainTextSize = -1;
                     nativelyInflated = false;
                     if (!lcp.isNativeNodePlugin()) return [3, 9];
-                    debug("DECRYPT: " + linkHref);
+                    if (IS_DEV) {
+                        debug("LCP DECRYPT NATIVE: " + linkHref);
+                    }
                     fullEncryptedBuffer = void 0;
                     _a.label = 1;
                 case 1:

@@ -7,6 +7,7 @@ const requestPromise = require("request-promise-native");
 const lcpl_update_1 = require("./lcpl-update");
 const register_1 = require("./register");
 const debug = debug_("r2:lcp#lsd/status-document-processing");
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete) {
     if (!lcp || !lcp.Links) {
         if (onStatusDocumentProcessingComplete) {
@@ -23,7 +24,9 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
         return;
     }
-    debug(linkStatus);
+    if (IS_DEV) {
+        debug(linkStatus);
+    }
     const failure = (err) => {
         debug(err);
         if (onStatusDocumentProcessingComplete) {
@@ -31,20 +34,49 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
     };
     const success = async (response) => {
-        Object.keys(response.headers).forEach((header) => {
-            debug(header + " => " + response.headers[header]);
-        });
+        if (IS_DEV) {
+            Object.keys(response.headers).forEach((header) => {
+                debug(header + " => " + response.headers[header]);
+            });
+        }
         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-            failure("HTTP CODE " + response.statusCode);
-            let d;
+            let failBuff;
             try {
-                d = await BufferUtils_1.streamToBufferPromise(response);
+                failBuff = await BufferUtils_1.streamToBufferPromise(response);
             }
-            catch (err) {
+            catch (buffErr) {
+                if (IS_DEV) {
+                    debug(buffErr);
+                }
+                failure(response.statusCode);
                 return;
             }
-            const s = d.toString("utf8");
-            debug(s);
+            try {
+                const failStr = failBuff.toString("utf8");
+                if (IS_DEV) {
+                    debug(failStr);
+                }
+                try {
+                    const failJson = global.JSON.parse(failStr);
+                    if (IS_DEV) {
+                        debug(failJson);
+                    }
+                    failJson.httpStatusCode = response.statusCode;
+                    failure(failJson);
+                }
+                catch (jsonErr) {
+                    if (IS_DEV) {
+                        debug(jsonErr);
+                    }
+                    failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                }
+            }
+            catch (strErr) {
+                if (IS_DEV) {
+                    debug(strErr);
+                }
+                failure(response.statusCode);
+            }
             return;
         }
         let responseData;
@@ -60,12 +92,16 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
         const responseStr = responseData.toString("utf8");
         const mime = "application/vnd.readium.license.status.v1.0+json";
-        if (response.headers["content-type"] === mime ||
-            response.headers["content-type"] === "application/json") {
-            debug(responseStr);
+        if (IS_DEV) {
+            if (response.headers["content-type"] === mime ||
+                response.headers["content-type"] === "application/json") {
+                debug(responseStr);
+            }
         }
         const lsdJson = global.JSON.parse(responseStr);
-        debug(lsdJson);
+        if (IS_DEV) {
+            debug(lsdJson);
+        }
         lcp.LSDJson = lsdJson;
         let licenseUpdateResponseJson;
         try {

@@ -10,6 +10,7 @@ const requestPromise = require("request-promise-native");
 const ta_json_x_1 = require("ta-json-x");
 const lcp_1 = require("./parser/epub/lcp");
 const debug = debug_("r2:lcp#publication-download");
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
     return new Promise(async (resolve, reject) => {
         const lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
@@ -27,20 +28,49 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                     reject(pubLink.Href + " (" + err + ")");
                 };
                 const success = async (response) => {
-                    Object.keys(response.headers).forEach((header) => {
-                        debug(header + " => " + response.headers[header]);
-                    });
+                    if (IS_DEV) {
+                        Object.keys(response.headers).forEach((header) => {
+                            debug(header + " => " + response.headers[header]);
+                        });
+                    }
                     if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                        failure("HTTP CODE " + response.statusCode);
-                        let d;
+                        let failBuff;
                         try {
-                            d = await BufferUtils_1.streamToBufferPromise(response);
+                            failBuff = await BufferUtils_1.streamToBufferPromise(response);
                         }
-                        catch (err) {
+                        catch (buffErr) {
+                            if (IS_DEV) {
+                                debug(buffErr);
+                            }
+                            failure(response.statusCode);
                             return;
                         }
-                        const s = d.toString("utf8");
-                        debug(s);
+                        try {
+                            const failStr = failBuff.toString("utf8");
+                            if (IS_DEV) {
+                                debug(failStr);
+                            }
+                            try {
+                                const failJson = global.JSON.parse(failStr);
+                                if (IS_DEV) {
+                                    debug(failJson);
+                                }
+                                failJson.httpStatusCode = response.statusCode;
+                                failure(failJson);
+                            }
+                            catch (jsonErr) {
+                                if (IS_DEV) {
+                                    debug(jsonErr);
+                                }
+                                failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                            }
+                        }
+                        catch (strErr) {
+                            if (IS_DEV) {
+                                debug(strErr);
+                            }
+                            failure(response.statusCode);
+                        }
                         return;
                     }
                     const destStreamTMP = fs.createWriteStream(destPathTMP);

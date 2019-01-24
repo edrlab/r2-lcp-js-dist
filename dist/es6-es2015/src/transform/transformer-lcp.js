@@ -7,6 +7,7 @@ const RangeStream_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/Ran
 const debug_ = require("debug");
 const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/BufferUtils");
 const debug = debug_("r2:lcp#transform/transformer-lcp");
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 const AES_BLOCK_SIZE = 16;
 const readStream = (s, n) => tslib_1.__awaiter(this, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
@@ -33,10 +34,6 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
             linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0")
         && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
     if (!check) {
-        debug("Incorrect resource LCP fields.");
-        debug(linkPropertiesEncrypted.Scheme);
-        debug(linkPropertiesEncrypted.Profile);
-        debug(linkPropertiesEncrypted.Algorithm);
         return false;
     }
     return true;
@@ -50,7 +47,9 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
         let nativelyDecryptedStream;
         let nativelyInflated = false;
         if (lcp.isNativeNodePlugin()) {
-            debug("DECRYPT: " + linkHref);
+            if (IS_DEV) {
+                debug("LCP DECRYPT NATIVE: " + linkHref);
+            }
             let fullEncryptedBuffer;
             try {
                 fullEncryptedBuffer = yield BufferUtils_1.streamToBufferPromise(stream.stream);

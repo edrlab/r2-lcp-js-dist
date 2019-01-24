@@ -7,6 +7,7 @@ const moment = require("moment");
 const request = require("request");
 const requestPromise = require("request-promise-native");
 const debug = debug_("r2:lcp#lsd/lcpl-update");
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function lsdLcpUpdate(lsdJson, lcp) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         if (lsdJson.updated && lsdJson.updated.license &&
@@ -16,7 +17,9 @@ function lsdLcpUpdate(lsdJson, lcp) {
             const forceUpdate = false;
             if (forceUpdate ||
                 updatedLicense.isBefore(updatedLicenseLSD)) {
-                debug("LSD license updating...");
+                if (IS_DEV) {
+                    debug("LSD license updating...");
+                }
                 if (lsdJson.links) {
                     const licenseLink = lsdJson.links.find((link) => {
                         return link.rel === "license";
@@ -24,26 +27,57 @@ function lsdLcpUpdate(lsdJson, lcp) {
                     if (!licenseLink) {
                         return Promise.reject("LSD license link is missing.");
                     }
-                    debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.href);
+                    if (IS_DEV) {
+                        debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.href);
+                    }
                     return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                         const failure = (err) => {
                             reject(err);
                         };
                         const success = (response) => tslib_1.__awaiter(this, void 0, void 0, function* () {
-                            Object.keys(response.headers).forEach((header) => {
-                                debug(header + " => " + response.headers[header]);
-                            });
+                            if (IS_DEV) {
+                                Object.keys(response.headers).forEach((header) => {
+                                    debug(header + " => " + response.headers[header]);
+                                });
+                            }
                             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                                failure("HTTP CODE " + response.statusCode);
-                                let d;
+                                let failBuff;
                                 try {
-                                    d = yield BufferUtils_1.streamToBufferPromise(response);
+                                    failBuff = yield BufferUtils_1.streamToBufferPromise(response);
                                 }
-                                catch (err) {
+                                catch (buffErr) {
+                                    if (IS_DEV) {
+                                        debug(buffErr);
+                                    }
+                                    failure(response.statusCode);
                                     return;
                                 }
-                                const s = d.toString("utf8");
-                                debug(s);
+                                try {
+                                    const failStr = failBuff.toString("utf8");
+                                    if (IS_DEV) {
+                                        debug(failStr);
+                                    }
+                                    try {
+                                        const failJson = global.JSON.parse(failStr);
+                                        if (IS_DEV) {
+                                            debug(failJson);
+                                        }
+                                        failJson.httpStatusCode = response.statusCode;
+                                        failure(failJson);
+                                    }
+                                    catch (jsonErr) {
+                                        if (IS_DEV) {
+                                            debug(jsonErr);
+                                        }
+                                        failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                                    }
+                                }
+                                catch (strErr) {
+                                    if (IS_DEV) {
+                                        debug(strErr);
+                                    }
+                                    failure(response.statusCode);
+                                }
                                 return;
                             }
                             let responseData;
@@ -55,7 +89,9 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                 return;
                             }
                             const lcplStr = responseData.toString("utf8");
-                            debug(lcplStr);
+                            if (IS_DEV) {
+                                debug(lcplStr);
+                            }
                             resolve(lcplStr);
                         });
                         const headers = {

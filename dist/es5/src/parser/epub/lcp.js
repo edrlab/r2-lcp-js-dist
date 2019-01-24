@@ -18,12 +18,17 @@ var lcp_signature_1 = require("./lcp-signature");
 var lcp_user_1 = require("./lcp-user");
 var AES_BLOCK_SIZE = 16;
 var debug = debug_("r2:lcp#parser/epub/lcp");
+var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 var LCP_NATIVE_PLUGIN_PATH = path.join(process.cwd(), "LCP", "lcp.node");
 function setLcpNativePluginPath(filepath) {
     LCP_NATIVE_PLUGIN_PATH = filepath;
-    debug(LCP_NATIVE_PLUGIN_PATH);
+    if (IS_DEV) {
+        debug(LCP_NATIVE_PLUGIN_PATH);
+    }
     var exists = fs.existsSync(LCP_NATIVE_PLUGIN_PATH);
-    debug("LCP NATIVE PLUGIN: " + (exists ? "OKAY" : "MISSING"));
+    if (IS_DEV) {
+        debug("LCP NATIVE PLUGIN: " + (exists ? "OKAY" : "MISSING"));
+    }
     return exists;
 }
 exports.setLcpNativePluginPath = setLcpNativePluginPath;
@@ -48,11 +53,15 @@ var LCP = (function () {
         this.ContentKey = undefined;
         this._lcpContext = undefined;
         if (fs.existsSync(LCP_NATIVE_PLUGIN_PATH)) {
-            debug("LCP _usesNativeNodePlugin");
+            if (IS_DEV) {
+                debug("LCP _usesNativeNodePlugin");
+            }
             var filePath = path.dirname(LCP_NATIVE_PLUGIN_PATH);
             var fileName = path.basename(LCP_NATIVE_PLUGIN_PATH);
-            debug(filePath);
-            debug(fileName);
+            if (IS_DEV) {
+                debug(filePath);
+                debug(fileName);
+            }
             this._usesNativeNodePlugin = true;
             this._lcpNative = bind({
                 bindings: fileName,
@@ -64,7 +73,9 @@ var LCP = (function () {
             });
         }
         else {
-            debug("LCP JS impl");
+            if (IS_DEV) {
+                debug("LCP JS impl");
+            }
             this._usesNativeNodePlugin = false;
             this._lcpNative = undefined;
         }
@@ -176,29 +187,58 @@ var LCP = (function () {
                                         resolve(lcp_certificate_1.DUMMY_CRL);
                                     };
                                     success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                        var d, err_2, s, responseData, err_3, lcplStr;
+                                        var failBuff, buffErr_1, failStr, failJson, responseData, err_2, lcplStr;
                                         return tslib_1.__generator(this, function (_a) {
                                             switch (_a.label) {
                                                 case 0:
-                                                    Object.keys(response.headers).forEach(function (header) {
-                                                        debug(header + " => " + response.headers[header]);
-                                                    });
+                                                    if (IS_DEV) {
+                                                        Object.keys(response.headers).forEach(function (header) {
+                                                            debug(header + " => " + response.headers[header]);
+                                                        });
+                                                    }
                                                     if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
-                                                    failure("HTTP CODE " + response.statusCode);
-                                                    d = void 0;
+                                                    failBuff = void 0;
                                                     _a.label = 1;
                                                 case 1:
                                                     _a.trys.push([1, 3, , 4]);
                                                     return [4, BufferUtils_1.streamToBufferPromise(response)];
                                                 case 2:
-                                                    d = _a.sent();
+                                                    failBuff = _a.sent();
                                                     return [3, 4];
                                                 case 3:
-                                                    err_2 = _a.sent();
+                                                    buffErr_1 = _a.sent();
+                                                    if (IS_DEV) {
+                                                        debug(buffErr_1);
+                                                    }
+                                                    failure(response.statusCode);
                                                     return [2];
                                                 case 4:
-                                                    s = d.toString("utf8");
-                                                    debug(s);
+                                                    try {
+                                                        failStr = failBuff.toString("utf8");
+                                                        if (IS_DEV) {
+                                                            debug(failStr);
+                                                        }
+                                                        try {
+                                                            failJson = global.JSON.parse(failStr);
+                                                            if (IS_DEV) {
+                                                                debug(failJson);
+                                                            }
+                                                            failJson.httpStatusCode = response.statusCode;
+                                                            failure(failJson);
+                                                        }
+                                                        catch (jsonErr) {
+                                                            if (IS_DEV) {
+                                                                debug(jsonErr);
+                                                            }
+                                                            failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                                                        }
+                                                    }
+                                                    catch (strErr) {
+                                                        if (IS_DEV) {
+                                                            debug(strErr);
+                                                        }
+                                                        failure(response.statusCode);
+                                                    }
                                                     return [2];
                                                 case 5:
                                                     _a.trys.push([5, 7, , 8]);
@@ -207,13 +247,15 @@ var LCP = (function () {
                                                     responseData = _a.sent();
                                                     return [3, 8];
                                                 case 7:
-                                                    err_3 = _a.sent();
-                                                    reject(err_3);
+                                                    err_2 = _a.sent();
+                                                    reject(err_2);
                                                     return [2];
                                                 case 8:
                                                     lcplStr = "-----BEGIN X509 CRL-----\n" +
                                                         responseData.toString("base64") + "\n-----END X509 CRL-----";
-                                                    debug(lcplStr);
+                                                    if (IS_DEV) {
+                                                        debug(lcplStr);
+                                                    }
                                                     resolve(lcplStr);
                                                     return [2];
                                             }
