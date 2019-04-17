@@ -5,16 +5,40 @@ const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/Buf
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
+const ta_json_x_1 = require("ta-json-x");
+const lsd_1 = require("../parser/epub/lsd");
 const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/return");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdReturn(lsdJson, deviceIDManager) {
+function lsdReturn(lsdJSON, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
-        if (!lsdJson.links) {
+        if (lsdJSON instanceof lsd_1.LSD) {
+            return lsdReturn_(lsdJSON, deviceIDManager);
+        }
+        let lsd;
+        try {
+            lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+        }
+        catch (err) {
+            debug(err);
+            debug(lsdJSON);
+            return Promise.reject("Bad LSD JSON?");
+        }
+        const obj = lsdReturn_(lsd, deviceIDManager);
+        return ta_json_x_1.JSON.serialize(obj);
+    });
+}
+exports.lsdReturn = lsdReturn;
+function lsdReturn_(lsd, deviceIDManager) {
+    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        if (!lsd) {
+            return Promise.reject("LCP LSD data is missing.");
+        }
+        if (!lsd.Links) {
             return Promise.reject("No LSD links!");
         }
-        const licenseReturn = lsdJson.links.find((link) => {
-            return link.rel === "return";
+        const licenseReturn = lsd.Links.find((link) => {
+            return link.Rel === "return";
         });
         if (!licenseReturn) {
             return Promise.reject("No LSD return link!");
@@ -35,8 +59,8 @@ function lsdReturn(lsdJson, deviceIDManager) {
             debug(err);
             return Promise.reject("Problem getting Device NAME !?");
         }
-        let returnURL = licenseReturn.href;
-        if (licenseReturn.templated === true || licenseReturn.templated === "true") {
+        let returnURL = licenseReturn.Href;
+        if (licenseReturn.Templated) {
             const urlTemplate = new URITemplate(returnURL);
             returnURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
         }
@@ -109,7 +133,17 @@ function lsdReturn(lsdJson, deviceIDManager) {
                 if (IS_DEV) {
                     debug(responseJson);
                 }
-                resolve(responseJson);
+                try {
+                    const newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                    if (IS_DEV) {
+                        debug(newLsd);
+                    }
+                    resolve(newLsd);
+                }
+                catch (err) {
+                    debug(err);
+                    resolve(responseJson);
+                }
             });
             const headers = {
                 "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
@@ -143,5 +177,5 @@ function lsdReturn(lsdJson, deviceIDManager) {
         }));
     });
 }
-exports.lsdReturn = lsdReturn;
+exports.lsdReturn_ = lsdReturn_;
 //# sourceMappingURL=return.js.map

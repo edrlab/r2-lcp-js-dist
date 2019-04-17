@@ -5,21 +5,47 @@ var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils"
 var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
+var ta_json_x_1 = require("ta-json-x");
+var lsd_1 = require("../parser/epub/lsd");
 var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/register");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdRegister(lsdJson, deviceIDManager) {
+function lsdRegister(lsdJSON, deviceIDManager) {
+    return tslib_1.__awaiter(this, void 0, void 0, function () {
+        var lsd, obj;
+        return tslib_1.__generator(this, function (_a) {
+            if (lsdJSON instanceof lsd_1.LSD) {
+                return [2, lsdRegister_(lsdJSON, deviceIDManager)];
+            }
+            try {
+                lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+            }
+            catch (err) {
+                debug(err);
+                debug(lsdJSON);
+                return [2, Promise.reject("Bad LSD JSON?")];
+            }
+            obj = lsdRegister_(lsd, deviceIDManager);
+            return [2, ta_json_x_1.JSON.serialize(obj)];
+        });
+    });
+}
+exports.lsdRegister = lsdRegister;
+function lsdRegister_(lsd, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var licenseRegister, deviceID, err_1, deviceNAME, err_2, doRegister, deviceIDForStatusDoc, err_3, registerURL, urlTemplate;
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!lsdJson.links) {
+                    if (!lsd) {
+                        return [2, Promise.reject("LCP LSD data is missing.")];
+                    }
+                    if (!lsd.Links) {
                         return [2, Promise.reject("No LSD links!")];
                     }
-                    licenseRegister = lsdJson.links.find(function (link) {
-                        return link.rel === "register";
+                    licenseRegister = lsd.Links.find(function (link) {
+                        return link.Rel === "register";
                     });
                     if (!licenseRegister) {
                         return [2, Promise.reject("No LSD register link!")];
@@ -47,16 +73,16 @@ function lsdRegister(lsdJson, deviceIDManager) {
                     return [2, Promise.reject("Problem getting Device NAME !?")];
                 case 7:
                     doRegister = false;
-                    if (!(lsdJson.status === "ready")) return [3, 8];
+                    if (!(lsd.Status === "ready")) return [3, 8];
                     doRegister = true;
                     return [3, 13];
                 case 8:
-                    if (!(lsdJson.status === "active")) return [3, 13];
+                    if (!(lsd.Status === "active")) return [3, 13];
                     deviceIDForStatusDoc = void 0;
                     _a.label = 9;
                 case 9:
                     _a.trys.push([9, 11, , 12]);
-                    return [4, deviceIDManager.checkDeviceID(lsdJson.id)];
+                    return [4, deviceIDManager.checkDeviceID(lsd.ID)];
                 case 10:
                     deviceIDForStatusDoc = _a.sent();
                     return [3, 12];
@@ -70,7 +96,7 @@ function lsdRegister(lsdJson, deviceIDManager) {
                     }
                     else if (deviceIDForStatusDoc !== deviceID) {
                         if (IS_DEV) {
-                            debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+                            debug("LSD registered device ID is different? ", lsd.ID, ": ", deviceIDForStatusDoc, " --- ", deviceID);
                         }
                         doRegister = true;
                     }
@@ -79,8 +105,8 @@ function lsdRegister(lsdJson, deviceIDManager) {
                     if (!doRegister) {
                         return [2, Promise.reject("No need to LSD register.")];
                     }
-                    registerURL = licenseRegister.href;
-                    if (licenseRegister.templated === true || licenseRegister.templated === "true") {
+                    registerURL = licenseRegister.Href;
+                    if (licenseRegister.Templated) {
                         urlTemplate = new URITemplate(registerURL);
                         registerURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
                     }
@@ -97,7 +123,7 @@ function lsdRegister(lsdJson, deviceIDManager) {
                                             reject(err);
                                         };
                                         success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                            var failBuff, buffErr_1, failStr, failJson, responseData, err_5, responseStr, responseJson, err_6;
+                                            var failBuff, buffErr_1, failStr, failJson, responseData, err_5, responseStr, responseJson, err_6, newLsd;
                                             return tslib_1.__generator(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
@@ -183,7 +209,17 @@ function lsdRegister(lsdJson, deviceIDManager) {
                                                         debug(err_6);
                                                         return [3, 12];
                                                     case 12:
-                                                        resolve(responseJson);
+                                                        try {
+                                                            newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                                                            if (IS_DEV) {
+                                                                debug(newLsd);
+                                                            }
+                                                            resolve(newLsd);
+                                                        }
+                                                        catch (err) {
+                                                            debug(err);
+                                                            resolve(responseJson);
+                                                        }
                                                         return [2];
                                                 }
                                             });
@@ -231,5 +267,5 @@ function lsdRegister(lsdJson, deviceIDManager) {
         });
     });
 }
-exports.lsdRegister = lsdRegister;
+exports.lsdRegister_ = lsdRegister_;
 //# sourceMappingURL=register.js.map

@@ -8,27 +8,30 @@ const request = require("request");
 const requestPromise = require("request-promise-native");
 const debug = debug_("r2:lcp#lsd/lcpl-update");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdLcpUpdate(lsdJson, lcp) {
+function lsdLcpUpdate(lcp) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
-        if (lsdJson.updated && lsdJson.updated.license &&
+        if (!lcp.LSD) {
+            return Promise.reject("LCP LSD data is missing.");
+        }
+        if (lcp.LSD.Updated && lcp.LSD.Updated.License &&
             (lcp.Updated || lcp.Issued)) {
-            const updatedLicenseLSD = moment(lsdJson.updated.license);
+            const updatedLicenseLSD = moment(lcp.LSD.Updated.License);
             const updatedLicense = moment(lcp.Updated || lcp.Issued);
             const forceUpdate = false;
             if (forceUpdate ||
-                updatedLicense.isBefore(updatedLicenseLSD)) {
+                (updatedLicense.isBefore(updatedLicenseLSD))) {
                 if (IS_DEV) {
                     debug("LSD license updating...");
                 }
-                if (lsdJson.links) {
-                    const licenseLink = lsdJson.links.find((link) => {
-                        return link.rel === "license";
+                if (lcp.LSD.Links) {
+                    const licenseLink = lcp.LSD.Links.find((link) => {
+                        return link.Rel === "license";
                     });
                     if (!licenseLink) {
                         return Promise.reject("LSD license link is missing.");
                     }
                     if (IS_DEV) {
-                        debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.href);
+                        debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.Href);
                     }
                     return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                         const failure = (err) => {
@@ -40,6 +43,22 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                     debug(header + " => " + response.headers[header]);
                                 });
                             }
+                            const tryErrorJson = (str) => {
+                                try {
+                                    const failJson = global.JSON.parse(str);
+                                    if (IS_DEV) {
+                                        debug(failJson);
+                                    }
+                                    failJson.httpStatusCode = response.statusCode;
+                                    failure(failJson);
+                                }
+                                catch (jsonErr) {
+                                    if (IS_DEV) {
+                                        debug(jsonErr);
+                                    }
+                                    failure({ httpStatusCode: response.statusCode, httpResponseBody: str });
+                                }
+                            };
                             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                                 let failBuff;
                                 try {
@@ -57,20 +76,7 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                     if (IS_DEV) {
                                         debug(failStr);
                                     }
-                                    try {
-                                        const failJson = global.JSON.parse(failStr);
-                                        if (IS_DEV) {
-                                            debug(failJson);
-                                        }
-                                        failJson.httpStatusCode = response.statusCode;
-                                        failure(failJson);
-                                    }
-                                    catch (jsonErr) {
-                                        if (IS_DEV) {
-                                            debug(jsonErr);
-                                        }
-                                        failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
-                                    }
+                                    tryErrorJson(failStr);
                                 }
                                 catch (strErr) {
                                     if (IS_DEV) {
@@ -92,6 +98,24 @@ function lsdLcpUpdate(lsdJson, lcp) {
                             if (IS_DEV) {
                                 debug(lcplStr);
                             }
+                            try {
+                                const tryLcpJson = global.JSON.parse(lcplStr);
+                                if (!tryLcpJson.id || !tryLcpJson.issued || !tryLcpJson.provider || !tryLcpJson.encryption || !tryLcpJson.encryption.profile) {
+                                    if (IS_DEV) {
+                                        debug(lcplStr);
+                                        debug("NOT AN LCP LICENSE!");
+                                    }
+                                    tryErrorJson(lcplStr);
+                                    return;
+                                }
+                            }
+                            catch (jsonErr) {
+                                if (IS_DEV) {
+                                    debug(jsonErr);
+                                }
+                                tryErrorJson(lcplStr);
+                                return;
+                            }
                             resolve(lcplStr);
                         });
                         const headers = {
@@ -102,7 +126,7 @@ function lsdLcpUpdate(lsdJson, lcp) {
                             request.get({
                                 headers,
                                 method: "GET",
-                                uri: licenseLink.href,
+                                uri: licenseLink.Href,
                             })
                                 .on("response", success)
                                 .on("error", failure);
@@ -114,7 +138,7 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                     headers,
                                     method: "GET",
                                     resolveWithFullResponse: true,
-                                    uri: licenseLink.href,
+                                    uri: licenseLink.Href,
                                 });
                             }
                             catch (err) {

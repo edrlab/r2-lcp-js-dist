@@ -5,6 +5,8 @@ const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/Buf
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
+const ta_json_x_1 = require("ta-json-x");
+const lsd_1 = require("../parser/epub/lsd");
 const lcpl_update_1 = require("./lcpl-update");
 const register_1 = require("./register");
 const debug = debug_("r2:lcp#lsd/status-document-processing");
@@ -100,14 +102,26 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                     debug(responseStr);
                 }
             }
-            const lsdJson = global.JSON.parse(responseStr);
+            const lsdJSON = global.JSON.parse(responseStr);
             if (IS_DEV) {
-                debug(lsdJson);
+                debug(lsdJSON);
             }
-            lcp.LSDJson = lsdJson;
+            try {
+                lcp.LSD = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+                if (IS_DEV) {
+                    debug(lcp.LSD);
+                }
+            }
+            catch (err) {
+                debug(err);
+                if (onStatusDocumentProcessingComplete) {
+                    onStatusDocumentProcessingComplete(undefined);
+                }
+                return;
+            }
             let licenseUpdateResponseJson;
             try {
-                licenseUpdateResponseJson = yield lcpl_update_1.lsdLcpUpdate(lsdJson, lcp);
+                licenseUpdateResponseJson = yield lcpl_update_1.lsdLcpUpdate(lcp);
             }
             catch (err) {
                 debug(err);
@@ -118,11 +132,11 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                 }
                 return;
             }
-            if (lsdJson.status === "revoked"
-                || lsdJson.status === "returned"
-                || lsdJson.status === "cancelled"
-                || lsdJson.status === "expired") {
-                debug("What?! LSD " + lsdJson.status);
+            if (lcp.LSD.Status === "revoked"
+                || lcp.LSD.Status === "returned"
+                || lcp.LSD.Status === "cancelled"
+                || lcp.LSD.Status === "expired") {
+                debug("What?! LSD status:" + lcp.LSD.Status);
                 if (onStatusDocumentProcessingComplete) {
                     onStatusDocumentProcessingComplete(undefined);
                 }
@@ -130,11 +144,21 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             }
             let registerResponseJson;
             try {
-                registerResponseJson = yield register_1.lsdRegister(lsdJson, deviceIDManager);
-                lcp.LSDJson = registerResponseJson;
+                registerResponseJson = yield register_1.lsdRegister_(lcp.LSD, deviceIDManager);
             }
             catch (err) {
                 debug(err);
+            }
+            if (registerResponseJson) {
+                try {
+                    lcp.LSD = ta_json_x_1.JSON.deserialize(registerResponseJson, lsd_1.LSD);
+                    if (IS_DEV) {
+                        debug(lcp.LSD);
+                    }
+                }
+                catch (err) {
+                    debug(err);
+                }
             }
             if (onStatusDocumentProcessingComplete) {
                 onStatusDocumentProcessingComplete(undefined);

@@ -5,21 +5,47 @@ var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils"
 var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
+var ta_json_x_1 = require("ta-json-x");
+var lsd_1 = require("../parser/epub/lsd");
 var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/return");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdReturn(lsdJson, deviceIDManager) {
+function lsdReturn(lsdJSON, deviceIDManager) {
+    return tslib_1.__awaiter(this, void 0, void 0, function () {
+        var lsd, obj;
+        return tslib_1.__generator(this, function (_a) {
+            if (lsdJSON instanceof lsd_1.LSD) {
+                return [2, lsdReturn_(lsdJSON, deviceIDManager)];
+            }
+            try {
+                lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+            }
+            catch (err) {
+                debug(err);
+                debug(lsdJSON);
+                return [2, Promise.reject("Bad LSD JSON?")];
+            }
+            obj = lsdReturn_(lsd, deviceIDManager);
+            return [2, ta_json_x_1.JSON.serialize(obj)];
+        });
+    });
+}
+exports.lsdReturn = lsdReturn;
+function lsdReturn_(lsd, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var licenseReturn, deviceID, err_1, deviceNAME, err_2, returnURL, urlTemplate;
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!lsdJson.links) {
+                    if (!lsd) {
+                        return [2, Promise.reject("LCP LSD data is missing.")];
+                    }
+                    if (!lsd.Links) {
                         return [2, Promise.reject("No LSD links!")];
                     }
-                    licenseReturn = lsdJson.links.find(function (link) {
-                        return link.rel === "return";
+                    licenseReturn = lsd.Links.find(function (link) {
+                        return link.Rel === "return";
                     });
                     if (!licenseReturn) {
                         return [2, Promise.reject("No LSD return link!")];
@@ -46,8 +72,8 @@ function lsdReturn(lsdJson, deviceIDManager) {
                     debug(err_2);
                     return [2, Promise.reject("Problem getting Device NAME !?")];
                 case 7:
-                    returnURL = licenseReturn.href;
-                    if (licenseReturn.templated === true || licenseReturn.templated === "true") {
+                    returnURL = licenseReturn.Href;
+                    if (licenseReturn.Templated) {
                         urlTemplate = new URITemplate(returnURL);
                         returnURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
                     }
@@ -64,7 +90,7 @@ function lsdReturn(lsdJson, deviceIDManager) {
                                             reject(err);
                                         };
                                         success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                            var failBuff, buffErr_1, failStr, failJson, responseData, err_4, responseStr, responseJson;
+                                            var failBuff, buffErr_1, failStr, failJson, responseData, err_4, responseStr, responseJson, newLsd;
                                             return tslib_1.__generator(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
@@ -136,7 +162,17 @@ function lsdReturn(lsdJson, deviceIDManager) {
                                                         if (IS_DEV) {
                                                             debug(responseJson);
                                                         }
-                                                        resolve(responseJson);
+                                                        try {
+                                                            newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                                                            if (IS_DEV) {
+                                                                debug(newLsd);
+                                                            }
+                                                            resolve(newLsd);
+                                                        }
+                                                        catch (err) {
+                                                            debug(err);
+                                                            resolve(responseJson);
+                                                        }
                                                         return [2];
                                                 }
                                             });
@@ -184,5 +220,5 @@ function lsdReturn(lsdJson, deviceIDManager) {
         });
     });
 }
-exports.lsdReturn = lsdReturn;
+exports.lsdReturn_ = lsdReturn_;
 //# sourceMappingURL=return.js.map

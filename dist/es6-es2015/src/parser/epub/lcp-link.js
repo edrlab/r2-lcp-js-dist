@@ -28,7 +28,7 @@ tslib_1.__decorate([
 ], Link.prototype, "Type", void 0);
 tslib_1.__decorate([
     ta_json_x_1.JsonProperty("templated"),
-    tslib_1.__metadata("design:type", String)
+    tslib_1.__metadata("design:type", Boolean)
 ], Link.prototype, "Templated", void 0);
 tslib_1.__decorate([
     ta_json_x_1.JsonProperty("profile"),

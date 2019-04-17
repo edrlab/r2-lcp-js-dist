@@ -4,15 +4,37 @@ const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/Buf
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
+const ta_json_x_1 = require("ta-json-x");
+const lsd_1 = require("../parser/epub/lsd");
 const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/register");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-async function lsdRegister(lsdJson, deviceIDManager) {
-    if (!lsdJson.links) {
+async function lsdRegister(lsdJSON, deviceIDManager) {
+    if (lsdJSON instanceof lsd_1.LSD) {
+        return lsdRegister_(lsdJSON, deviceIDManager);
+    }
+    let lsd;
+    try {
+        lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+    }
+    catch (err) {
+        debug(err);
+        debug(lsdJSON);
+        return Promise.reject("Bad LSD JSON?");
+    }
+    const obj = lsdRegister_(lsd, deviceIDManager);
+    return ta_json_x_1.JSON.serialize(obj);
+}
+exports.lsdRegister = lsdRegister;
+async function lsdRegister_(lsd, deviceIDManager) {
+    if (!lsd) {
+        return Promise.reject("LCP LSD data is missing.");
+    }
+    if (!lsd.Links) {
         return Promise.reject("No LSD links!");
     }
-    const licenseRegister = lsdJson.links.find((link) => {
-        return link.rel === "register";
+    const licenseRegister = lsd.Links.find((link) => {
+        return link.Rel === "register";
     });
     if (!licenseRegister) {
         return Promise.reject("No LSD register link!");
@@ -34,13 +56,13 @@ async function lsdRegister(lsdJson, deviceIDManager) {
         return Promise.reject("Problem getting Device NAME !?");
     }
     let doRegister = false;
-    if (lsdJson.status === "ready") {
+    if (lsd.Status === "ready") {
         doRegister = true;
     }
-    else if (lsdJson.status === "active") {
+    else if (lsd.Status === "active") {
         let deviceIDForStatusDoc;
         try {
-            deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lsdJson.id);
+            deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lsd.ID);
         }
         catch (err) {
             debug(err);
@@ -50,7 +72,7 @@ async function lsdRegister(lsdJson, deviceIDManager) {
         }
         else if (deviceIDForStatusDoc !== deviceID) {
             if (IS_DEV) {
-                debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+                debug("LSD registered device ID is different? ", lsd.ID, ": ", deviceIDForStatusDoc, " --- ", deviceID);
             }
             doRegister = true;
         }
@@ -58,8 +80,8 @@ async function lsdRegister(lsdJson, deviceIDManager) {
     if (!doRegister) {
         return Promise.reject("No need to LSD register.");
     }
-    let registerURL = licenseRegister.href;
-    if (licenseRegister.templated === true || licenseRegister.templated === "true") {
+    let registerURL = licenseRegister.Href;
+    if (licenseRegister.Templated) {
         const urlTemplate = new URITemplate(registerURL);
         registerURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
     }
@@ -141,7 +163,17 @@ async function lsdRegister(lsdJson, deviceIDManager) {
                     debug(err);
                 }
             }
-            resolve(responseJson);
+            try {
+                const newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                if (IS_DEV) {
+                    debug(newLsd);
+                }
+                resolve(newLsd);
+            }
+            catch (err) {
+                debug(err);
+                resolve(responseJson);
+            }
         };
         const headers = {
             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
@@ -174,5 +206,5 @@ async function lsdRegister(lsdJson, deviceIDManager) {
         }
     });
 }
-exports.lsdRegister = lsdRegister;
+exports.lsdRegister_ = lsdRegister_;
 //# sourceMappingURL=register.js.map

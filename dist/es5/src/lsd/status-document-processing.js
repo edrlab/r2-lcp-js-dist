@@ -5,6 +5,8 @@ var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils"
 var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
+var ta_json_x_1 = require("ta-json-x");
+var lsd_1 = require("../parser/epub/lsd");
 var lcpl_update_1 = require("./lcpl-update");
 var register_1 = require("./register");
 var debug = debug_("r2:lcp#lsd/status-document-processing");
@@ -41,7 +43,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                         }
                     };
                     success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                        var failBuff, buffErr_1, failStr, failJson, responseData, err_2, responseStr, mime, lsdJson, licenseUpdateResponseJson, err_3, registerResponseJson, err_4;
+                        var failBuff, buffErr_1, failStr, failJson, responseData, err_2, responseStr, mime, lsdJSON, licenseUpdateResponseJson, err_3, registerResponseJson, err_4;
                         return tslib_1.__generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -116,15 +118,27 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                             debug(responseStr);
                                         }
                                     }
-                                    lsdJson = global.JSON.parse(responseStr);
+                                    lsdJSON = global.JSON.parse(responseStr);
                                     if (IS_DEV) {
-                                        debug(lsdJson);
+                                        debug(lsdJSON);
                                     }
-                                    lcp.LSDJson = lsdJson;
+                                    try {
+                                        lcp.LSD = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+                                        if (IS_DEV) {
+                                            debug(lcp.LSD);
+                                        }
+                                    }
+                                    catch (err) {
+                                        debug(err);
+                                        if (onStatusDocumentProcessingComplete) {
+                                            onStatusDocumentProcessingComplete(undefined);
+                                        }
+                                        return [2];
+                                    }
                                     _a.label = 9;
                                 case 9:
                                     _a.trys.push([9, 11, , 12]);
-                                    return [4, lcpl_update_1.lsdLcpUpdate(lsdJson, lcp)];
+                                    return [4, lcpl_update_1.lsdLcpUpdate(lcp)];
                                 case 10:
                                     licenseUpdateResponseJson = _a.sent();
                                     return [3, 12];
@@ -139,11 +153,11 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                         }
                                         return [2];
                                     }
-                                    if (lsdJson.status === "revoked"
-                                        || lsdJson.status === "returned"
-                                        || lsdJson.status === "cancelled"
-                                        || lsdJson.status === "expired") {
-                                        debug("What?! LSD " + lsdJson.status);
+                                    if (lcp.LSD.Status === "revoked"
+                                        || lcp.LSD.Status === "returned"
+                                        || lcp.LSD.Status === "cancelled"
+                                        || lcp.LSD.Status === "expired") {
+                                        debug("What?! LSD status:" + lcp.LSD.Status);
                                         if (onStatusDocumentProcessingComplete) {
                                             onStatusDocumentProcessingComplete(undefined);
                                         }
@@ -152,16 +166,26 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     _a.label = 13;
                                 case 13:
                                     _a.trys.push([13, 15, , 16]);
-                                    return [4, register_1.lsdRegister(lsdJson, deviceIDManager)];
+                                    return [4, register_1.lsdRegister_(lcp.LSD, deviceIDManager)];
                                 case 14:
                                     registerResponseJson = _a.sent();
-                                    lcp.LSDJson = registerResponseJson;
                                     return [3, 16];
                                 case 15:
                                     err_4 = _a.sent();
                                     debug(err_4);
                                     return [3, 16];
                                 case 16:
+                                    if (registerResponseJson) {
+                                        try {
+                                            lcp.LSD = ta_json_x_1.JSON.deserialize(registerResponseJson, lsd_1.LSD);
+                                            if (IS_DEV) {
+                                                debug(lcp.LSD);
+                                            }
+                                        }
+                                        catch (err) {
+                                            debug(err);
+                                        }
+                                    }
                                     if (onStatusDocumentProcessingComplete) {
                                         onStatusDocumentProcessingComplete(undefined);
                                     }

@@ -1,2 +1,2 @@
 import { LCP } from "../parser/epub/lcp";
-export declare function lsdLcpUpdate(lsdJson: any, lcp: LCP): Promise<string>;
+export declare function lsdLcpUpdate(lcp: LCP): Promise<string>;

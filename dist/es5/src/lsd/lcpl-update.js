@@ -8,30 +8,33 @@ var request = require("request");
 var requestPromise = require("request-promise-native");
 var debug = debug_("r2:lcp#lsd/lcpl-update");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdLcpUpdate(lsdJson, lcp) {
+function lsdLcpUpdate(lcp) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var updatedLicenseLSD, updatedLicense, forceUpdate, licenseLink_1;
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
-            if (lsdJson.updated && lsdJson.updated.license &&
+            if (!lcp.LSD) {
+                return [2, Promise.reject("LCP LSD data is missing.")];
+            }
+            if (lcp.LSD.Updated && lcp.LSD.Updated.License &&
                 (lcp.Updated || lcp.Issued)) {
-                updatedLicenseLSD = moment(lsdJson.updated.license);
+                updatedLicenseLSD = moment(lcp.LSD.Updated.License);
                 updatedLicense = moment(lcp.Updated || lcp.Issued);
                 forceUpdate = false;
                 if (forceUpdate ||
-                    updatedLicense.isBefore(updatedLicenseLSD)) {
+                    (updatedLicense.isBefore(updatedLicenseLSD))) {
                     if (IS_DEV) {
                         debug("LSD license updating...");
                     }
-                    if (lsdJson.links) {
-                        licenseLink_1 = lsdJson.links.find(function (link) {
-                            return link.rel === "license";
+                    if (lcp.LSD.Links) {
+                        licenseLink_1 = lcp.LSD.Links.find(function (link) {
+                            return link.Rel === "license";
                         });
                         if (!licenseLink_1) {
                             return [2, Promise.reject("LSD license link is missing.")];
                         }
                         if (IS_DEV) {
-                            debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink_1.href);
+                            debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink_1.Href);
                         }
                         return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                 var failure, success, headers, needsStreamingResponse, response, err_1;
@@ -43,7 +46,7 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                 reject(err);
                                             };
                                             success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                                var failBuff, buffErr_1, failStr, failJson, responseData, err_2, lcplStr;
+                                                var tryErrorJson, failBuff, buffErr_1, failStr, responseData, err_2, lcplStr, tryLcpJson;
                                                 return tslib_1.__generator(this, function (_a) {
                                                     switch (_a.label) {
                                                         case 0:
@@ -52,6 +55,22 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                                     debug(header + " => " + response.headers[header]);
                                                                 });
                                                             }
+                                                            tryErrorJson = function (str) {
+                                                                try {
+                                                                    var failJson = global.JSON.parse(str);
+                                                                    if (IS_DEV) {
+                                                                        debug(failJson);
+                                                                    }
+                                                                    failJson.httpStatusCode = response.statusCode;
+                                                                    failure(failJson);
+                                                                }
+                                                                catch (jsonErr) {
+                                                                    if (IS_DEV) {
+                                                                        debug(jsonErr);
+                                                                    }
+                                                                    failure({ httpStatusCode: response.statusCode, httpResponseBody: str });
+                                                                }
+                                                            };
                                                             if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
                                                             failBuff = void 0;
                                                             _a.label = 1;
@@ -74,20 +93,7 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                                 if (IS_DEV) {
                                                                     debug(failStr);
                                                                 }
-                                                                try {
-                                                                    failJson = global.JSON.parse(failStr);
-                                                                    if (IS_DEV) {
-                                                                        debug(failJson);
-                                                                    }
-                                                                    failJson.httpStatusCode = response.statusCode;
-                                                                    failure(failJson);
-                                                                }
-                                                                catch (jsonErr) {
-                                                                    if (IS_DEV) {
-                                                                        debug(jsonErr);
-                                                                    }
-                                                                    failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
-                                                                }
+                                                                tryErrorJson(failStr);
                                                             }
                                                             catch (strErr) {
                                                                 if (IS_DEV) {
@@ -111,6 +117,24 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                             if (IS_DEV) {
                                                                 debug(lcplStr);
                                                             }
+                                                            try {
+                                                                tryLcpJson = global.JSON.parse(lcplStr);
+                                                                if (!tryLcpJson.id || !tryLcpJson.issued || !tryLcpJson.provider || !tryLcpJson.encryption || !tryLcpJson.encryption.profile) {
+                                                                    if (IS_DEV) {
+                                                                        debug(lcplStr);
+                                                                        debug("NOT AN LCP LICENSE!");
+                                                                    }
+                                                                    tryErrorJson(lcplStr);
+                                                                    return [2];
+                                                                }
+                                                            }
+                                                            catch (jsonErr) {
+                                                                if (IS_DEV) {
+                                                                    debug(jsonErr);
+                                                                }
+                                                                tryErrorJson(lcplStr);
+                                                                return [2];
+                                                            }
                                                             resolve(lcplStr);
                                                             return [2];
                                                     }
@@ -124,7 +148,7 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                             request.get({
                                                 headers: headers,
                                                 method: "GET",
-                                                uri: licenseLink_1.href,
+                                                uri: licenseLink_1.Href,
                                             })
                                                 .on("response", success)
                                                 .on("error", failure);
@@ -138,7 +162,7 @@ function lsdLcpUpdate(lsdJson, lcp) {
                                                     headers: headers,
                                                     method: "GET",
                                                     resolveWithFullResponse: true,
-                                                    uri: licenseLink_1.href,
+                                                    uri: licenseLink_1.Href,
                                                 })];
                                         case 3:
                                             response = _a.sent();

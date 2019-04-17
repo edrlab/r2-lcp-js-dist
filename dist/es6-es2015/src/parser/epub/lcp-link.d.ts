@@ -3,7 +3,7 @@ export declare class Link {
     Href: string;
     Title: string;
     Type: string;
-    Templated: string;
+    Templated: boolean;
     Profile: string;
     Hash: string;
     Rel: string;

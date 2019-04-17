@@ -4,16 +4,38 @@ const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/Buf
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
+const ta_json_x_1 = require("ta-json-x");
+const lsd_1 = require("../parser/epub/lsd");
 const URI = require("urijs");
 const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/renew");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-async function lsdRenew(end, lsdJson, deviceIDManager) {
-    if (!lsdJson.links) {
+async function lsdRenew(end, lsdJSON, deviceIDManager) {
+    if (lsdJSON instanceof lsd_1.LSD) {
+        return lsdRenew_(end, lsdJSON, deviceIDManager);
+    }
+    let lsd;
+    try {
+        lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+    }
+    catch (err) {
+        debug(err);
+        debug(lsdJSON);
+        return Promise.reject("Bad LSD JSON?");
+    }
+    const obj = lsdRenew_(end, lsd, deviceIDManager);
+    return ta_json_x_1.JSON.serialize(obj);
+}
+exports.lsdRenew = lsdRenew;
+async function lsdRenew_(end, lsd, deviceIDManager) {
+    if (!lsd) {
+        return Promise.reject("LCP LSD data is missing.");
+    }
+    if (!lsd.Links) {
         return Promise.reject("No LSD links!");
     }
-    const licenseRenew = lsdJson.links.find((link) => {
-        return link.rel === "renew";
+    const licenseRenew = lsd.Links.find((link) => {
+        return link.Rel === "renew";
     });
     if (!licenseRenew) {
         return Promise.reject("No LSD renew link!");
@@ -34,8 +56,8 @@ async function lsdRenew(end, lsdJson, deviceIDManager) {
         debug(err);
         return Promise.reject("Problem getting Device NAME !?");
     }
-    let renewURL = licenseRenew.href;
-    if (licenseRenew.templated === true || licenseRenew.templated === "true") {
+    let renewURL = licenseRenew.Href;
+    if (licenseRenew.Templated) {
         const urlTemplate = new URITemplate(renewURL);
         renewURL = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
         const renewURI = new URI(renewURL);
@@ -113,7 +135,17 @@ async function lsdRenew(end, lsdJson, deviceIDManager) {
             if (IS_DEV) {
                 debug(responseJson);
             }
-            resolve(responseJson);
+            try {
+                const newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                if (IS_DEV) {
+                    debug(newLsd);
+                }
+                resolve(newLsd);
+            }
+            catch (err) {
+                debug(err);
+                resolve(responseJson);
+            }
         };
         const headers = {
             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
@@ -146,5 +178,5 @@ async function lsdRenew(end, lsdJson, deviceIDManager) {
         }
     });
 }
-exports.lsdRenew = lsdRenew;
+exports.lsdRenew_ = lsdRenew_;
 //# sourceMappingURL=renew.js.map

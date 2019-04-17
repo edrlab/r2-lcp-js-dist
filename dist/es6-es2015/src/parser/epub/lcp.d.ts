@@ -4,6 +4,7 @@ import { Link } from "./lcp-link";
 import { Rights } from "./lcp-rights";
 import { Signature } from "./lcp-signature";
 import { User } from "./lcp-user";
+import { LSD } from "./lsd";
 export declare function setLcpNativePluginPath(filepath: string): boolean;
 export interface IDecryptedBuffer {
     buffer: Buffer;
@@ -21,7 +22,7 @@ export declare class LCP {
     Links: Link[];
     ZipPath: string | undefined;
     JsonSource: string | undefined;
-    LSDJson: any;
+    LSD: LSD | undefined;
     ContentKey: Buffer | undefined;
     private _usesNativeNodePlugin;
     private _lcpNative;
