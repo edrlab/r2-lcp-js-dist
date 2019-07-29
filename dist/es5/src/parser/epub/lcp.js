@@ -302,8 +302,8 @@ var LCP = (function () {
         });
     };
     LCP.prototype.tryUserKey = function (lcpUserKey) {
-        var userKey = new Buffer(lcpUserKey, "hex");
-        var keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
+        var userKey = Buffer.from(lcpUserKey, "hex");
+        var keyCheck = Buffer.from(this.Encryption.UserKey.KeyCheck, "base64");
         var encryptedLicenseID = keyCheck;
         var iv = encryptedLicenseID.slice(0, AES_BLOCK_SIZE);
         var encrypted = encryptedLicenseID.slice(AES_BLOCK_SIZE);
@@ -326,7 +326,7 @@ var LCP = (function () {
             debug("Failed LCP ID check.");
             return false;
         }
-        var encryptedContentKey = new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
+        var encryptedContentKey = Buffer.from(this.Encryption.ContentKey.EncryptedValue, "base64");
         var iv2 = encryptedContentKey.slice(0, AES_BLOCK_SIZE);
         var encrypted2 = encryptedContentKey.slice(AES_BLOCK_SIZE);
         var decrypteds2 = [];

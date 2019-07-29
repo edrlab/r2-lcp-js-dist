@@ -258,8 +258,8 @@ let LCP = class LCP {
         });
     }
     tryUserKey(lcpUserKey) {
-        const userKey = new Buffer(lcpUserKey, "hex");
-        const keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
+        const userKey = Buffer.from(lcpUserKey, "hex");
+        const keyCheck = Buffer.from(this.Encryption.UserKey.KeyCheck, "base64");
         const encryptedLicenseID = keyCheck;
         const iv = encryptedLicenseID.slice(0, AES_BLOCK_SIZE);
         const encrypted = encryptedLicenseID.slice(AES_BLOCK_SIZE);
@@ -282,7 +282,7 @@ let LCP = class LCP {
             debug("Failed LCP ID check.");
             return false;
         }
-        const encryptedContentKey = new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
+        const encryptedContentKey = Buffer.from(this.Encryption.ContentKey.EncryptedValue, "base64");
         const iv2 = encryptedContentKey.slice(0, AES_BLOCK_SIZE);
         const encrypted2 = encryptedContentKey.slice(AES_BLOCK_SIZE);
         const decrypteds2 = [];

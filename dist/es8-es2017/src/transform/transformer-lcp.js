@@ -115,15 +115,6 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
             }
         }
     }
-    if (partialByteBegin < 0) {
-        partialByteBegin = 0;
-    }
-    if (partialByteEnd < 0) {
-        partialByteEnd = plainTextSize - 1;
-        if (linkPropertiesEncrypted.OriginalLength) {
-            partialByteEnd = linkPropertiesEncrypted.OriginalLength - 1;
-        }
-    }
     let destStream;
     if (nativelyDecryptedStream) {
         destStream = nativelyDecryptedStream;
@@ -163,6 +154,27 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
         const inflateStream = zlib.createInflateRaw();
         destStream.pipe(inflateStream);
         destStream = inflateStream;
+        if (!linkPropertiesEncrypted.OriginalLength) {
+            debug(`############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!`);
+            let fullDeflatedBuffer;
+            try {
+                fullDeflatedBuffer = await BufferUtils_1.streamToBufferPromise(destStream);
+                linkPropertiesEncrypted.OriginalLength = fullDeflatedBuffer.length;
+                destStream = BufferUtils_1.bufferToStream(fullDeflatedBuffer);
+            }
+            catch (err) {
+                debug(err);
+            }
+        }
+    }
+    if (partialByteBegin < 0) {
+        partialByteBegin = 0;
+    }
+    if (partialByteEnd < 0) {
+        partialByteEnd = plainTextSize - 1;
+        if (linkPropertiesEncrypted.OriginalLength) {
+            partialByteEnd = linkPropertiesEncrypted.OriginalLength - 1;
+        }
     }
     const l = (!nativelyInflated && linkPropertiesEncrypted.OriginalLength) ?
         linkPropertiesEncrypted.OriginalLength : plainTextSize;
