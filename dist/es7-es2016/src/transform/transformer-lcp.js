@@ -9,7 +9,7 @@ const BufferUtils_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/Buf
 const debug = debug_("r2:lcp#transform/transformer-lcp");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 const AES_BLOCK_SIZE = 16;
-const readStream = (s, n) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+const readStream = (s, n) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
         const onReadable = () => {
             const b = s.read(n);

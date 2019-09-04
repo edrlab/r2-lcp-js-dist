@@ -1,5 +1,4 @@
 "use strict";
-var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var crypto = require("crypto");
@@ -10,7 +9,7 @@ var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils"
 var debug = debug_("r2:lcp#transform/transformer-lcp");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 var AES_BLOCK_SIZE = 16;
-var readStream = function (s, n) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+var readStream = function (s, n) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
     return tslib_1.__generator(this, function (_a) {
         return [2, new Promise(function (resolve, reject) {
                 var onReadable = function () {
