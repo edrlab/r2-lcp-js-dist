@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
+var debug_ = require("debug");
 var fs = require("fs");
 var path = require("path");
-var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
-var zipInjector_1 = require("r2-utils-js/dist/es5/src/_utils/zip/zipInjector");
-var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
 var ta_json_x_1 = require("ta-json-x");
+var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
+var zipInjector_1 = require("r2-utils-js/dist/es5/src/_utils/zip/zipInjector");
 var lcp_1 = require("./parser/epub/lcp");
 var debug = debug_("r2:lcp#publication-download");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
 var ta_json_x_1 = require("ta-json-x");
+var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var lsd_1 = require("../parser/epub/lsd");
 var URI = require("urijs");
 var URITemplate = require("urijs/src/URITemplate");

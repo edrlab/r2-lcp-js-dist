@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
+const bind = require("bindings");
 const crypto = require("crypto");
+const debug_ = require("debug");
 const fs = require("fs");
 const path = require("path");
-const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/BufferUtils");
-const bind = require("bindings");
-const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
 const ta_json_x_1 = require("ta-json-x");
+const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/BufferUtils");
 const lcp_certificate_1 = require("./lcp-certificate");
 const lcp_encryption_1 = require("./lcp-encryption");
 const lcp_link_1 = require("./lcp-link");

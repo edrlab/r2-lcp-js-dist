@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const crypto = require("crypto");
-const zlib = require("zlib");
-const RangeStream_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/RangeStream");
 const debug_ = require("debug");
+const zlib = require("zlib");
 const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/BufferUtils");
+const RangeStream_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/RangeStream");
 const debug = debug_("r2:lcp#transform/transformer-lcp");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 const AES_BLOCK_SIZE = 16;

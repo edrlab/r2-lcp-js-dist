@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
+const debug_ = require("debug");
 const fs = require("fs");
 const path = require("path");
-const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/BufferUtils");
-const zipInjector_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/zip/zipInjector");
-const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
 const ta_json_x_1 = require("ta-json-x");
+const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/BufferUtils");
+const zipInjector_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/zip/zipInjector");
 const lcp_1 = require("./parser/epub/lcp");
 const debug = debug_("r2:lcp#publication-download");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
