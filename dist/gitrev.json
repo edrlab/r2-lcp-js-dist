@@ -1,10 +1,10 @@
 {
   "node": "10.16.3",
-  "npm": "6.11.3",
-  "short": "4c39310",
-  "long": "4c39310becc69c15599d649c8ad2a9eb65e7c9f8",
+  "npm": "6.12.0",
+  "short": "f780dd4",
+  "long": "f780dd420693fb32e2acbb50df11e57cb482fa27",
   "branch": "develop",
-  "date": "2019-09-27T20:25:55.000Z",
-  "urlHistory": "https://github.com/readium/r2-lcp-js/commits/4c39310becc69c15599d649c8ad2a9eb65e7c9f8",
-  "urlDiff": "https://github.com/readium/r2-lcp-js/compare/4c39310becc69c15599d649c8ad2a9eb65e7c9f8...develop"
+  "date": "2019-10-13T15:09:07.000Z",
+  "urlHistory": "https://github.com/readium/r2-lcp-js/commits/f780dd420693fb32e2acbb50df11e57cb482fa27",
+  "urlDiff": "https://github.com/readium/r2-lcp-js/compare/f780dd420693fb32e2acbb50df11e57cb482fa27...develop"
 }

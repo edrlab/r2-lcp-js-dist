@@ -165,6 +165,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             }
         });
         const headers = {
+            "Accept": "application/json,application/xml",
             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
         };
         const needsStreamingResponse = true;
