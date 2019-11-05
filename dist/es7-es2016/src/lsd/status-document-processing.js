@@ -142,22 +142,17 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                 }
                 return;
             }
-            let registerResponseJson;
+            let registerResponse;
             try {
-                registerResponseJson = yield register_1.lsdRegister_(lcp.LSD, deviceIDManager);
+                registerResponse = yield register_1.lsdRegister_(lcp.LSD, deviceIDManager);
             }
             catch (err) {
                 debug(err);
             }
-            if (registerResponseJson) {
-                try {
-                    lcp.LSD = ta_json_x_1.JSON.deserialize(registerResponseJson, lsd_1.LSD);
-                    if (IS_DEV) {
-                        debug(lcp.LSD);
-                    }
-                }
-                catch (err) {
-                    debug(err);
+            if (registerResponse) {
+                lcp.LSD = registerResponse;
+                if (IS_DEV) {
+                    debug(lcp.LSD);
                 }
             }
             if (onStatusDocumentProcessingComplete) {

@@ -43,7 +43,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                         }
                     };
                     success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                        var failBuff, buffErr_1, failStr, failJson, responseData, err_2, responseStr, mime, lsdJSON, licenseUpdateResponseJson, err_3, registerResponseJson, err_4;
+                        var failBuff, buffErr_1, failStr, failJson, responseData, err_2, responseStr, mime, lsdJSON, licenseUpdateResponseJson, err_3, registerResponse, err_4;
                         return tslib_1.__generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -168,22 +168,17 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     _a.trys.push([13, 15, , 16]);
                                     return [4, register_1.lsdRegister_(lcp.LSD, deviceIDManager)];
                                 case 14:
-                                    registerResponseJson = _a.sent();
+                                    registerResponse = _a.sent();
                                     return [3, 16];
                                 case 15:
                                     err_4 = _a.sent();
                                     debug(err_4);
                                     return [3, 16];
                                 case 16:
-                                    if (registerResponseJson) {
-                                        try {
-                                            lcp.LSD = ta_json_x_1.JSON.deserialize(registerResponseJson, lsd_1.LSD);
-                                            if (IS_DEV) {
-                                                debug(lcp.LSD);
-                                            }
-                                        }
-                                        catch (err) {
-                                            debug(err);
+                                    if (registerResponse) {
+                                        lcp.LSD = registerResponse;
+                                        if (IS_DEV) {
+                                            debug(lcp.LSD);
                                         }
                                     }
                                     if (onStatusDocumentProcessingComplete) {
