@@ -33,7 +33,7 @@ function lsdReturn(lsdJSON, deviceIDManager) {
 exports.lsdReturn = lsdReturn;
 function lsdReturn_(lsd, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var licenseReturn, deviceID, err_1, deviceNAME, err_2, returnURL, urlTemplate;
+        var licenseReturn, deviceID, err_1, deviceNAME, err_2, returnURL, urlTemplate, uri1;
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
@@ -75,7 +75,8 @@ function lsdReturn_(lsd, deviceIDManager) {
                     returnURL = licenseReturn.Href;
                     if (licenseReturn.Templated) {
                         urlTemplate = new URITemplate(returnURL);
-                        returnURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+                        uri1 = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+                        returnURL = uri1.toString();
                     }
                     if (IS_DEV) {
                         debug("RETURN: " + returnURL);

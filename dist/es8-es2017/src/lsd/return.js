@@ -58,7 +58,8 @@ async function lsdReturn_(lsd, deviceIDManager) {
     let returnURL = licenseReturn.Href;
     if (licenseReturn.Templated) {
         const urlTemplate = new URITemplate(returnURL);
-        returnURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+        const uri1 = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+        returnURL = uri1.toString();
     }
     if (IS_DEV) {
         debug("RETURN: " + returnURL);

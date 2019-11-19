@@ -87,7 +87,8 @@ function lsdRegister_(lsd, deviceIDManager) {
         let registerURL = licenseRegister.Href;
         if (licenseRegister.Templated) {
             const urlTemplate = new URITemplate(registerURL);
-            registerURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+            const uri1 = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+            registerURL = uri1.toString();
         }
         if (IS_DEV) {
             debug("REGISTER: " + registerURL);

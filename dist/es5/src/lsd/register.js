@@ -33,7 +33,7 @@ function lsdRegister(lsdJSON, deviceIDManager) {
 exports.lsdRegister = lsdRegister;
 function lsdRegister_(lsd, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var licenseRegister, deviceID, err_1, deviceNAME, err_2, doRegister, deviceIDForStatusDoc, err_3, registerURL, urlTemplate;
+        var licenseRegister, deviceID, err_1, deviceNAME, err_2, doRegister, deviceIDForStatusDoc, err_3, registerURL, urlTemplate, uri1;
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
@@ -108,7 +108,8 @@ function lsdRegister_(lsd, deviceIDManager) {
                     registerURL = licenseRegister.Href;
                     if (licenseRegister.Templated) {
                         urlTemplate = new URITemplate(registerURL);
-                        registerURL = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+                        uri1 = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+                        registerURL = uri1.toString();
                     }
                     if (IS_DEV) {
                         debug("REGISTER: " + registerURL);

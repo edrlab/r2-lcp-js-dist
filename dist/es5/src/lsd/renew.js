@@ -34,7 +34,7 @@ function lsdRenew(end, lsdJSON, deviceIDManager) {
 exports.lsdRenew = lsdRenew;
 function lsdRenew_(end, lsd, deviceIDManager) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var licenseRenew, deviceID, err_1, deviceNAME, err_2, renewURL, urlTemplate, renewURI;
+        var licenseRenew, deviceID, err_1, deviceNAME, err_2, renewURL, urlTemplate, uri1, uri2;
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             switch (_a.label) {
@@ -76,12 +76,14 @@ function lsdRenew_(end, lsd, deviceIDManager) {
                     renewURL = licenseRenew.Href;
                     if (licenseRenew.Templated) {
                         urlTemplate = new URITemplate(renewURL);
-                        renewURL = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
-                        renewURI = new URI(renewURL);
-                        renewURI.search(function (data) {
-                            data.end = end;
+                        uri1 = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
+                        renewURL = uri1.toString();
+                        uri2 = new URI(renewURL);
+                        uri2.search(function (data) {
+                            var _a;
+                            data.end = (_a = end) === null || _a === void 0 ? void 0 : _a.toISOString();
                         });
-                        renewURL = renewURI.toString();
+                        renewURL = uri2.toString();
                     }
                     if (IS_DEV) {
                         debug("RENEW: " + renewURL);

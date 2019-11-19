@@ -59,12 +59,14 @@ async function lsdRenew_(end, lsd, deviceIDManager) {
     let renewURL = licenseRenew.Href;
     if (licenseRenew.Templated) {
         const urlTemplate = new URITemplate(renewURL);
-        renewURL = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
-        const renewURI = new URI(renewURL);
-        renewURI.search((data) => {
-            data.end = end;
+        const uri1 = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
+        renewURL = uri1.toString();
+        const uri2 = new URI(renewURL);
+        uri2.search((data) => {
+            var _a;
+            data.end = (_a = end) === null || _a === void 0 ? void 0 : _a.toISOString();
         });
-        renewURL = renewURI.toString();
+        renewURL = uri2.toString();
     }
     if (IS_DEV) {
         debug("RENEW: " + renewURL);
