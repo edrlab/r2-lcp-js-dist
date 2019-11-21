@@ -4,9 +4,9 @@ var tslib_1 = require("tslib");
 var debug_ = require("debug");
 var request = require("request");
 var requestPromise = require("request-promise-native");
-var ta_json_x_1 = require("ta-json-x");
 var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var lsd_1 = require("../parser/epub/lsd");
+var serializable_1 = require("../serializable");
 var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/return");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
@@ -18,7 +18,7 @@ function lsdReturn(lsdJSON, deviceIDManager) {
                 return [2, lsdReturn_(lsdJSON, deviceIDManager)];
             }
             try {
-                lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+                lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
             }
             catch (err) {
                 debug(err);
@@ -26,7 +26,7 @@ function lsdReturn(lsdJSON, deviceIDManager) {
                 return [2, Promise.reject("Bad LSD JSON?")];
             }
             obj = lsdReturn_(lsd, deviceIDManager);
-            return [2, ta_json_x_1.JSON.serialize(obj)];
+            return [2, serializable_1.TaJsonSerialize(obj)];
         });
     });
 }
@@ -164,7 +164,7 @@ function lsdReturn_(lsd, deviceIDManager) {
                                                             debug(responseJson);
                                                         }
                                                         try {
-                                                            newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                                                            newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
                                                             if (IS_DEV) {
                                                                 debug(newLsd);
                                                             }

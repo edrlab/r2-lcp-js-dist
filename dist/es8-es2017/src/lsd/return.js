@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
-const ta_json_x_1 = require("ta-json-x");
 const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/BufferUtils");
 const lsd_1 = require("../parser/epub/lsd");
+const serializable_1 = require("../serializable");
 const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/return");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
@@ -15,7 +15,7 @@ async function lsdReturn(lsdJSON, deviceIDManager) {
     }
     let lsd;
     try {
-        lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+        lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
     }
     catch (err) {
         debug(err);
@@ -23,7 +23,7 @@ async function lsdReturn(lsdJSON, deviceIDManager) {
         return Promise.reject("Bad LSD JSON?");
     }
     const obj = lsdReturn_(lsd, deviceIDManager);
-    return ta_json_x_1.JSON.serialize(obj);
+    return serializable_1.TaJsonSerialize(obj);
 }
 exports.lsdReturn = lsdReturn;
 async function lsdReturn_(lsd, deviceIDManager) {
@@ -131,7 +131,7 @@ async function lsdReturn_(lsd, deviceIDManager) {
                 debug(responseJson);
             }
             try {
-                const newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                const newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
                 if (IS_DEV) {
                     debug(newLsd);
                 }

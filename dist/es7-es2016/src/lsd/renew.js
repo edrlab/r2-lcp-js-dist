@@ -4,9 +4,9 @@ const tslib_1 = require("tslib");
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
-const ta_json_x_1 = require("ta-json-x");
 const BufferUtils_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/BufferUtils");
 const lsd_1 = require("../parser/epub/lsd");
+const serializable_1 = require("../serializable");
 const URI = require("urijs");
 const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/renew");
@@ -18,7 +18,7 @@ function lsdRenew(end, lsdJSON, deviceIDManager) {
         }
         let lsd;
         try {
-            lsd = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+            lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
         }
         catch (err) {
             debug(err);
@@ -26,7 +26,7 @@ function lsdRenew(end, lsdJSON, deviceIDManager) {
             return Promise.reject("Bad LSD JSON?");
         }
         const obj = lsdRenew_(end, lsd, deviceIDManager);
-        return ta_json_x_1.JSON.serialize(obj);
+        return serializable_1.TaJsonSerialize(obj);
     });
 }
 exports.lsdRenew = lsdRenew;
@@ -142,7 +142,7 @@ function lsdRenew_(end, lsd, deviceIDManager) {
                     debug(responseJson);
                 }
                 try {
-                    const newLsd = ta_json_x_1.JSON.deserialize(responseJson, lsd_1.LSD);
+                    const newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
                     if (IS_DEV) {
                         debug(newLsd);
                     }

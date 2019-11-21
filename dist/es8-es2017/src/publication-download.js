@@ -5,17 +5,17 @@ const fs = require("fs");
 const path = require("path");
 const request = require("request");
 const requestPromise = require("request-promise-native");
-const ta_json_x_1 = require("ta-json-x");
 const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/BufferUtils");
 const zipInjector_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/zip/zipInjector");
 const lcp_1 = require("./parser/epub/lcp");
+const serializable_1 = require("./serializable");
 const debug = debug_("r2:lcp#publication-download");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
     return new Promise(async (resolve, reject) => {
         const lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
         const lcplJson = global.JSON.parse(lcplStr);
-        const lcpl = ta_json_x_1.JSON.deserialize(lcplJson, lcp_1.LCP);
+        const lcpl = serializable_1.TaJsonDeserialize(lcplJson, lcp_1.LCP);
         if (lcpl.Links) {
             const pubLink = lcpl.Links.find((link) => {
                 return link.Rel === "publication";

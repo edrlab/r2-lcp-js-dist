@@ -4,9 +4,9 @@ const tslib_1 = require("tslib");
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
-const ta_json_x_1 = require("ta-json-x");
 const BufferUtils_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/BufferUtils");
 const lsd_1 = require("../parser/epub/lsd");
+const serializable_1 = require("../serializable");
 const lcpl_update_1 = require("./lcpl-update");
 const register_1 = require("./register");
 const debug = debug_("r2:lcp#lsd/status-document-processing");
@@ -107,7 +107,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                 debug(lsdJSON);
             }
             try {
-                lcp.LSD = ta_json_x_1.JSON.deserialize(lsdJSON, lsd_1.LSD);
+                lcp.LSD = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
                 if (IS_DEV) {
                     debug(lcp.LSD);
                 }
