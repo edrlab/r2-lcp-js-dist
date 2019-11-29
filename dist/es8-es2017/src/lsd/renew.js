@@ -10,7 +10,7 @@ const URI = require("urijs");
 const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/renew");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-async function lsdRenew(end, lsdJSON, deviceIDManager) {
+async function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
     if (lsdJSON instanceof lsd_1.LSD) {
         return lsdRenew_(end, lsdJSON, deviceIDManager);
     }
@@ -23,11 +23,11 @@ async function lsdRenew(end, lsdJSON, deviceIDManager) {
         debug(lsdJSON);
         return Promise.reject("Bad LSD JSON?");
     }
-    const obj = lsdRenew_(end, lsd, deviceIDManager);
+    const obj = lsdRenew_(end, lsd, deviceIDManager, httpHeaders);
     return serializable_1.TaJsonSerialize(obj);
 }
 exports.lsdRenew = lsdRenew;
-async function lsdRenew_(end, lsd, deviceIDManager) {
+async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
     if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
     }
@@ -149,10 +149,11 @@ async function lsdRenew_(end, lsd, deviceIDManager) {
                 resolve(responseJson);
             }
         };
-        const headers = {
+        const headers = Object.assign({
             "Accept": "application/json,application/xml",
             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-        };
+            "User-Agent": "Readium2-LCP",
+        }, httpHeaders ? httpHeaders : {});
         const needsStreamingResponse = true;
         if (needsStreamingResponse) {
             request.put({

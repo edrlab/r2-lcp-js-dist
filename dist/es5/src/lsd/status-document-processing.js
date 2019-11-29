@@ -11,7 +11,7 @@ var lcpl_update_1 = require("./lcpl-update");
 var register_1 = require("./register");
 var debug = debug_("r2:lcp#lsd/status-document-processing");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete) {
+function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var linkStatus, failure, success, headers, needsStreamingResponse, response, err_1;
         var _this = this;
@@ -188,10 +188,11 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                             }
                         });
                     }); };
-                    headers = {
+                    headers = Object.assign({
                         "Accept": "application/json,application/xml",
                         "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-                    };
+                        "User-Agent": "Readium2-LCP",
+                    }, httpHeaders ? httpHeaders : {});
                     needsStreamingResponse = true;
                     if (!needsStreamingResponse) return [3, 1];
                     request.get({

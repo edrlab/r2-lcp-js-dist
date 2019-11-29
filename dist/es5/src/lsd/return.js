@@ -10,7 +10,7 @@ var serializable_1 = require("../serializable");
 var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/return");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdReturn(lsdJSON, deviceIDManager) {
+function lsdReturn(lsdJSON, deviceIDManager, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var lsd, obj;
         return tslib_1.__generator(this, function (_a) {
@@ -25,13 +25,13 @@ function lsdReturn(lsdJSON, deviceIDManager) {
                 debug(lsdJSON);
                 return [2, Promise.reject("Bad LSD JSON?")];
             }
-            obj = lsdReturn_(lsd, deviceIDManager);
+            obj = lsdReturn_(lsd, deviceIDManager, httpHeaders);
             return [2, serializable_1.TaJsonSerialize(obj)];
         });
     });
 }
 exports.lsdReturn = lsdReturn;
-function lsdReturn_(lsd, deviceIDManager) {
+function lsdReturn_(lsd, deviceIDManager, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var licenseReturn, deviceID, err_1, deviceNAME, err_2, returnURL, urlTemplate, uri1;
         var _this = this;
@@ -178,10 +178,11 @@ function lsdReturn_(lsd, deviceIDManager) {
                                                 }
                                             });
                                         }); };
-                                        headers = {
+                                        headers = Object.assign({
                                             "Accept": "application/json,application/xml",
                                             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-                                        };
+                                            "User-Agent": "Readium2-LCP",
+                                        }, httpHeaders ? httpHeaders : {});
                                         needsStreamingResponse = true;
                                         if (!needsStreamingResponse) return [3, 1];
                                         request.put({

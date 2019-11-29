@@ -11,7 +11,7 @@ var URI = require("urijs");
 var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/renew");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdRenew(end, lsdJSON, deviceIDManager) {
+function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var lsd, obj;
         return tslib_1.__generator(this, function (_a) {
@@ -26,13 +26,13 @@ function lsdRenew(end, lsdJSON, deviceIDManager) {
                 debug(lsdJSON);
                 return [2, Promise.reject("Bad LSD JSON?")];
             }
-            obj = lsdRenew_(end, lsd, deviceIDManager);
+            obj = lsdRenew_(end, lsd, deviceIDManager, httpHeaders);
             return [2, serializable_1.TaJsonSerialize(obj)];
         });
     });
 }
 exports.lsdRenew = lsdRenew;
-function lsdRenew_(end, lsd, deviceIDManager) {
+function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var licenseRenew, deviceID, err_1, deviceNAME, err_2, renewURL, urlTemplate, uri1, uri2;
         var _this = this;
@@ -185,10 +185,11 @@ function lsdRenew_(end, lsd, deviceIDManager) {
                                                 }
                                             });
                                         }); };
-                                        headers = {
+                                        headers = Object.assign({
                                             "Accept": "application/json,application/xml",
                                             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-                                        };
+                                            "User-Agent": "Readium2-LCP",
+                                        }, httpHeaders ? httpHeaders : {});
                                         needsStreamingResponse = true;
                                         if (!needsStreamingResponse) return [3, 1];
                                         request.put({

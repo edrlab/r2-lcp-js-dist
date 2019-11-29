@@ -7,7 +7,7 @@ const requestPromise = require("request-promise-native");
 const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/BufferUtils");
 const debug = debug_("r2:lcp#lsd/lcpl-update");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-async function lsdLcpUpdate(lcp) {
+async function lsdLcpUpdate(lcp, httpHeaders) {
     if (!lcp.LSD) {
         return Promise.reject("LCP LSD data is missing.");
     }
@@ -116,10 +116,11 @@ async function lsdLcpUpdate(lcp) {
                         }
                         resolve(lcplStr);
                     };
-                    const headers = {
+                    const headers = Object.assign({
                         "Accept": "application/json,application/xml",
                         "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-                    };
+                        "User-Agent": "Readium2-LCP",
+                    }, httpHeaders ? httpHeaders : {});
                     const needsStreamingResponse = true;
                     if (needsStreamingResponse) {
                         request.get({

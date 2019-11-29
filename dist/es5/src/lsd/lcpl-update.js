@@ -8,7 +8,7 @@ var requestPromise = require("request-promise-native");
 var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var debug = debug_("r2:lcp#lsd/lcpl-update");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
-function lsdLcpUpdate(lcp) {
+function lsdLcpUpdate(lcp, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var updatedLicenseLSD, updatedLicense, forceUpdate, licenseLink_1;
         var _this = this;
@@ -140,10 +140,11 @@ function lsdLcpUpdate(lcp) {
                                                     }
                                                 });
                                             }); };
-                                            headers = {
+                                            headers = Object.assign({
                                                 "Accept": "application/json,application/xml",
                                                 "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-                                            };
+                                                "User-Agent": "Readium2-LCP",
+                                            }, httpHeaders ? httpHeaders : {});
                                             needsStreamingResponse = true;
                                             if (!needsStreamingResponse) return [3, 1];
                                             request.get({
