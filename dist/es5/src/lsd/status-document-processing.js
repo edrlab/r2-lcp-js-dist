@@ -138,7 +138,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     _a.label = 9;
                                 case 9:
                                     _a.trys.push([9, 11, , 12]);
-                                    return [4, lcpl_update_1.lsdLcpUpdate(lcp)];
+                                    return [4, lcpl_update_1.lsdLcpUpdate(lcp, httpHeaders)];
                                 case 10:
                                     licenseUpdateResponseJson = _a.sent();
                                     return [3, 12];

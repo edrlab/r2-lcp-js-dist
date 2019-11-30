@@ -119,7 +119,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
         let licenseUpdateResponseJson;
         try {
-            licenseUpdateResponseJson = await lcpl_update_1.lsdLcpUpdate(lcp);
+            licenseUpdateResponseJson = await lcpl_update_1.lsdLcpUpdate(lcp, httpHeaders);
         }
         catch (err) {
             debug(err);

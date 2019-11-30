@@ -121,7 +121,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             }
             let licenseUpdateResponseJson;
             try {
-                licenseUpdateResponseJson = yield lcpl_update_1.lsdLcpUpdate(lcp);
+                licenseUpdateResponseJson = yield lcpl_update_1.lsdLcpUpdate(lcp, httpHeaders);
             }
             catch (err) {
                 debug(err);
