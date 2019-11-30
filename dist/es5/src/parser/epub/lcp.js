@@ -112,9 +112,38 @@ var LCP = (function () {
             });
         });
     };
+    LCP.prototype.dummyCreateContext = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var crlPem_1, sha256DummyPassphrase_1;
+            var _this = this;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.init();
+                        if (!this._usesNativeNodePlugin) return [3, 2];
+                        return [4, this.getCRLPem()];
+                    case 1:
+                        crlPem_1 = _a.sent();
+                        sha256DummyPassphrase_1 = "0".repeat(64);
+                        return [2, new Promise(function (resolve, reject) {
+                                _this._lcpNative.createContext(_this.JsonSource, sha256DummyPassphrase_1, crlPem_1, function (erro, _context) {
+                                    if (erro) {
+                                        debug("dummyCreateContext ERROR");
+                                        debug(erro);
+                                        reject(erro);
+                                        return;
+                                    }
+                                    resolve();
+                                });
+                            })];
+                    case 2: return [2, Promise.resolve()];
+                }
+            });
+        });
+    };
     LCP.prototype.tryUserKeys = function (lcpUserKeys) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var check, crlPem_1, _i, lcpUserKeys_1, lcpUserKey;
+            var check, crlPem_2, _i, lcpUserKeys_1, lcpUserKey;
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
@@ -134,7 +163,7 @@ var LCP = (function () {
                         if (!this._usesNativeNodePlugin) return [3, 2];
                         return [4, this.getCRLPem()];
                     case 1:
-                        crlPem_1 = _a.sent();
+                        crlPem_2 = _a.sent();
                         return [2, new Promise(function (resolve, reject) {
                                 _this._lcpNative.findOneValidPassphrase(_this.JsonSource, lcpUserKeys, function (err, validHashedPassphrase) {
                                     if (err) {
@@ -143,7 +172,7 @@ var LCP = (function () {
                                         reject(err);
                                         return;
                                     }
-                                    _this._lcpNative.createContext(_this.JsonSource, validHashedPassphrase, crlPem_1, function (erro, context) {
+                                    _this._lcpNative.createContext(_this.JsonSource, validHashedPassphrase, crlPem_2, function (erro, context) {
                                         if (erro) {
                                             debug("createContext ERROR");
                                             debug(erro);

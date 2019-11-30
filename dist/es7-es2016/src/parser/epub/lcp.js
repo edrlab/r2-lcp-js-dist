@@ -109,6 +109,27 @@ let LCP = class LCP {
             });
         });
     }
+    dummyCreateContext() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            this.init();
+            if (this._usesNativeNodePlugin) {
+                const crlPem = yield this.getCRLPem();
+                const sha256DummyPassphrase = "0".repeat(64);
+                return new Promise((resolve, reject) => {
+                    this._lcpNative.createContext(this.JsonSource, sha256DummyPassphrase, crlPem, (erro, _context) => {
+                        if (erro) {
+                            debug("dummyCreateContext ERROR");
+                            debug(erro);
+                            reject(erro);
+                            return;
+                        }
+                        resolve();
+                    });
+                });
+            }
+            return Promise.resolve();
+        });
+    }
     tryUserKeys(lcpUserKeys) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             this.init();

@@ -107,6 +107,25 @@ let LCP = class LCP {
             }, this.JsonSource, linkHref, needsInflating);
         });
     }
+    async dummyCreateContext() {
+        this.init();
+        if (this._usesNativeNodePlugin) {
+            const crlPem = await this.getCRLPem();
+            const sha256DummyPassphrase = "0".repeat(64);
+            return new Promise((resolve, reject) => {
+                this._lcpNative.createContext(this.JsonSource, sha256DummyPassphrase, crlPem, (erro, _context) => {
+                    if (erro) {
+                        debug("dummyCreateContext ERROR");
+                        debug(erro);
+                        reject(erro);
+                        return;
+                    }
+                    resolve();
+                });
+            });
+        }
+        return Promise.resolve();
+    }
     async tryUserKeys(lcpUserKeys) {
         this.init();
         const check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
