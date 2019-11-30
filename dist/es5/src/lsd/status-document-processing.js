@@ -166,7 +166,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     _a.label = 13;
                                 case 13:
                                     _a.trys.push([13, 15, , 16]);
-                                    return [4, register_1.lsdRegister_(lcp.LSD, deviceIDManager)];
+                                    return [4, register_1.lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders)];
                                 case 14:
                                     registerResponse = _a.sent();
                                     return [3, 16];

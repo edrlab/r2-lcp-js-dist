@@ -142,7 +142,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
         let registerResponse;
         try {
-            registerResponse = await register_1.lsdRegister_(lcp.LSD, deviceIDManager);
+            registerResponse = await register_1.lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders);
         }
         catch (err) {
             debug(err);

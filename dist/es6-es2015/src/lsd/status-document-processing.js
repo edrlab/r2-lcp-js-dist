@@ -144,7 +144,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             }
             let registerResponse;
             try {
-                registerResponse = yield register_1.lsdRegister_(lcp.LSD, deviceIDManager);
+                registerResponse = yield register_1.lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders);
             }
             catch (err) {
                 debug(err);
