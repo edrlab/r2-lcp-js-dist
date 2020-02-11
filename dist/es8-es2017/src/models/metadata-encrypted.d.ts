@@ -3,7 +3,10 @@ export declare class Encrypted {
     Profile: string;
     Algorithm: string;
     Compression: string;
-    OriginalLength: number;
+    OriginalLength2: number;
+    OriginalLength1: number | undefined;
+    get OriginalLength(): number | undefined;
+    set OriginalLength(length: number | undefined);
     DecryptedLengthBeforeInflate: number;
     CypherBlockPadding: number;
     CypherBlockIV: string | undefined;
