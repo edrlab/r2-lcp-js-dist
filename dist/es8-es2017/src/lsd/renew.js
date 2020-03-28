@@ -63,8 +63,7 @@ async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
         renewURL = uri1.toString();
         const uri2 = new URI(renewURL);
         uri2.search((data) => {
-            var _a;
-            data.end = (_a = end) === null || _a === void 0 ? void 0 : _a.toISOString();
+            data.end = end === null || end === void 0 ? void 0 : end.toISOString();
         });
         renewURL = uri2.toString();
     }
