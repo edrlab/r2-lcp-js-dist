@@ -28,10 +28,14 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
         debug("LCP not ready!");
         return false;
     }
-    const check = linkPropertiesEncrypted.Scheme === "http://readium.org/2014/01/lcp"
+    const check = (linkPropertiesEncrypted.Scheme === "http://readium.org/2014/01/lcp"
         && (linkPropertiesEncrypted.Profile === "http://readium.org/lcp/basic-profile" ||
             linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0")
-        && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+        && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc")
+        ||
+            (linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc" &&
+                (lcp.Encryption.Profile === "http://readium.org/lcp/basic-profile" ||
+                    lcp.Encryption.Profile === "http://readium.org/lcp/profile-1.0"));
     if (!check) {
         return false;
     }

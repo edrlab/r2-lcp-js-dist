@@ -17,7 +17,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                    var lcplStr, lcplJson, lcpl, pubLink_1, destPathTMP_1, destPathFINAL_1, failure_1, success, needsStreamingResponse, response, err_1;
+                    var lcplStr, lcplJson, lcpl, pubLink_1, isAudio_1, isAudioLcp_1, ext, destPathTMP_1, destPathFINAL_1, failure_1, success, needsStreamingResponse, response, err_1;
                     var _this = this;
                     return tslib_1.__generator(this, function (_a) {
                         switch (_a.label) {
@@ -30,8 +30,11 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                     return link.Rel === "publication";
                                 });
                                 if (!pubLink_1) return [3, 7];
+                                isAudio_1 = pubLink_1.Type === "application/audiobook+zip";
+                                isAudioLcp_1 = pubLink_1.Type === "application/audiobook+lcp";
+                                ext = isAudio_1 ? ".audiobook" : (isAudioLcp_1 ? ".lcpa" : ".epub");
                                 destPathTMP_1 = path.join(dir, destFileName + ".tmp");
-                                destPathFINAL_1 = path.join(dir, destFileName);
+                                destPathFINAL_1 = path.join(dir, destFileName + ext);
                                 failure_1 = function (err) {
                                     debug(err);
                                     reject(pubLink_1.Href + " (" + err + ")");
@@ -104,7 +107,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                                         }, 1000);
                                                         resolve([destPathFINAL_1, pubLink_1.Href]);
                                                     };
-                                                    var zipEntryPath = "META-INF/license.lcpl";
+                                                    var zipEntryPath = (isAudio_1 || isAudioLcp_1) ? "license.lcpl" : "META-INF/license.lcpl";
                                                     zipInjector_1.injectFileInZip(destPathTMP_1, destPathFINAL_1, filePath, zipEntryPath, zipError, doneCallback);
                                                 });
                                                 return [2];

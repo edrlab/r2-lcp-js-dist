@@ -21,8 +21,11 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                 return link.Rel === "publication";
             });
             if (pubLink) {
+                const isAudio = pubLink.Type === "application/audiobook+zip";
+                const isAudioLcp = pubLink.Type === "application/audiobook+lcp";
+                const ext = isAudio ? ".audiobook" : (isAudioLcp ? ".lcpa" : ".epub");
                 const destPathTMP = path.join(dir, destFileName + ".tmp");
-                const destPathFINAL = path.join(dir, destFileName);
+                const destPathFINAL = path.join(dir, destFileName + ext);
                 const failure = (err) => {
                     debug(err);
                     reject(pubLink.Href + " (" + err + ")");
@@ -86,7 +89,7 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                             }, 1000);
                             resolve([destPathFINAL, pubLink.Href]);
                         };
-                        const zipEntryPath = "META-INF/license.lcpl";
+                        const zipEntryPath = (isAudio || isAudioLcp) ? "license.lcpl" : "META-INF/license.lcpl";
                         zipInjector_1.injectFileInZip(destPathTMP, destPathFINAL, filePath, zipEntryPath, zipError, doneCallback);
                     });
                 };
