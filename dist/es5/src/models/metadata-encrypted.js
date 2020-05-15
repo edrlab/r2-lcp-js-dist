@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Encrypted = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
 var Encrypted = (function () {
@@ -17,7 +18,7 @@ var Encrypted = (function () {
                 this.OriginalLength2 = length;
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     tslib_1.__decorate([

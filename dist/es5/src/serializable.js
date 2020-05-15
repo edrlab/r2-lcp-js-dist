@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TaJsonSerialize = exports.TaJsonDeserialize = exports.KeyToPreserveUnknownJSON = void 0;
 var ta_json_x_1 = require("ta-json-x");
 exports.KeyToPreserveUnknownJSON = "AdditionalJSON";
 function TaJsonDeserialize(json, type) {

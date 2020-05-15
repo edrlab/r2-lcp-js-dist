@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.downloadEPUBFromLCPL = void 0;
 const debug_ = require("debug");
 const fs = require("fs");
 const path = require("path");

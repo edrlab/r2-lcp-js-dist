@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDecryptedSizeStream = exports.transformStream = exports.supports = void 0;
 const tslib_1 = require("tslib");
 const crypto = require("crypto");
 const debug_ = require("debug");

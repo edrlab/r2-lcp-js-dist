@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DUMMY_CRL = exports.CRL_URL_ALT = exports.CRL_URL = void 0;
 exports.CRL_URL = "http://crl.edrlab.telesec.de/rl/EDRLab_CA.crl";
 exports.CRL_URL_ALT = "http://crl.edrlab.telesec.de/rl/Readium_LCP_Root_CA.crl";
 exports.DUMMY_CRL = `-----BEGIN X509 CRL-----

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LSD = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
 var lcp_link_1 = require("./lcp-link");

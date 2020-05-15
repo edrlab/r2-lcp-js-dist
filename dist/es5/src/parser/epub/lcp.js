@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LCP = exports.setLcpNativePluginPath = void 0;
 var tslib_1 = require("tslib");
 var bind = require("bindings");
 var crypto = require("crypto");

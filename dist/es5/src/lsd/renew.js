@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.lsdRenew_ = exports.lsdRenew = void 0;
 var tslib_1 = require("tslib");
 var debug_ = require("debug");
 var request = require("request");

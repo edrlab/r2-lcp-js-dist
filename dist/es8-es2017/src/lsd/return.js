@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.lsdReturn_ = exports.lsdReturn = void 0;
 const debug_ = require("debug");
 const request = require("request");
 const requestPromise = require("request-promise-native");
