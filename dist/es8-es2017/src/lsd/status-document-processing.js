@@ -131,10 +131,10 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
             }
             return;
         }
-        if (lcp.LSD.Status === "revoked"
-            || lcp.LSD.Status === "returned"
-            || lcp.LSD.Status === "cancelled"
-            || lcp.LSD.Status === "expired") {
+        if (lcp.LSD.Status === lsd_1.StatusEnum.Revoked
+            || lcp.LSD.Status === lsd_1.StatusEnum.Returned
+            || lcp.LSD.Status === lsd_1.StatusEnum.Cancelled
+            || lcp.LSD.Status === lsd_1.StatusEnum.Expired) {
             debug("What?! LSD status:" + lcp.LSD.Status);
             if (onStatusDocumentProcessingComplete) {
                 onStatusDocumentProcessingComplete(undefined);

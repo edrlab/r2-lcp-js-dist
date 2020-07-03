@@ -1,4 +1,4 @@
-export declare const enum TypeEnum {
+export declare enum TypeEnum {
     Register = "register",
     Renew = "renew",
     Return = "return",

@@ -1,8 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LsdEvent = void 0;
+exports.LsdEvent = exports.TypeEnum = void 0;
 const tslib_1 = require("tslib");
 const ta_json_x_1 = require("ta-json-x");
+var TypeEnum;
+(function (TypeEnum) {
+    TypeEnum["Register"] = "register";
+    TypeEnum["Renew"] = "renew";
+    TypeEnum["Return"] = "return";
+    TypeEnum["Revoke"] = "revoke";
+    TypeEnum["Cancel"] = "cancel";
+})(TypeEnum = exports.TypeEnum || (exports.TypeEnum = {}));
 let LsdEvent = class LsdEvent {
 };
 tslib_1.__decorate([

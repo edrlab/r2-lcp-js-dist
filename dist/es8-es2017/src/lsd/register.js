@@ -57,10 +57,10 @@ async function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
         return Promise.reject("Problem getting Device NAME !?");
     }
     let doRegister = false;
-    if (lsd.Status === "ready") {
+    if (lsd.Status === lsd_1.StatusEnum.Ready) {
         doRegister = true;
     }
-    else if (lsd.Status === "active") {
+    else if (lsd.Status === lsd_1.StatusEnum.Active) {
         let deviceIDForStatusDoc;
         try {
             deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lsd.ID);

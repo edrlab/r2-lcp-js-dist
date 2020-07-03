@@ -74,11 +74,11 @@ function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                     return [2, Promise.reject("Problem getting Device NAME !?")];
                 case 7:
                     doRegister = false;
-                    if (!(lsd.Status === "ready")) return [3, 8];
+                    if (!(lsd.Status === lsd_1.StatusEnum.Ready)) return [3, 8];
                     doRegister = true;
                     return [3, 13];
                 case 8:
-                    if (!(lsd.Status === "active")) return [3, 13];
+                    if (!(lsd.Status === lsd_1.StatusEnum.Active)) return [3, 13];
                     deviceIDForStatusDoc = void 0;
                     _a.label = 9;
                 case 9:

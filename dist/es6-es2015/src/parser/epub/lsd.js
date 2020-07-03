@@ -1,12 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LSD = void 0;
+exports.LSD = exports.StatusEnum = void 0;
 const tslib_1 = require("tslib");
 const ta_json_x_1 = require("ta-json-x");
 const lcp_link_1 = require("./lcp-link");
 const lsd_event_1 = require("./lsd-event");
 const lsd_potential_rights_1 = require("./lsd-potential-rights");
 const lsd_updated_1 = require("./lsd-updated");
+var StatusEnum;
+(function (StatusEnum) {
+    StatusEnum["Ready"] = "ready";
+    StatusEnum["Active"] = "active";
+    StatusEnum["Revoked"] = "revoked";
+    StatusEnum["Returned"] = "returned";
+    StatusEnum["Cancelled"] = "cancelled";
+    StatusEnum["Expired"] = "expired";
+})(StatusEnum = exports.StatusEnum || (exports.StatusEnum = {}));
 let LSD = class LSD {
 };
 tslib_1.__decorate([
