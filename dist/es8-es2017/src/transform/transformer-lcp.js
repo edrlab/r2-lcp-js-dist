@@ -55,7 +55,7 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
         }
         let fullEncryptedBuffer;
         try {
-            fullEncryptedBuffer = await BufferUtils_1.streamToBufferPromise(stream.stream);
+            fullEncryptedBuffer = await (0, BufferUtils_1.streamToBufferPromise)(stream.stream);
         }
         catch (err) {
             debug(err);
@@ -82,7 +82,7 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
                 `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
                 `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
         }
-        nativelyDecryptedStream = BufferUtils_1.bufferToStream(nativelyDecryptedBuffer);
+        nativelyDecryptedStream = (0, BufferUtils_1.bufferToStream)(nativelyDecryptedBuffer);
     }
     else {
         let cryptoInfo;
@@ -163,9 +163,9 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
             debug(`############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!`);
             let fullDeflatedBuffer;
             try {
-                fullDeflatedBuffer = await BufferUtils_1.streamToBufferPromise(destStream);
+                fullDeflatedBuffer = await (0, BufferUtils_1.streamToBufferPromise)(destStream);
                 linkPropertiesEncrypted.OriginalLength = fullDeflatedBuffer.length;
-                destStream = BufferUtils_1.bufferToStream(fullDeflatedBuffer);
+                destStream = (0, BufferUtils_1.bufferToStream)(fullDeflatedBuffer);
             }
             catch (err) {
                 debug(err);

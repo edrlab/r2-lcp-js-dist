@@ -13,7 +13,7 @@ const register_1 = require("./register");
 const debug = debug_("r2:lcp#lsd/status-document-processing");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         if (!lcp || !lcp.Links) {
             if (onStatusDocumentProcessingComplete) {
                 onStatusDocumentProcessingComplete(undefined);
@@ -38,7 +38,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                 onStatusDocumentProcessingComplete(undefined);
             }
         };
-        const success = (response) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+        const success = (response) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             if (IS_DEV) {
                 Object.keys(response.headers).forEach((header) => {
                     debug(header + " => " + response.headers[header]);
@@ -47,7 +47,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                 let failBuff;
                 try {
-                    failBuff = yield BufferUtils_1.streamToBufferPromise(response);
+                    failBuff = yield (0, BufferUtils_1.streamToBufferPromise)(response);
                 }
                 catch (buffErr) {
                     if (IS_DEV) {
@@ -86,7 +86,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             }
             let responseData;
             try {
-                responseData = yield BufferUtils_1.streamToBufferPromise(response);
+                responseData = yield (0, BufferUtils_1.streamToBufferPromise)(response);
             }
             catch (err) {
                 debug(err);
@@ -108,7 +108,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                 debug(lsdJSON);
             }
             try {
-                lcp.LSD = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+                lcp.LSD = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
                 if (IS_DEV) {
                     debug(lcp.LSD);
                 }
@@ -122,7 +122,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             }
             let licenseUpdateResponseJson;
             try {
-                licenseUpdateResponseJson = yield lcpl_update_1.lsdLcpUpdate(lcp, httpHeaders);
+                licenseUpdateResponseJson = yield (0, lcpl_update_1.lsdLcpUpdate)(lcp, httpHeaders);
             }
             catch (err) {
                 debug(err);
@@ -145,7 +145,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             }
             let registerResponse;
             try {
-                registerResponse = yield register_1.lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders);
+                registerResponse = yield (0, register_1.lsdRegister_)(lcp.LSD, deviceIDManager, httpHeaders);
             }
             catch (err) {
                 debug(err);
@@ -170,6 +170,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
             request.get({
                 headers,
                 method: "GET",
+                timeout: 2000,
                 uri: linkStatus.Href,
             })
                 .on("response", success)

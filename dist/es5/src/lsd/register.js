@@ -12,14 +12,14 @@ var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/register");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function lsdRegister(lsdJSON, deviceIDManager, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var lsd, obj;
-        return tslib_1.__generator(this, function (_a) {
+        return (0, tslib_1.__generator)(this, function (_a) {
             if (lsdJSON instanceof lsd_1.LSD) {
                 return [2, lsdRegister_(lsdJSON, deviceIDManager)];
             }
             try {
-                lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+                lsd = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
             }
             catch (err) {
                 debug(err);
@@ -27,16 +27,16 @@ function lsdRegister(lsdJSON, deviceIDManager, httpHeaders) {
                 return [2, Promise.reject("Bad LSD JSON?")];
             }
             obj = lsdRegister_(lsd, deviceIDManager, httpHeaders);
-            return [2, serializable_1.TaJsonSerialize(obj)];
+            return [2, (0, serializable_1.TaJsonSerialize)(obj)];
         });
     });
 }
 exports.lsdRegister = lsdRegister;
 function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var licenseRegister, deviceID, err_1, deviceNAME, err_2, doRegister, deviceIDForStatusDoc, err_3, registerURL, urlTemplate, uri1;
         var _this = this;
-        return tslib_1.__generator(this, function (_a) {
+        return (0, tslib_1.__generator)(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if (!lsd) {
@@ -115,18 +115,18 @@ function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                     if (IS_DEV) {
                         debug("REGISTER: " + registerURL);
                     }
-                    return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    return [2, new Promise(function (resolve, reject) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                             var failure, success, headers, needsStreamingResponse, response, err_4;
                             var _this = this;
-                            return tslib_1.__generator(this, function (_a) {
+                            return (0, tslib_1.__generator)(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
                                         failure = function (err) {
                                             reject(err);
                                         };
-                                        success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                        success = function (response) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                                             var failBuff, buffErr_1, failStr, failJson, responseData, err_5, responseStr, responseJson, err_6, newLsd;
-                                            return tslib_1.__generator(this, function (_a) {
+                                            return (0, tslib_1.__generator)(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
                                                         if (IS_DEV) {
@@ -139,7 +139,7 @@ function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                                                         _a.label = 1;
                                                     case 1:
                                                         _a.trys.push([1, 3, , 4]);
-                                                        return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                        return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                     case 2:
                                                         failBuff = _a.sent();
                                                         return [3, 4];
@@ -180,7 +180,7 @@ function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                                                         return [2];
                                                     case 5:
                                                         _a.trys.push([5, 7, , 8]);
-                                                        return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                        return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                     case 6:
                                                         responseData = _a.sent();
                                                         return [3, 8];
@@ -212,7 +212,7 @@ function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                                                         return [3, 12];
                                                     case 12:
                                                         try {
-                                                            newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
+                                                            newLsd = (0, serializable_1.TaJsonDeserialize)(responseJson, lsd_1.LSD);
                                                             if (IS_DEV) {
                                                                 debug(newLsd);
                                                             }
@@ -236,6 +236,7 @@ function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                                         request.post({
                                             headers: headers,
                                             method: "POST",
+                                            timeout: 2000,
                                             uri: registerURL,
                                         })
                                             .on("response", success)

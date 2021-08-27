@@ -14,11 +14,11 @@ const serializable_1 = require("./serializable");
 const debug = debug_("r2:lcp#publication-download");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function downloadEPUBFromLCPL(filePath, dir, destFileName) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             const lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
             const lcplJson = global.JSON.parse(lcplStr);
-            const lcpl = serializable_1.TaJsonDeserialize(lcplJson, lcp_1.LCP);
+            const lcpl = (0, serializable_1.TaJsonDeserialize)(lcplJson, lcp_1.LCP);
             if (lcpl.Links) {
                 const pubLink = lcpl.Links.find((link) => {
                     return link.Rel === "publication";
@@ -33,7 +33,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                         debug(err);
                         reject(pubLink.Href + " (" + err + ")");
                     };
-                    const success = (response) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                    const success = (response) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                         if (IS_DEV) {
                             Object.keys(response.headers).forEach((header) => {
                                 debug(header + " => " + response.headers[header]);
@@ -42,7 +42,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                             let failBuff;
                             try {
-                                failBuff = yield BufferUtils_1.streamToBufferPromise(response);
+                                failBuff = yield (0, BufferUtils_1.streamToBufferPromise)(response);
                             }
                             catch (buffErr) {
                                 if (IS_DEV) {
@@ -93,7 +93,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                 resolve([destPathFINAL, pubLink.Href]);
                             };
                             const zipEntryPath = (isAudio || isAudioLcp) ? "license.lcpl" : "META-INF/license.lcpl";
-                            zipInjector_1.injectFileInZip(destPathTMP, destPathFINAL, filePath, zipEntryPath, zipError, doneCallback);
+                            (0, zipInjector_1.injectFileInZip)(destPathTMP, destPathFINAL, filePath, zipEntryPath, zipError, doneCallback);
                         });
                     });
                     const needsStreamingResponse = true;
@@ -101,6 +101,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                         request.get({
                             headers: {},
                             method: "GET",
+                            timeout: 5000,
                             uri: pubLink.Href,
                         })
                             .on("response", success)

@@ -10,8 +10,8 @@ var RangeStream_1 = require("r2-utils-js/dist/es5/src/_utils/stream/RangeStream"
 var debug = debug_("r2:lcp#transform/transformer-lcp");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 var AES_BLOCK_SIZE = 16;
-var readStream = function (s, n) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
-    return tslib_1.__generator(this, function (_a) {
+var readStream = function (s, n) { return (0, tslib_1.__awaiter)(void 0, void 0, void 0, function () {
+    return (0, tslib_1.__generator)(this, function (_a) {
         return [2, new Promise(function (resolve, reject) {
                 var onReadable = function () {
                     var b = s.read(n);
@@ -47,10 +47,10 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
 }
 exports.supports = supports;
 function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var isCompressionNone, isCompressionDeflate, plainTextSize, nativelyDecryptedStream, nativelyInflated, fullEncryptedBuffer, err_1, res, err_2, nativelyDecryptedBuffer, cryptoInfo, cypherBlockPadding, err_3, err_4, destStream, rawDecryptStream, ivBuffer, cypherRangeStream, err_5, decryptStream, cypherUnpaddedStream, inflateStream, fullDeflatedBuffer, err_6, l, rangeStream, sal;
         var _this = this;
-        return tslib_1.__generator(this, function (_a) {
+        return (0, tslib_1.__generator)(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     isCompressionNone = linkPropertiesEncrypted.Compression === "none";
@@ -65,7 +65,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4, BufferUtils_1.streamToBufferPromise(stream.stream)];
+                    return [4, (0, BufferUtils_1.streamToBufferPromise)(stream.stream)];
                 case 2:
                     fullEncryptedBuffer = _a.sent();
                     return [3, 4];
@@ -100,7 +100,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                             "linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
                             (linkPropertiesEncrypted.OriginalLength + " !== " + plainTextSize));
                     }
-                    nativelyDecryptedStream = BufferUtils_1.bufferToStream(nativelyDecryptedBuffer);
+                    nativelyDecryptedStream = (0, BufferUtils_1.bufferToStream)(nativelyDecryptedBuffer);
                     return [3, 18];
                 case 9:
                     cryptoInfo = void 0;
@@ -195,11 +195,11 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                     _a.label = 26;
                 case 26:
                     _a.trys.push([26, 28, , 29]);
-                    return [4, BufferUtils_1.streamToBufferPromise(destStream)];
+                    return [4, (0, BufferUtils_1.streamToBufferPromise)(destStream)];
                 case 27:
                     fullDeflatedBuffer = _a.sent();
                     linkPropertiesEncrypted.OriginalLength = fullDeflatedBuffer.length;
-                    destStream = BufferUtils_1.bufferToStream(fullDeflatedBuffer);
+                    destStream = (0, BufferUtils_1.bufferToStream)(fullDeflatedBuffer);
                     return [3, 29];
                 case 28:
                     err_6 = _a.sent();
@@ -224,9 +224,9 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                     }
                     sal = {
                         length: l,
-                        reset: function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                        reset: function () { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                             var resetedStream, err_7;
-                            return tslib_1.__generator(this, function (_a) {
+                            return (0, tslib_1.__generator)(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
                                         _a.trys.push([0, 2, , 3]);
@@ -251,12 +251,12 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
 }
 exports.transformStream = transformStream;
 function getDecryptedSizeStream(lcp, stream) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var _this = this;
-        return tslib_1.__generator(this, function (_a) {
-            return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+        return (0, tslib_1.__generator)(this, function (_a) {
+            return [2, new Promise(function (resolve, reject) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                     var TWO_AES_BLOCK_SIZE, readPos, cypherRangeStream, decrypteds, handle, finished, finish, buf, err_8;
-                    return tslib_1.__generator(this, function (_a) {
+                    return (0, tslib_1.__generator)(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 TWO_AES_BLOCK_SIZE = 2 * AES_BLOCK_SIZE;

@@ -13,10 +13,10 @@ var register_1 = require("./register");
 var debug = debug_("r2:lcp#lsd/status-document-processing");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentProcessingComplete, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var linkStatus, failure, success, headers, needsStreamingResponse, response, err_1;
         var _this = this;
-        return tslib_1.__generator(this, function (_a) {
+        return (0, tslib_1.__generator)(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if (!lcp || !lcp.Links) {
@@ -43,9 +43,9 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                             onStatusDocumentProcessingComplete(undefined);
                         }
                     };
-                    success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    success = function (response) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                         var failBuff, buffErr_1, failStr, failJson, responseData, err_2, responseStr, mime, lsdJSON, licenseUpdateResponseJson, err_3, registerResponse, err_4;
-                        return tslib_1.__generator(this, function (_a) {
+                        return (0, tslib_1.__generator)(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
                                     if (IS_DEV) {
@@ -58,7 +58,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 3, , 4]);
-                                    return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                    return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                 case 2:
                                     failBuff = _a.sent();
                                     return [3, 4];
@@ -99,7 +99,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     return [2];
                                 case 5:
                                     _a.trys.push([5, 7, , 8]);
-                                    return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                    return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                 case 6:
                                     responseData = _a.sent();
                                     return [3, 8];
@@ -124,7 +124,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                         debug(lsdJSON);
                                     }
                                     try {
-                                        lcp.LSD = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+                                        lcp.LSD = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
                                         if (IS_DEV) {
                                             debug(lcp.LSD);
                                         }
@@ -139,7 +139,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     _a.label = 9;
                                 case 9:
                                     _a.trys.push([9, 11, , 12]);
-                                    return [4, lcpl_update_1.lsdLcpUpdate(lcp, httpHeaders)];
+                                    return [4, (0, lcpl_update_1.lsdLcpUpdate)(lcp, httpHeaders)];
                                 case 10:
                                     licenseUpdateResponseJson = _a.sent();
                                     return [3, 12];
@@ -167,7 +167,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                                     _a.label = 13;
                                 case 13:
                                     _a.trys.push([13, 15, , 16]);
-                                    return [4, register_1.lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders)];
+                                    return [4, (0, register_1.lsdRegister_)(lcp.LSD, deviceIDManager, httpHeaders)];
                                 case 14:
                                     registerResponse = _a.sent();
                                     return [3, 16];
@@ -199,6 +199,7 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                     request.get({
                         headers: headers,
                         method: "GET",
+                        timeout: 2000,
                         uri: linkStatus.Href,
                     })
                         .on("response", success)

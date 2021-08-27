@@ -10,10 +10,10 @@ var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils"
 var debug = debug_("r2:lcp#lsd/lcpl-update");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function lsdLcpUpdate(lcp, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var updatedLicenseLSD, updatedLicense, forceUpdate, licenseLink_1;
         var _this = this;
-        return tslib_1.__generator(this, function (_a) {
+        return (0, tslib_1.__generator)(this, function (_a) {
             if (!lcp.LSD) {
                 return [2, Promise.reject("LCP LSD data is missing.")];
             }
@@ -37,18 +37,18 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                         if (IS_DEV) {
                             debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink_1.Href);
                         }
-                        return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                        return [2, new Promise(function (resolve, reject) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                                 var failure, success, headers, needsStreamingResponse, response, err_1;
                                 var _this = this;
-                                return tslib_1.__generator(this, function (_a) {
+                                return (0, tslib_1.__generator)(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
                                             failure = function (err) {
                                                 reject(err);
                                             };
-                                            success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                            success = function (response) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                                                 var tryErrorJson, failBuff, buffErr_1, failStr, responseData, err_2, lcplStr, tryLcpJson;
-                                                return tslib_1.__generator(this, function (_a) {
+                                                return (0, tslib_1.__generator)(this, function (_a) {
                                                     switch (_a.label) {
                                                         case 0:
                                                             if (IS_DEV) {
@@ -77,7 +77,7 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                                                             _a.label = 1;
                                                         case 1:
                                                             _a.trys.push([1, 3, , 4]);
-                                                            return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                            return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                         case 2:
                                                             failBuff = _a.sent();
                                                             return [3, 4];
@@ -105,7 +105,7 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                                                             return [2];
                                                         case 5:
                                                             _a.trys.push([5, 7, , 8]);
-                                                            return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                            return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                         case 6:
                                                             responseData = _a.sent();
                                                             return [3, 8];
@@ -151,6 +151,7 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                                             request.get({
                                                 headers: headers,
                                                 method: "GET",
+                                                timeout: 2000,
                                                 uri: licenseLink_1.Href,
                                             })
                                                 .on("response", success)

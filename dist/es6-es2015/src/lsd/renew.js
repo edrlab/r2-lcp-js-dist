@@ -13,13 +13,13 @@ const URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/renew");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         if (lsdJSON instanceof lsd_1.LSD) {
             return lsdRenew_(end, lsdJSON, deviceIDManager);
         }
         let lsd;
         try {
-            lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+            lsd = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
         }
         catch (err) {
             debug(err);
@@ -27,12 +27,12 @@ function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
             return Promise.reject("Bad LSD JSON?");
         }
         const obj = lsdRenew_(end, lsd, deviceIDManager, httpHeaders);
-        return serializable_1.TaJsonSerialize(obj);
+        return (0, serializable_1.TaJsonSerialize)(obj);
     });
 }
 exports.lsdRenew = lsdRenew;
 function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         if (!lsd) {
             return Promise.reject("LCP LSD data is missing.");
         }
@@ -75,11 +75,11 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
         if (IS_DEV) {
             debug("RENEW: " + renewURL);
         }
-        return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             const failure = (err) => {
                 reject(err);
             };
-            const success = (response) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const success = (response) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                 if (IS_DEV) {
                     Object.keys(response.headers).forEach((header) => {
                         debug(header + " => " + response.headers[header]);
@@ -88,7 +88,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                 if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                     let failBuff;
                     try {
-                        failBuff = yield BufferUtils_1.streamToBufferPromise(response);
+                        failBuff = yield (0, BufferUtils_1.streamToBufferPromise)(response);
                     }
                     catch (buffErr) {
                         if (IS_DEV) {
@@ -127,7 +127,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                 }
                 let responseData;
                 try {
-                    responseData = yield BufferUtils_1.streamToBufferPromise(response);
+                    responseData = yield (0, BufferUtils_1.streamToBufferPromise)(response);
                 }
                 catch (err) {
                     reject(err);
@@ -142,7 +142,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                     debug(responseJson);
                 }
                 try {
-                    const newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
+                    const newLsd = (0, serializable_1.TaJsonDeserialize)(responseJson, lsd_1.LSD);
                     if (IS_DEV) {
                         debug(newLsd);
                     }
@@ -163,6 +163,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                 request.put({
                     headers,
                     method: "PUT",
+                    timeout: 5000,
                     uri: renewURL,
                 })
                     .on("response", success)

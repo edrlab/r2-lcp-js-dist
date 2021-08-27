@@ -6,24 +6,24 @@ var ta_json_x_1 = require("ta-json-x");
 var Rights = (function () {
     function Rights() {
     }
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("print"),
-        tslib_1.__metadata("design:type", Number)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("print"),
+        (0, tslib_1.__metadata)("design:type", Number)
     ], Rights.prototype, "Print", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("copy"),
-        tslib_1.__metadata("design:type", Number)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("copy"),
+        (0, tslib_1.__metadata)("design:type", Number)
     ], Rights.prototype, "Copy", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("start"),
-        tslib_1.__metadata("design:type", Date)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("start"),
+        (0, tslib_1.__metadata)("design:type", Date)
     ], Rights.prototype, "Start", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("end"),
-        tslib_1.__metadata("design:type", Date)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("end"),
+        (0, tslib_1.__metadata)("design:type", Date)
     ], Rights.prototype, "End", void 0);
-    Rights = tslib_1.__decorate([
-        ta_json_x_1.JsonObject()
+    Rights = (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonObject)()
     ], Rights);
     return Rights;
 }());

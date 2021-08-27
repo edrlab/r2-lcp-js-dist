@@ -13,14 +13,14 @@ var URITemplate = require("urijs/src/URITemplate");
 var debug = debug_("r2:lcp#lsd/renew");
 var IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var lsd, obj;
-        return tslib_1.__generator(this, function (_a) {
+        return (0, tslib_1.__generator)(this, function (_a) {
             if (lsdJSON instanceof lsd_1.LSD) {
                 return [2, lsdRenew_(end, lsdJSON, deviceIDManager)];
             }
             try {
-                lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+                lsd = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
             }
             catch (err) {
                 debug(err);
@@ -28,16 +28,16 @@ function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
                 return [2, Promise.reject("Bad LSD JSON?")];
             }
             obj = lsdRenew_(end, lsd, deviceIDManager, httpHeaders);
-            return [2, serializable_1.TaJsonSerialize(obj)];
+            return [2, (0, serializable_1.TaJsonSerialize)(obj)];
         });
     });
 }
 exports.lsdRenew = lsdRenew;
 function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
         var licenseRenew, deviceID, err_1, deviceNAME, err_2, renewURL, urlTemplate, uri1, uri2;
         var _this = this;
-        return tslib_1.__generator(this, function (_a) {
+        return (0, tslib_1.__generator)(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if (!lsd) {
@@ -88,18 +88,18 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                     if (IS_DEV) {
                         debug("RENEW: " + renewURL);
                     }
-                    return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    return [2, new Promise(function (resolve, reject) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                             var failure, success, headers, needsStreamingResponse, response, err_3;
                             var _this = this;
-                            return tslib_1.__generator(this, function (_a) {
+                            return (0, tslib_1.__generator)(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
                                         failure = function (err) {
                                             reject(err);
                                         };
-                                        success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                        success = function (response) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                                             var failBuff, buffErr_1, failStr, failJson, responseData, err_4, responseStr, responseJson, newLsd;
-                                            return tslib_1.__generator(this, function (_a) {
+                                            return (0, tslib_1.__generator)(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
                                                         if (IS_DEV) {
@@ -112,7 +112,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                                                         _a.label = 1;
                                                     case 1:
                                                         _a.trys.push([1, 3, , 4]);
-                                                        return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                        return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                     case 2:
                                                         failBuff = _a.sent();
                                                         return [3, 4];
@@ -153,7 +153,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                                                         return [2];
                                                     case 5:
                                                         _a.trys.push([5, 7, , 8]);
-                                                        return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                        return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                     case 6:
                                                         responseData = _a.sent();
                                                         return [3, 8];
@@ -171,7 +171,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                                                             debug(responseJson);
                                                         }
                                                         try {
-                                                            newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
+                                                            newLsd = (0, serializable_1.TaJsonDeserialize)(responseJson, lsd_1.LSD);
                                                             if (IS_DEV) {
                                                                 debug(newLsd);
                                                             }
@@ -195,6 +195,7 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                                         request.put({
                                             headers: headers,
                                             method: "PUT",
+                                            timeout: 5000,
                                             uri: renewURL,
                                         })
                                             .on("response", success)

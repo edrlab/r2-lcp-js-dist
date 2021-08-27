@@ -17,7 +17,7 @@ async function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
     }
     let lsd;
     try {
-        lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+        lsd = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
     }
     catch (err) {
         debug(err);
@@ -25,7 +25,7 @@ async function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
         return Promise.reject("Bad LSD JSON?");
     }
     const obj = lsdRenew_(end, lsd, deviceIDManager, httpHeaders);
-    return serializable_1.TaJsonSerialize(obj);
+    return (0, serializable_1.TaJsonSerialize)(obj);
 }
 exports.lsdRenew = lsdRenew;
 async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
@@ -84,7 +84,7 @@ async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                 let failBuff;
                 try {
-                    failBuff = await BufferUtils_1.streamToBufferPromise(response);
+                    failBuff = await (0, BufferUtils_1.streamToBufferPromise)(response);
                 }
                 catch (buffErr) {
                     if (IS_DEV) {
@@ -123,7 +123,7 @@ async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
             }
             let responseData;
             try {
-                responseData = await BufferUtils_1.streamToBufferPromise(response);
+                responseData = await (0, BufferUtils_1.streamToBufferPromise)(response);
             }
             catch (err) {
                 reject(err);
@@ -138,7 +138,7 @@ async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                 debug(responseJson);
             }
             try {
-                const newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
+                const newLsd = (0, serializable_1.TaJsonDeserialize)(responseJson, lsd_1.LSD);
                 if (IS_DEV) {
                     debug(newLsd);
                 }
@@ -159,6 +159,7 @@ async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
             request.put({
                 headers,
                 method: "PUT",
+                timeout: 5000,
                 uri: renewURL,
             })
                 .on("response", success)

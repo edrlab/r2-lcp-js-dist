@@ -10,7 +10,7 @@ const BufferUtils_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/Buf
 const debug = debug_("r2:lcp#lsd/lcpl-update");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 function lsdLcpUpdate(lcp, httpHeaders) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         if (!lcp.LSD) {
             return Promise.reject("LCP LSD data is missing.");
         }
@@ -34,11 +34,11 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                     if (IS_DEV) {
                         debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.Href);
                     }
-                    return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                    return new Promise((resolve, reject) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                         const failure = (err) => {
                             reject(err);
                         };
-                        const success = (response) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                        const success = (response) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                             if (IS_DEV) {
                                 Object.keys(response.headers).forEach((header) => {
                                     debug(header + " => " + response.headers[header]);
@@ -63,7 +63,7 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                                 let failBuff;
                                 try {
-                                    failBuff = yield BufferUtils_1.streamToBufferPromise(response);
+                                    failBuff = yield (0, BufferUtils_1.streamToBufferPromise)(response);
                                 }
                                 catch (buffErr) {
                                     if (IS_DEV) {
@@ -89,7 +89,7 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                             }
                             let responseData;
                             try {
-                                responseData = yield BufferUtils_1.streamToBufferPromise(response);
+                                responseData = yield (0, BufferUtils_1.streamToBufferPromise)(response);
                             }
                             catch (err) {
                                 reject(err);
@@ -129,6 +129,7 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                             request.get({
                                 headers,
                                 method: "GET",
+                                timeout: 2000,
                                 uri: licenseLink.Href,
                             })
                                 .on("response", success)

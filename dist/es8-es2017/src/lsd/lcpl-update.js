@@ -61,7 +61,7 @@ async function lsdLcpUpdate(lcp, httpHeaders) {
                         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                             let failBuff;
                             try {
-                                failBuff = await BufferUtils_1.streamToBufferPromise(response);
+                                failBuff = await (0, BufferUtils_1.streamToBufferPromise)(response);
                             }
                             catch (buffErr) {
                                 if (IS_DEV) {
@@ -87,7 +87,7 @@ async function lsdLcpUpdate(lcp, httpHeaders) {
                         }
                         let responseData;
                         try {
-                            responseData = await BufferUtils_1.streamToBufferPromise(response);
+                            responseData = await (0, BufferUtils_1.streamToBufferPromise)(response);
                         }
                         catch (err) {
                             reject(err);
@@ -127,6 +127,7 @@ async function lsdLcpUpdate(lcp, httpHeaders) {
                         request.get({
                             headers,
                             method: "GET",
+                            timeout: 2000,
                             uri: licenseLink.Href,
                         })
                             .on("response", success)

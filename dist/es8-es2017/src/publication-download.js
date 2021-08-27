@@ -16,7 +16,7 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
     return new Promise(async (resolve, reject) => {
         const lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
         const lcplJson = global.JSON.parse(lcplStr);
-        const lcpl = serializable_1.TaJsonDeserialize(lcplJson, lcp_1.LCP);
+        const lcpl = (0, serializable_1.TaJsonDeserialize)(lcplJson, lcp_1.LCP);
         if (lcpl.Links) {
             const pubLink = lcpl.Links.find((link) => {
                 return link.Rel === "publication";
@@ -40,7 +40,7 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                     if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                         let failBuff;
                         try {
-                            failBuff = await BufferUtils_1.streamToBufferPromise(response);
+                            failBuff = await (0, BufferUtils_1.streamToBufferPromise)(response);
                         }
                         catch (buffErr) {
                             if (IS_DEV) {
@@ -91,7 +91,7 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                             resolve([destPathFINAL, pubLink.Href]);
                         };
                         const zipEntryPath = (isAudio || isAudioLcp) ? "license.lcpl" : "META-INF/license.lcpl";
-                        zipInjector_1.injectFileInZip(destPathTMP, destPathFINAL, filePath, zipEntryPath, zipError, doneCallback);
+                        (0, zipInjector_1.injectFileInZip)(destPathTMP, destPathFINAL, filePath, zipEntryPath, zipError, doneCallback);
                     });
                 };
                 const needsStreamingResponse = true;
@@ -99,6 +99,7 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                     request.get({
                         headers: {},
                         method: "GET",
+                        timeout: 5000,
                         uri: pubLink.Href,
                     })
                         .on("response", success)

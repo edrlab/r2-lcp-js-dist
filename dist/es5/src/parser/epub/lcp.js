@@ -82,9 +82,9 @@ var LCP = (function () {
         }
     };
     LCP.prototype.decrypt = function (encryptedContent, linkHref, needsInflating) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
             var _this = this;
-            return tslib_1.__generator(this, function (_a) {
+            return (0, tslib_1.__generator)(this, function (_a) {
                 if (!this.isNativeNodePlugin()) {
                     return [2, Promise.reject("direct decrypt buffer only for native plugin")];
                 }
@@ -114,10 +114,10 @@ var LCP = (function () {
         });
     };
     LCP.prototype.dummyCreateContext = function () {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
             var crlPem_1, sha256DummyPassphrase_1;
             var _this = this;
-            return tslib_1.__generator(this, function (_a) {
+            return (0, tslib_1.__generator)(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.init();
@@ -143,10 +143,10 @@ var LCP = (function () {
         });
     };
     LCP.prototype.tryUserKeys = function (lcpUserKeys) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
             var check, crlPem_2, _i, lcpUserKeys_1, lcpUserKey;
             var _this = this;
-            return tslib_1.__generator(this, function (_a) {
+            return (0, tslib_1.__generator)(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.init();
@@ -202,13 +202,13 @@ var LCP = (function () {
         });
     };
     LCP.prototype.getCRLPem = function () {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function () {
             var _this = this;
-            return tslib_1.__generator(this, function (_a) {
-                return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+            return (0, tslib_1.__generator)(this, function (_a) {
+                return [2, new Promise(function (resolve, reject) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                         var crlURL, failure, success, headers, needsStreamingResponse, response, err_1;
                         var _this = this;
-                        return tslib_1.__generator(this, function (_a) {
+                        return (0, tslib_1.__generator)(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
                                     crlURL = lcp_certificate_1.CRL_URL;
@@ -216,9 +216,9 @@ var LCP = (function () {
                                         debug(err);
                                         resolve(lcp_certificate_1.DUMMY_CRL);
                                     };
-                                    success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                    success = function (response) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                                         var failBuff, buffErr_1, failStr, failJson, responseData, err_2, lcplStr;
-                                        return tslib_1.__generator(this, function (_a) {
+                                        return (0, tslib_1.__generator)(this, function (_a) {
                                             switch (_a.label) {
                                                 case 0:
                                                     if (IS_DEV) {
@@ -231,7 +231,7 @@ var LCP = (function () {
                                                     _a.label = 1;
                                                 case 1:
                                                     _a.trys.push([1, 3, , 4]);
-                                                    return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                    return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                 case 2:
                                                     failBuff = _a.sent();
                                                     return [3, 4];
@@ -272,7 +272,7 @@ var LCP = (function () {
                                                     return [2];
                                                 case 5:
                                                     _a.trys.push([5, 7, , 8]);
-                                                    return [4, BufferUtils_1.streamToBufferPromise(response)];
+                                                    return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
                                                 case 6:
                                                     responseData = _a.sent();
                                                     return [3, 8];
@@ -297,6 +297,7 @@ var LCP = (function () {
                                     request.get({
                                         headers: headers,
                                         method: "GET",
+                                        timeout: 2000,
                                         uri: crlURL,
                                     })
                                         .on("response", success)
@@ -376,45 +377,45 @@ var LCP = (function () {
         this.ContentKey = decrypted2.slice(0, size2);
         return true;
     };
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("id"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("id"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LCP.prototype, "ID", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("provider"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("provider"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LCP.prototype, "Provider", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("issued"),
-        tslib_1.__metadata("design:type", Date)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("issued"),
+        (0, tslib_1.__metadata)("design:type", Date)
     ], LCP.prototype, "Issued", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("updated"),
-        tslib_1.__metadata("design:type", Date)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("updated"),
+        (0, tslib_1.__metadata)("design:type", Date)
     ], LCP.prototype, "Updated", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("encryption"),
-        tslib_1.__metadata("design:type", lcp_encryption_1.Encryption)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("encryption"),
+        (0, tslib_1.__metadata)("design:type", lcp_encryption_1.Encryption)
     ], LCP.prototype, "Encryption", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("rights"),
-        tslib_1.__metadata("design:type", lcp_rights_1.Rights)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("rights"),
+        (0, tslib_1.__metadata)("design:type", lcp_rights_1.Rights)
     ], LCP.prototype, "Rights", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("user"),
-        tslib_1.__metadata("design:type", lcp_user_1.User)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("user"),
+        (0, tslib_1.__metadata)("design:type", lcp_user_1.User)
     ], LCP.prototype, "User", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("signature"),
-        tslib_1.__metadata("design:type", lcp_signature_1.Signature)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("signature"),
+        (0, tslib_1.__metadata)("design:type", lcp_signature_1.Signature)
     ], LCP.prototype, "Signature", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("links"),
-        ta_json_x_1.JsonElementType(lcp_link_1.Link),
-        tslib_1.__metadata("design:type", Array)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("links"),
+        (0, ta_json_x_1.JsonElementType)(lcp_link_1.Link),
+        (0, tslib_1.__metadata)("design:type", Array)
     ], LCP.prototype, "Links", void 0);
-    LCP = tslib_1.__decorate([
-        ta_json_x_1.JsonObject()
+    LCP = (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonObject)()
     ], LCP);
     return LCP;
 }());

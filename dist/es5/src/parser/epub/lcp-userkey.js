@@ -6,20 +6,20 @@ var ta_json_x_1 = require("ta-json-x");
 var UserKey = (function () {
     function UserKey() {
     }
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("text_hint"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("text_hint"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], UserKey.prototype, "TextHint", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("algorithm"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("algorithm"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], UserKey.prototype, "Algorithm", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("key_check"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("key_check"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], UserKey.prototype, "KeyCheck", void 0);
-    UserKey = tslib_1.__decorate([
-        ta_json_x_1.JsonObject()
+    UserKey = (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonObject)()
     ], UserKey);
     return UserKey;
 }());

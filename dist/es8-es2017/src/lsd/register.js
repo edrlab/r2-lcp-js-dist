@@ -16,7 +16,7 @@ async function lsdRegister(lsdJSON, deviceIDManager, httpHeaders) {
     }
     let lsd;
     try {
-        lsd = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+        lsd = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
     }
     catch (err) {
         debug(err);
@@ -24,7 +24,7 @@ async function lsdRegister(lsdJSON, deviceIDManager, httpHeaders) {
         return Promise.reject("Bad LSD JSON?");
     }
     const obj = lsdRegister_(lsd, deviceIDManager, httpHeaders);
-    return serializable_1.TaJsonSerialize(obj);
+    return (0, serializable_1.TaJsonSerialize)(obj);
 }
 exports.lsdRegister = lsdRegister;
 async function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
@@ -103,7 +103,7 @@ async function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                 let failBuff;
                 try {
-                    failBuff = await BufferUtils_1.streamToBufferPromise(response);
+                    failBuff = await (0, BufferUtils_1.streamToBufferPromise)(response);
                 }
                 catch (buffErr) {
                     if (IS_DEV) {
@@ -142,7 +142,7 @@ async function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
             }
             let responseData;
             try {
-                responseData = await BufferUtils_1.streamToBufferPromise(response);
+                responseData = await (0, BufferUtils_1.streamToBufferPromise)(response);
             }
             catch (err) {
                 reject(err);
@@ -166,7 +166,7 @@ async function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                 }
             }
             try {
-                const newLsd = serializable_1.TaJsonDeserialize(responseJson, lsd_1.LSD);
+                const newLsd = (0, serializable_1.TaJsonDeserialize)(responseJson, lsd_1.LSD);
                 if (IS_DEV) {
                     debug(newLsd);
                 }
@@ -187,6 +187,7 @@ async function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
             request.post({
                 headers,
                 method: "POST",
+                timeout: 2000,
                 uri: registerURL,
             })
                 .on("response", success)

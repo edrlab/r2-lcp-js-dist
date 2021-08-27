@@ -19,38 +19,38 @@ var StatusEnum;
 var LSD = (function () {
     function LSD() {
     }
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("id"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("id"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LSD.prototype, "ID", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("status"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("status"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LSD.prototype, "Status", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("message"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("message"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LSD.prototype, "Message", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("updated"),
-        tslib_1.__metadata("design:type", lsd_updated_1.Updated)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("updated"),
+        (0, tslib_1.__metadata)("design:type", lsd_updated_1.Updated)
     ], LSD.prototype, "Updated", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("links"),
-        ta_json_x_1.JsonElementType(lcp_link_1.Link),
-        tslib_1.__metadata("design:type", Array)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("links"),
+        (0, ta_json_x_1.JsonElementType)(lcp_link_1.Link),
+        (0, tslib_1.__metadata)("design:type", Array)
     ], LSD.prototype, "Links", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("potential_rights"),
-        tslib_1.__metadata("design:type", lsd_potential_rights_1.PotentialRights)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("potential_rights"),
+        (0, tslib_1.__metadata)("design:type", lsd_potential_rights_1.PotentialRights)
     ], LSD.prototype, "PotentialRights", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("events"),
-        ta_json_x_1.JsonElementType(lsd_event_1.LsdEvent),
-        tslib_1.__metadata("design:type", Array)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("events"),
+        (0, ta_json_x_1.JsonElementType)(lsd_event_1.LsdEvent),
+        (0, tslib_1.__metadata)("design:type", Array)
     ], LSD.prototype, "Events", void 0);
-    LSD = tslib_1.__decorate([
-        ta_json_x_1.JsonObject()
+    LSD = (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonObject)()
     ], LSD);
     return LSD;
 }());

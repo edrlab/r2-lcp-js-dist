@@ -10,7 +10,7 @@ const RangeStream_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/Ran
 const debug = debug_("r2:lcp#transform/transformer-lcp");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 const AES_BLOCK_SIZE = 16;
-const readStream = (s, n) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+const readStream = (s, n) => (0, tslib_1.__awaiter)(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
         const onReadable = () => {
             const b = s.read(n);
@@ -45,7 +45,7 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
 }
 exports.supports = supports;
 function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const isCompressionNone = linkPropertiesEncrypted.Compression === "none";
         const isCompressionDeflate = linkPropertiesEncrypted.Compression === "deflate";
         let plainTextSize = -1;
@@ -57,7 +57,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
             }
             let fullEncryptedBuffer;
             try {
-                fullEncryptedBuffer = yield BufferUtils_1.streamToBufferPromise(stream.stream);
+                fullEncryptedBuffer = yield (0, BufferUtils_1.streamToBufferPromise)(stream.stream);
             }
             catch (err) {
                 debug(err);
@@ -84,7 +84,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                     `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
                     `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
             }
-            nativelyDecryptedStream = BufferUtils_1.bufferToStream(nativelyDecryptedBuffer);
+            nativelyDecryptedStream = (0, BufferUtils_1.bufferToStream)(nativelyDecryptedBuffer);
         }
         else {
             let cryptoInfo;
@@ -165,9 +165,9 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                 debug(`############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!`);
                 let fullDeflatedBuffer;
                 try {
-                    fullDeflatedBuffer = yield BufferUtils_1.streamToBufferPromise(destStream);
+                    fullDeflatedBuffer = yield (0, BufferUtils_1.streamToBufferPromise)(destStream);
                     linkPropertiesEncrypted.OriginalLength = fullDeflatedBuffer.length;
-                    destStream = BufferUtils_1.bufferToStream(fullDeflatedBuffer);
+                    destStream = (0, BufferUtils_1.bufferToStream)(fullDeflatedBuffer);
                 }
                 catch (err) {
                     debug(err);
@@ -192,7 +192,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
         }
         const sal = {
             length: l,
-            reset: () => tslib_1.__awaiter(this, void 0, void 0, function* () {
+            reset: () => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                 let resetedStream;
                 try {
                     resetedStream = yield stream.reset();
@@ -210,8 +210,8 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
 }
 exports.transformStream = transformStream;
 function getDecryptedSizeStream(lcp, stream) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             const TWO_AES_BLOCK_SIZE = 2 * AES_BLOCK_SIZE;
             if (stream.length < TWO_AES_BLOCK_SIZE) {
                 reject("crypto err");

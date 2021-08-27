@@ -14,24 +14,24 @@ var TypeEnum;
 var LsdEvent = (function () {
     function LsdEvent() {
     }
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("type"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("type"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LsdEvent.prototype, "Type", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("name"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("name"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LsdEvent.prototype, "Name", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("id"),
-        tslib_1.__metadata("design:type", String)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("id"),
+        (0, tslib_1.__metadata)("design:type", String)
     ], LsdEvent.prototype, "ID", void 0);
-    tslib_1.__decorate([
-        ta_json_x_1.JsonProperty("timestamp"),
-        tslib_1.__metadata("design:type", Date)
+    (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonProperty)("timestamp"),
+        (0, tslib_1.__metadata)("design:type", Date)
     ], LsdEvent.prototype, "TimeStamp", void 0);
-    LsdEvent = tslib_1.__decorate([
-        ta_json_x_1.JsonObject()
+    LsdEvent = (0, tslib_1.__decorate)([
+        (0, ta_json_x_1.JsonObject)()
     ], LsdEvent);
     return LsdEvent;
 }());

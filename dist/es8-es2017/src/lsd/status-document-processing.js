@@ -45,7 +45,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
             let failBuff;
             try {
-                failBuff = await BufferUtils_1.streamToBufferPromise(response);
+                failBuff = await (0, BufferUtils_1.streamToBufferPromise)(response);
             }
             catch (buffErr) {
                 if (IS_DEV) {
@@ -84,7 +84,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
         let responseData;
         try {
-            responseData = await BufferUtils_1.streamToBufferPromise(response);
+            responseData = await (0, BufferUtils_1.streamToBufferPromise)(response);
         }
         catch (err) {
             debug(err);
@@ -106,7 +106,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
             debug(lsdJSON);
         }
         try {
-            lcp.LSD = serializable_1.TaJsonDeserialize(lsdJSON, lsd_1.LSD);
+            lcp.LSD = (0, serializable_1.TaJsonDeserialize)(lsdJSON, lsd_1.LSD);
             if (IS_DEV) {
                 debug(lcp.LSD);
             }
@@ -120,7 +120,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
         let licenseUpdateResponseJson;
         try {
-            licenseUpdateResponseJson = await lcpl_update_1.lsdLcpUpdate(lcp, httpHeaders);
+            licenseUpdateResponseJson = await (0, lcpl_update_1.lsdLcpUpdate)(lcp, httpHeaders);
         }
         catch (err) {
             debug(err);
@@ -143,7 +143,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         }
         let registerResponse;
         try {
-            registerResponse = await register_1.lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders);
+            registerResponse = await (0, register_1.lsdRegister_)(lcp.LSD, deviceIDManager, httpHeaders);
         }
         catch (err) {
             debug(err);
@@ -168,6 +168,7 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
         request.get({
             headers,
             method: "GET",
+            timeout: 2000,
             uri: linkStatus.Href,
         })
             .on("response", success)
