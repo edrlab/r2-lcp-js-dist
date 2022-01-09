@@ -77,9 +77,7 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
             linkPropertiesEncrypted.OriginalLength &&
             isCompressionNone &&
             linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
-            debug(`############### ` +
-                `LCP transformStream() LENGTH NOT MATCH ` +
-                `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
+            debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
                 `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
         }
         nativelyDecryptedStream = (0, BufferUtils_1.bufferToStream)(nativelyDecryptedBuffer);
@@ -113,9 +111,7 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
             if (linkPropertiesEncrypted.OriginalLength &&
                 isCompressionNone &&
                 linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
-                debug(`############### ` +
-                    `LCP transformStream() LENGTH NOT MATCH ` +
-                    `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
+                debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
                     `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
             }
         }
@@ -160,7 +156,7 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
         destStream.pipe(inflateStream);
         destStream = inflateStream;
         if (!linkPropertiesEncrypted.OriginalLength) {
-            debug(`############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!`);
+            debug("############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!");
             let fullDeflatedBuffer;
             try {
                 fullDeflatedBuffer = await (0, BufferUtils_1.streamToBufferPromise)(destStream);

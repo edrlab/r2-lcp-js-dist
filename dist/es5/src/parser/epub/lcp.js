@@ -193,7 +193,7 @@ var LCP = (function () {
                                     return [2, Promise.resolve()];
                                 }
                             }
-                            catch (err) {
+                            catch (_err) {
                             }
                         }
                         return [2, Promise.reject(1)];

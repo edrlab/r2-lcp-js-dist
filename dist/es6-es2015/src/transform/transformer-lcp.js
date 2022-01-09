@@ -79,9 +79,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                 linkPropertiesEncrypted.OriginalLength &&
                 isCompressionNone &&
                 linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
-                debug(`############### ` +
-                    `LCP transformStream() LENGTH NOT MATCH ` +
-                    `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
+                debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
                     `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
             }
             nativelyDecryptedStream = (0, BufferUtils_1.bufferToStream)(nativelyDecryptedBuffer);
@@ -115,9 +113,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                 if (linkPropertiesEncrypted.OriginalLength &&
                     isCompressionNone &&
                     linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
-                    debug(`############### ` +
-                        `LCP transformStream() LENGTH NOT MATCH ` +
-                        `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
+                    debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
                         `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
                 }
             }
@@ -162,7 +158,7 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
             destStream.pipe(inflateStream);
             destStream = inflateStream;
             if (!linkPropertiesEncrypted.OriginalLength) {
-                debug(`############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!`);
+                debug("############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!");
                 let fullDeflatedBuffer;
                 try {
                     fullDeflatedBuffer = yield (0, BufferUtils_1.streamToBufferPromise)(destStream);

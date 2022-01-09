@@ -174,7 +174,7 @@ let LCP = class LCP {
                         return Promise.resolve();
                     }
                 }
-                catch (err) {
+                catch (_err) {
                 }
             }
             return Promise.reject(1);

@@ -95,10 +95,8 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                         linkPropertiesEncrypted.OriginalLength &&
                         isCompressionNone &&
                         linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
-                        debug("############### " +
-                            "LCP transformStream() LENGTH NOT MATCH " +
-                            "linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
-                            (linkPropertiesEncrypted.OriginalLength + " !== " + plainTextSize));
+                        debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
+                            "".concat(linkPropertiesEncrypted.OriginalLength, " !== ").concat(plainTextSize));
                     }
                     nativelyDecryptedStream = (0, BufferUtils_1.bufferToStream)(nativelyDecryptedBuffer);
                     return [3, 18];
@@ -139,10 +137,8 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
                     if (linkPropertiesEncrypted.OriginalLength &&
                         isCompressionNone &&
                         linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
-                        debug("############### " +
-                            "LCP transformStream() LENGTH NOT MATCH " +
-                            "linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
-                            (linkPropertiesEncrypted.OriginalLength + " !== " + plainTextSize));
+                        debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
+                            "".concat(linkPropertiesEncrypted.OriginalLength, " !== ").concat(plainTextSize));
                     }
                     _a.label = 18;
                 case 18:
