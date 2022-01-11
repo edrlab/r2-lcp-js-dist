@@ -190,7 +190,15 @@ async function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                 timeout: 2000,
                 uri: registerURL,
             })
-                .on("response", success)
+                .on("response", async (res) => {
+                try {
+                    await success(res);
+                }
+                catch (successError) {
+                    failure(successError);
+                    return;
+                }
+            })
                 .on("error", failure);
         }
         else {

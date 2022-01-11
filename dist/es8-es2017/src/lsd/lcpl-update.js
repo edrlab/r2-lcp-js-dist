@@ -130,7 +130,15 @@ async function lsdLcpUpdate(lcp, httpHeaders) {
                             timeout: 2000,
                             uri: licenseLink.Href,
                         })
-                            .on("response", success)
+                            .on("response", async (res) => {
+                            try {
+                                await success(res);
+                            }
+                            catch (successError) {
+                                failure(successError);
+                                return;
+                            }
+                        })
                             .on("error", failure);
                     }
                     else {

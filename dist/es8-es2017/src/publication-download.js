@@ -102,7 +102,15 @@ async function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                         timeout: 5000,
                         uri: pubLink.Href,
                     })
-                        .on("response", success)
+                        .on("response", async (res) => {
+                        try {
+                            await success(res);
+                        }
+                        catch (successError) {
+                            failure(successError);
+                            return;
+                        }
+                    })
                         .on("error", failure);
                 }
                 else {

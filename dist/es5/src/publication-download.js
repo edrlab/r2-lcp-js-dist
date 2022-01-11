@@ -18,7 +18,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
         var _this = this;
         return (0, tslib_1.__generator)(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
-                    var lcplStr, lcplJson, lcpl, pubLink_1, isAudio_1, isAudioLcp_1, ext, destPathTMP_1, destPathFINAL_1, failure_1, success, needsStreamingResponse, response, err_1;
+                    var lcplStr, lcplJson, lcpl, pubLink_1, isAudio_1, isAudioLcp_1, ext, destPathTMP_1, destPathFINAL_1, failure_1, success_1, needsStreamingResponse, response, err_1;
                     var _this = this;
                     return (0, tslib_1.__generator)(this, function (_a) {
                         switch (_a.label) {
@@ -40,7 +40,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                     debug(err);
                                     reject(pubLink_1.Href + " (" + err + ")");
                                 };
-                                success = function (response) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
+                                success_1 = function (response) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
                                     var failBuff, buffErr_1, failStr, failJson, destStreamTMP;
                                     return (0, tslib_1.__generator)(this, function (_a) {
                                         switch (_a.label) {
@@ -123,7 +123,24 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                     timeout: 5000,
                                     uri: pubLink_1.Href,
                                 })
-                                    .on("response", success)
+                                    .on("response", function (res) { return (0, tslib_1.__awaiter)(_this, void 0, void 0, function () {
+                                    var successError_1;
+                                    return (0, tslib_1.__generator)(this, function (_a) {
+                                        switch (_a.label) {
+                                            case 0:
+                                                _a.trys.push([0, 2, , 3]);
+                                                return [4, success_1(res)];
+                                            case 1:
+                                                _a.sent();
+                                                return [3, 3];
+                                            case 2:
+                                                successError_1 = _a.sent();
+                                                failure_1(successError_1);
+                                                return [2];
+                                            case 3: return [2];
+                                        }
+                                    });
+                                }); })
                                     .on("error", failure_1);
                                 return [3, 7];
                             case 1:
@@ -144,7 +161,7 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                 err_1 = _a.sent();
                                 failure_1(err_1);
                                 return [2];
-                            case 5: return [4, success(response)];
+                            case 5: return [4, success_1(response)];
                             case 6:
                                 _a.sent();
                                 _a.label = 7;

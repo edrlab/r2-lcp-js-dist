@@ -162,7 +162,15 @@ async function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                 timeout: 5000,
                 uri: renewURL,
             })
-                .on("response", success)
+                .on("response", async (res) => {
+                try {
+                    await success(res);
+                }
+                catch (successError) {
+                    failure(successError);
+                    return;
+                }
+            })
                 .on("error", failure);
         }
         else {

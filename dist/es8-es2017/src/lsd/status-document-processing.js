@@ -171,7 +171,15 @@ async function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocu
             timeout: 2000,
             uri: linkStatus.Href,
         })
-            .on("response", success)
+            .on("response", async (res) => {
+            try {
+                await success(res);
+            }
+            catch (successError) {
+                failure(successError);
+                return;
+            }
+        })
             .on("error", failure);
     }
     else {

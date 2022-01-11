@@ -166,7 +166,15 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                     timeout: 5000,
                     uri: renewURL,
                 })
-                    .on("response", success)
+                    .on("response", (res) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+                    try {
+                        yield success(res);
+                    }
+                    catch (successError) {
+                        failure(successError);
+                        return;
+                    }
+                }))
                     .on("error", failure);
             }
             else {

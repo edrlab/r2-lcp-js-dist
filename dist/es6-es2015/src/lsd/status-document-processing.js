@@ -173,7 +173,15 @@ function launchStatusDocumentProcessing(lcp, deviceIDManager, onStatusDocumentPr
                 timeout: 2000,
                 uri: linkStatus.Href,
             })
-                .on("response", success)
+                .on("response", (res) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+                try {
+                    yield success(res);
+                }
+                catch (successError) {
+                    failure(successError);
+                    return;
+                }
+            }))
                 .on("error", failure);
         }
         else {

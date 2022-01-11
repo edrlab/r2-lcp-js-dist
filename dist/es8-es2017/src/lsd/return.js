@@ -156,7 +156,15 @@ async function lsdReturn_(lsd, deviceIDManager, httpHeaders) {
                 timeout: 5000,
                 uri: returnURL,
             })
-                .on("response", success)
+                .on("response", async (res) => {
+                try {
+                    await success(res);
+                }
+                catch (successError) {
+                    failure(successError);
+                    return;
+                }
+            })
                 .on("error", failure);
         }
         else {

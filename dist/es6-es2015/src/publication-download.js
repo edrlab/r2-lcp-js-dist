@@ -104,7 +104,15 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                             timeout: 5000,
                             uri: pubLink.Href,
                         })
-                            .on("response", success)
+                            .on("response", (res) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+                            try {
+                                yield success(res);
+                            }
+                            catch (successError) {
+                                failure(successError);
+                                return;
+                            }
+                        }))
                             .on("error", failure);
                     }
                     else {
