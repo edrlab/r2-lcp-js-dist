@@ -15,8 +15,8 @@ var StatusEnum;
     StatusEnum["Returned"] = "returned";
     StatusEnum["Cancelled"] = "cancelled";
     StatusEnum["Expired"] = "expired";
-})(StatusEnum = exports.StatusEnum || (exports.StatusEnum = {}));
-let LSD = class LSD {
+})(StatusEnum || (exports.StatusEnum = StatusEnum = {}));
+let LSD = exports.LSD = class LSD {
 };
 tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("id"),
@@ -48,8 +48,7 @@ tslib_1.__decorate([
     (0, ta_json_x_1.JsonElementType)(lsd_event_1.LsdEvent),
     tslib_1.__metadata("design:type", Array)
 ], LSD.prototype, "Events", void 0);
-LSD = tslib_1.__decorate([
+exports.LSD = LSD = tslib_1.__decorate([
     (0, ta_json_x_1.JsonObject)()
 ], LSD);
-exports.LSD = LSD;
 //# sourceMappingURL=lsd.js.map

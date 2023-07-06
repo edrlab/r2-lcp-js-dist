@@ -33,7 +33,7 @@ function setLcpNativePluginPath(filepath) {
     return exists;
 }
 exports.setLcpNativePluginPath = setLcpNativePluginPath;
-var LCP = (function () {
+var LCP = exports.LCP = (function () {
     function LCP() {
         this._usesNativeNodePlugin = undefined;
     }
@@ -436,5 +436,4 @@ var LCP = (function () {
     ], LCP);
     return LCP;
 }());
-exports.LCP = LCP;
 //# sourceMappingURL=lcp.js.map

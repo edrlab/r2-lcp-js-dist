@@ -33,7 +33,7 @@ function setLcpNativePluginPath(filepath) {
     return exists;
 }
 exports.setLcpNativePluginPath = setLcpNativePluginPath;
-let LCP = class LCP {
+let LCP = exports.LCP = class LCP {
     constructor() {
         this._usesNativeNodePlugin = undefined;
     }
@@ -371,8 +371,7 @@ tslib_1.__decorate([
     (0, ta_json_x_1.JsonElementType)(lcp_link_1.Link),
     tslib_1.__metadata("design:type", Array)
 ], LCP.prototype, "Links", void 0);
-LCP = tslib_1.__decorate([
+exports.LCP = LCP = tslib_1.__decorate([
     (0, ta_json_x_1.JsonObject)()
 ], LCP);
-exports.LCP = LCP;
 //# sourceMappingURL=lcp.js.map

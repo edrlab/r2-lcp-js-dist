@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentKey = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var ContentKey = (function () {
+var ContentKey = exports.ContentKey = (function () {
     function ContentKey() {
     }
     tslib_1.__decorate([
@@ -19,5 +19,4 @@ var ContentKey = (function () {
     ], ContentKey);
     return ContentKey;
 }());
-exports.ContentKey = ContentKey;
 //# sourceMappingURL=lcp-contentkey.js.map

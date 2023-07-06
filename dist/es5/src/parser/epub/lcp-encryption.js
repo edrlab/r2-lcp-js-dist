@@ -5,7 +5,7 @@ var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
 var lcp_contentkey_1 = require("./lcp-contentkey");
 var lcp_userkey_1 = require("./lcp-userkey");
-var Encryption = (function () {
+var Encryption = exports.Encryption = (function () {
     function Encryption() {
     }
     tslib_1.__decorate([
@@ -25,5 +25,4 @@ var Encryption = (function () {
     ], Encryption);
     return Encryption;
 }());
-exports.Encryption = Encryption;
 //# sourceMappingURL=lcp-encryption.js.map

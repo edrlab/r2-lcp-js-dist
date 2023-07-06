@@ -10,8 +10,8 @@ var TypeEnum;
     TypeEnum["Return"] = "return";
     TypeEnum["Revoke"] = "revoke";
     TypeEnum["Cancel"] = "cancel";
-})(TypeEnum = exports.TypeEnum || (exports.TypeEnum = {}));
-var LsdEvent = (function () {
+})(TypeEnum || (exports.TypeEnum = TypeEnum = {}));
+var LsdEvent = exports.LsdEvent = (function () {
     function LsdEvent() {
     }
     tslib_1.__decorate([
@@ -35,5 +35,4 @@ var LsdEvent = (function () {
     ], LsdEvent);
     return LsdEvent;
 }());
-exports.LsdEvent = LsdEvent;
 //# sourceMappingURL=lsd-event.js.map

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Encrypted = void 0;
 const tslib_1 = require("tslib");
 const ta_json_x_1 = require("ta-json-x");
-let Encrypted = class Encrypted {
+let Encrypted = exports.Encrypted = class Encrypted {
     constructor() {
         this.DecryptedLengthBeforeInflate = -1;
         this.CypherBlockPadding = -1;
@@ -42,8 +42,7 @@ tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("original-length"),
     tslib_1.__metadata("design:type", Object)
 ], Encrypted.prototype, "OriginalLength1", void 0);
-Encrypted = tslib_1.__decorate([
+exports.Encrypted = Encrypted = tslib_1.__decorate([
     (0, ta_json_x_1.JsonObject)()
 ], Encrypted);
-exports.Encrypted = Encrypted;
 //# sourceMappingURL=metadata-encrypted.js.map

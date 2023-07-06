@@ -10,8 +10,8 @@ var TypeEnum;
     TypeEnum["Return"] = "return";
     TypeEnum["Revoke"] = "revoke";
     TypeEnum["Cancel"] = "cancel";
-})(TypeEnum = exports.TypeEnum || (exports.TypeEnum = {}));
-let LsdEvent = class LsdEvent {
+})(TypeEnum || (exports.TypeEnum = TypeEnum = {}));
+let LsdEvent = exports.LsdEvent = class LsdEvent {
 };
 tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("type"),
@@ -29,8 +29,7 @@ tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("timestamp"),
     tslib_1.__metadata("design:type", Date)
 ], LsdEvent.prototype, "TimeStamp", void 0);
-LsdEvent = tslib_1.__decorate([
+exports.LsdEvent = LsdEvent = tslib_1.__decorate([
     (0, ta_json_x_1.JsonObject)()
 ], LsdEvent);
-exports.LsdEvent = LsdEvent;
 //# sourceMappingURL=lsd-event.js.map
