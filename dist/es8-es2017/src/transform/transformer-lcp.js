@@ -31,12 +31,14 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
     }
     const check = (linkPropertiesEncrypted.Scheme === "http://readium.org/2014/01/lcp"
         && (linkPropertiesEncrypted.Profile === "http://readium.org/lcp/basic-profile" ||
-            linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0")
+            linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0" ||
+            (linkPropertiesEncrypted.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(linkPropertiesEncrypted.Profile)))
         && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc")
         ||
             (linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc" &&
                 (lcp.Encryption.Profile === "http://readium.org/lcp/basic-profile" ||
-                    lcp.Encryption.Profile === "http://readium.org/lcp/profile-1.0"));
+                    lcp.Encryption.Profile === "http://readium.org/lcp/profile-1.0") ||
+                (lcp.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(lcp.Encryption.Profile)));
     if (!check) {
         return false;
     }

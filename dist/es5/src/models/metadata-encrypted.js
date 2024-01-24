@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Encrypted = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var Encrypted = exports.Encrypted = (function () {
+var Encrypted = (function () {
     function Encrypted() {
         this.DecryptedLengthBeforeInflate = -1;
         this.CypherBlockPadding = -1;
@@ -50,4 +50,5 @@ var Encrypted = exports.Encrypted = (function () {
     ], Encrypted);
     return Encrypted;
 }());
+exports.Encrypted = Encrypted;
 //# sourceMappingURL=metadata-encrypted.js.map

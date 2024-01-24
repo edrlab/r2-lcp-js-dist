@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Rights = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var Rights = exports.Rights = (function () {
+var Rights = (function () {
     function Rights() {
     }
     tslib_1.__decorate([
@@ -27,4 +27,5 @@ var Rights = exports.Rights = (function () {
     ], Rights);
     return Rights;
 }());
+exports.Rights = Rights;
 //# sourceMappingURL=lcp-rights.js.map

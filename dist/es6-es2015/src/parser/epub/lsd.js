@@ -16,8 +16,9 @@ var StatusEnum;
     StatusEnum["Cancelled"] = "cancelled";
     StatusEnum["Expired"] = "expired";
 })(StatusEnum || (exports.StatusEnum = StatusEnum = {}));
-let LSD = exports.LSD = class LSD {
+let LSD = class LSD {
 };
+exports.LSD = LSD;
 tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("id"),
     tslib_1.__metadata("design:type", String)

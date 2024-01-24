@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PotentialRights = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var PotentialRights = exports.PotentialRights = (function () {
+var PotentialRights = (function () {
     function PotentialRights() {
     }
     tslib_1.__decorate([
@@ -15,4 +15,5 @@ var PotentialRights = exports.PotentialRights = (function () {
     ], PotentialRights);
     return PotentialRights;
 }());
+exports.PotentialRights = PotentialRights;
 //# sourceMappingURL=lsd-potential-rights.js.map

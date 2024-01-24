@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Link = void 0;
 const tslib_1 = require("tslib");
 const ta_json_x_1 = require("ta-json-x");
-let Link = exports.Link = class Link {
+let Link = class Link {
     HasRel(rel) {
         return this.Rel === rel;
     }
@@ -11,6 +11,7 @@ let Link = exports.Link = class Link {
         this.Rel = rel;
     }
 };
+exports.Link = Link;
 tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("length"),
     tslib_1.__metadata("design:type", Number)

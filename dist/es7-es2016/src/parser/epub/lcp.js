@@ -33,7 +33,7 @@ function setLcpNativePluginPath(filepath) {
     return exists;
 }
 exports.setLcpNativePluginPath = setLcpNativePluginPath;
-let LCP = exports.LCP = class LCP {
+let LCP = class LCP {
     constructor() {
         this._usesNativeNodePlugin = undefined;
     }
@@ -135,7 +135,8 @@ let LCP = exports.LCP = class LCP {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             this.init();
             const check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
-                || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0")
+                || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0" ||
+                (this.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(this.Encryption.Profile)))
                 && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
                 && this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
             if (!check) {
@@ -334,6 +335,7 @@ let LCP = exports.LCP = class LCP {
         return true;
     }
 };
+exports.LCP = LCP;
 tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("id"),
     tslib_1.__metadata("design:type", String)

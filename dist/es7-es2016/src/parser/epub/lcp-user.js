@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const tslib_1 = require("tslib");
 const ta_json_x_1 = require("ta-json-x");
-let User = exports.User = class User {
+let User = class User {
 };
+exports.User = User;
 tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("id"),
     tslib_1.__metadata("design:type", String)

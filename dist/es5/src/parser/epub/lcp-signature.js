@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Signature = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var Signature = exports.Signature = (function () {
+var Signature = (function () {
     function Signature() {
     }
     tslib_1.__decorate([
@@ -23,4 +23,5 @@ var Signature = exports.Signature = (function () {
     ], Signature);
     return Signature;
 }());
+exports.Signature = Signature;
 //# sourceMappingURL=lcp-signature.js.map

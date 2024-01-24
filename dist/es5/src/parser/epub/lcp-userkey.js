@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserKey = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var UserKey = exports.UserKey = (function () {
+var UserKey = (function () {
     function UserKey() {
     }
     tslib_1.__decorate([
@@ -23,4 +23,5 @@ var UserKey = exports.UserKey = (function () {
     ], UserKey);
     return UserKey;
 }());
+exports.UserKey = UserKey;
 //# sourceMappingURL=lcp-userkey.js.map

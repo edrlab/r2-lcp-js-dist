@@ -11,8 +11,9 @@ var TypeEnum;
     TypeEnum["Revoke"] = "revoke";
     TypeEnum["Cancel"] = "cancel";
 })(TypeEnum || (exports.TypeEnum = TypeEnum = {}));
-let LsdEvent = exports.LsdEvent = class LsdEvent {
+let LsdEvent = class LsdEvent {
 };
+exports.LsdEvent = LsdEvent;
 tslib_1.__decorate([
     (0, ta_json_x_1.JsonProperty)("type"),
     tslib_1.__metadata("design:type", String)

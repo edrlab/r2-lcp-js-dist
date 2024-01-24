@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Link = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var Link = exports.Link = (function () {
+var Link = (function () {
     function Link() {
     }
     Link.prototype.HasRel = function (rel) {
@@ -49,4 +49,5 @@ var Link = exports.Link = (function () {
     ], Link);
     return Link;
 }());
+exports.Link = Link;
 //# sourceMappingURL=lcp-link.js.map

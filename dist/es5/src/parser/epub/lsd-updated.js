@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Updated = void 0;
 var tslib_1 = require("tslib");
 var ta_json_x_1 = require("ta-json-x");
-var Updated = exports.Updated = (function () {
+var Updated = (function () {
     function Updated() {
     }
     tslib_1.__decorate([
@@ -19,4 +19,5 @@ var Updated = exports.Updated = (function () {
     ], Updated);
     return Updated;
 }());
+exports.Updated = Updated;
 //# sourceMappingURL=lsd-updated.js.map

@@ -33,7 +33,7 @@ function setLcpNativePluginPath(filepath) {
     return exists;
 }
 exports.setLcpNativePluginPath = setLcpNativePluginPath;
-var LCP = exports.LCP = (function () {
+var LCP = (function () {
     function LCP() {
         this._usesNativeNodePlugin = undefined;
     }
@@ -151,7 +151,8 @@ var LCP = exports.LCP = (function () {
                     case 0:
                         this.init();
                         check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
-                            || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0")
+                            || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0" ||
+                            (this.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(this.Encryption.Profile)))
                             && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
                             && this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
                         if (!check) {
@@ -436,4 +437,5 @@ var LCP = exports.LCP = (function () {
     ], LCP);
     return LCP;
 }());
+exports.LCP = LCP;
 //# sourceMappingURL=lcp.js.map

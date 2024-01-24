@@ -16,7 +16,7 @@ var StatusEnum;
     StatusEnum["Cancelled"] = "cancelled";
     StatusEnum["Expired"] = "expired";
 })(StatusEnum || (exports.StatusEnum = StatusEnum = {}));
-var LSD = exports.LSD = (function () {
+var LSD = (function () {
     function LSD() {
     }
     tslib_1.__decorate([
@@ -54,4 +54,5 @@ var LSD = exports.LSD = (function () {
     ], LSD);
     return LSD;
 }());
+exports.LSD = LSD;
 //# sourceMappingURL=lsd.js.map
