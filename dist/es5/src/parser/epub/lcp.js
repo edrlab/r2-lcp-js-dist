@@ -151,10 +151,14 @@ var LCP = (function () {
                     case 0:
                         this.init();
                         check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
-                            || this.Encryption.Profile === "http://readium.org/lcp/profile-1.0" ||
-                            (this.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(this.Encryption.Profile)))
-                            && this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
-                            && this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+                            ||
+                                this.Encryption.Profile === "http://readium.org/lcp/profile-1.0"
+                            ||
+                                (this.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(this.Encryption.Profile)))
+                            &&
+                                this.Encryption.UserKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#sha256"
+                            &&
+                                this.Encryption.ContentKey.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
                         if (!check) {
                             debug("Incorrect LCP fields.");
                             debug(this.Encryption.Profile);
