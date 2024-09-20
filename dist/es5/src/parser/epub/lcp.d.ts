@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { Encryption } from "./lcp-encryption";
 import { Link } from "./lcp-link";
 import { Rights } from "./lcp-rights";

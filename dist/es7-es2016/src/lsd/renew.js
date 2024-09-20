@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lsdRenew_ = exports.lsdRenew = void 0;
+exports.lsdRenew = lsdRenew;
+exports.lsdRenew_ = lsdRenew_;
 const tslib_1 = require("tslib");
 const debug_ = require("debug");
 const request = require("request");
-const requestPromise = require("request-promise-native");
 const BufferUtils_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/BufferUtils");
 const lsd_1 = require("../parser/epub/lsd");
 const serializable_1 = require("../serializable");
@@ -30,7 +30,6 @@ function lsdRenew(end, lsdJSON, deviceIDManager, httpHeaders) {
         return (0, serializable_1.TaJsonSerialize)(obj);
     });
 }
-exports.lsdRenew = lsdRenew;
 function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         if (!lsd) {
@@ -158,43 +157,23 @@ function lsdRenew_(end, lsd, deviceIDManager, httpHeaders) {
                 "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
                 "User-Agent": "Readium2-LCP",
             }, httpHeaders ? httpHeaders : {});
-            const needsStreamingResponse = true;
-            if (needsStreamingResponse) {
-                request.put({
-                    headers,
-                    method: "PUT",
-                    timeout: 5000,
-                    uri: renewURL,
-                })
-                    .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
-                    try {
-                        yield success(res);
-                    }
-                    catch (successError) {
-                        failure(successError);
-                        return;
-                    }
-                }))
-                    .on("error", failure);
-            }
-            else {
-                let response;
+            request.put({
+                headers,
+                method: "PUT",
+                timeout: 5000,
+                uri: renewURL,
+            })
+                .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                 try {
-                    response = yield requestPromise({
-                        headers,
-                        method: "PUT",
-                        resolveWithFullResponse: true,
-                        uri: renewURL,
-                    });
+                    yield success(res);
                 }
-                catch (err) {
-                    failure(err);
+                catch (successError) {
+                    failure(successError);
                     return;
                 }
-                yield success(response);
-            }
+            }))
+                .on("error", failure);
         }));
     });
 }
-exports.lsdRenew_ = lsdRenew_;
 //# sourceMappingURL=renew.js.map

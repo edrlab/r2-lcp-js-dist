@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDecryptedSizeStream = exports.transformStream = exports.supports = void 0;
+exports.supports = supports;
+exports.transformStream = transformStream;
+exports.getDecryptedSizeStream = getDecryptedSizeStream;
 const crypto = require("crypto");
 const debug_ = require("debug");
 const zlib = require("zlib");
@@ -52,7 +54,6 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
     }
     return true;
 }
-exports.supports = supports;
 async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd) {
     const isCompressionNone = linkPropertiesEncrypted.Compression === "none";
     const isCompressionDeflate = linkPropertiesEncrypted.Compression === "deflate";
@@ -211,7 +212,6 @@ async function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, i
     };
     return Promise.resolve(sal);
 }
-exports.transformStream = transformStream;
 async function getDecryptedSizeStream(lcp, stream) {
     return new Promise(async (resolve, reject) => {
         const TWO_AES_BLOCK_SIZE = 2 * AES_BLOCK_SIZE;
@@ -274,5 +274,4 @@ async function getDecryptedSizeStream(lcp, stream) {
         }
     });
 }
-exports.getDecryptedSizeStream = getDecryptedSizeStream;
 //# sourceMappingURL=transformer-lcp.js.map

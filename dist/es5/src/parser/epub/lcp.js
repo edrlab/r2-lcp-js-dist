@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LCP = exports.setLcpNativePluginPath = void 0;
+exports.LCP = void 0;
+exports.setLcpNativePluginPath = setLcpNativePluginPath;
 var tslib_1 = require("tslib");
 var bind = require("bindings");
 var crypto = require("crypto");
@@ -8,7 +9,6 @@ var debug_ = require("debug");
 var fs = require("fs");
 var path = require("path");
 var request = require("request");
-var requestPromise = require("request-promise-native");
 var ta_json_x_1 = require("ta-json-x");
 var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var lcp_certificate_1 = require("./lcp-certificate");
@@ -32,7 +32,6 @@ function setLcpNativePluginPath(filepath) {
     }
     return exists;
 }
-exports.setLcpNativePluginPath = setLcpNativePluginPath;
 var LCP = (function () {
     function LCP() {
         this._usesNativeNodePlugin = undefined;
@@ -211,144 +210,116 @@ var LCP = (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                        var crlURL, failure, success, headers, needsStreamingResponse, response, err_1;
+                        var crlURL, failure, success, headers;
                         var _this = this;
                         return tslib_1.__generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    crlURL = lcp_certificate_1.CRL_URL;
-                                    failure = function (err) {
-                                        debug(err);
-                                        resolve(lcp_certificate_1.DUMMY_CRL);
-                                    };
-                                    success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                        var failBuff, buffErr_1, failStr, failJson, responseData, err_2, lcplStr;
-                                        return tslib_1.__generator(this, function (_a) {
-                                            switch (_a.label) {
-                                                case 0:
-                                                    if (IS_DEV) {
-                                                        Object.keys(response.headers).forEach(function (header) {
-                                                            debug(header + " => " + response.headers[header]);
-                                                        });
-                                                    }
-                                                    if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
-                                                    failBuff = void 0;
-                                                    _a.label = 1;
-                                                case 1:
-                                                    _a.trys.push([1, 3, , 4]);
-                                                    return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
-                                                case 2:
-                                                    failBuff = _a.sent();
-                                                    return [3, 4];
-                                                case 3:
-                                                    buffErr_1 = _a.sent();
-                                                    if (IS_DEV) {
-                                                        debug(buffErr_1);
-                                                    }
-                                                    failure(response.statusCode);
-                                                    return [2];
-                                                case 4:
-                                                    try {
-                                                        failStr = failBuff.toString("utf8");
-                                                        if (IS_DEV) {
-                                                            debug(failStr);
-                                                        }
-                                                        try {
-                                                            failJson = global.JSON.parse(failStr);
-                                                            if (IS_DEV) {
-                                                                debug(failJson);
-                                                            }
-                                                            failJson.httpStatusCode = response.statusCode;
-                                                            failure(failJson);
-                                                        }
-                                                        catch (jsonErr) {
-                                                            if (IS_DEV) {
-                                                                debug(jsonErr);
-                                                            }
-                                                            failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
-                                                        }
-                                                    }
-                                                    catch (strErr) {
-                                                        if (IS_DEV) {
-                                                            debug(strErr);
-                                                        }
-                                                        failure(response.statusCode);
-                                                    }
-                                                    return [2];
-                                                case 5:
-                                                    _a.trys.push([5, 7, , 8]);
-                                                    return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
-                                                case 6:
-                                                    responseData = _a.sent();
-                                                    return [3, 8];
-                                                case 7:
-                                                    err_2 = _a.sent();
-                                                    reject(err_2);
-                                                    return [2];
-                                                case 8:
-                                                    lcplStr = "-----BEGIN X509 CRL-----\n" +
-                                                        responseData.toString("base64") + "\n-----END X509 CRL-----";
-                                                    if (IS_DEV) {
-                                                        debug(lcplStr);
-                                                    }
-                                                    resolve(lcplStr);
-                                                    return [2];
+                            crlURL = lcp_certificate_1.CRL_URL;
+                            failure = function (err) {
+                                debug(err);
+                                resolve(lcp_certificate_1.DUMMY_CRL);
+                            };
+                            success = function (response) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                var failBuff, buffErr_1, failStr, failJson, responseData, err_1, lcplStr;
+                                return tslib_1.__generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (IS_DEV) {
+                                                Object.keys(response.headers).forEach(function (header) {
+                                                    debug(header + " => " + response.headers[header]);
+                                                });
                                             }
-                                        });
-                                    }); };
-                                    headers = {};
-                                    needsStreamingResponse = true;
-                                    if (!needsStreamingResponse) return [3, 1];
-                                    request.get({
-                                        headers: headers,
-                                        method: "GET",
-                                        timeout: 2000,
-                                        uri: crlURL,
-                                    })
-                                        .on("response", function (res) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                        var successError_1;
-                                        return tslib_1.__generator(this, function (_a) {
-                                            switch (_a.label) {
-                                                case 0:
-                                                    _a.trys.push([0, 2, , 3]);
-                                                    return [4, success(res)];
-                                                case 1:
-                                                    _a.sent();
-                                                    return [3, 3];
-                                                case 2:
-                                                    successError_1 = _a.sent();
-                                                    failure(successError_1);
-                                                    return [2];
-                                                case 3: return [2];
+                                            if (!(response.statusCode && (response.statusCode < 200 || response.statusCode >= 300))) return [3, 5];
+                                            failBuff = void 0;
+                                            _a.label = 1;
+                                        case 1:
+                                            _a.trys.push([1, 3, , 4]);
+                                            return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
+                                        case 2:
+                                            failBuff = _a.sent();
+                                            return [3, 4];
+                                        case 3:
+                                            buffErr_1 = _a.sent();
+                                            if (IS_DEV) {
+                                                debug(buffErr_1);
                                             }
-                                        });
-                                    }); })
-                                        .on("error", failure);
-                                    return [3, 7];
-                                case 1:
-                                    response = void 0;
-                                    _a.label = 2;
-                                case 2:
-                                    _a.trys.push([2, 4, , 5]);
-                                    return [4, requestPromise({
-                                            headers: headers,
-                                            method: "GET",
-                                            resolveWithFullResponse: true,
-                                            uri: crlURL,
-                                        })];
-                                case 3:
-                                    response = _a.sent();
-                                    return [3, 5];
-                                case 4:
-                                    err_1 = _a.sent();
-                                    failure(err_1);
-                                    return [2];
-                                case 5: return [4, success(response)];
-                                case 6:
-                                    _a.sent();
-                                    _a.label = 7;
-                                case 7: return [2];
-                            }
+                                            failure(response.statusCode);
+                                            return [2];
+                                        case 4:
+                                            try {
+                                                failStr = failBuff.toString("utf8");
+                                                if (IS_DEV) {
+                                                    debug(failStr);
+                                                }
+                                                try {
+                                                    failJson = global.JSON.parse(failStr);
+                                                    if (IS_DEV) {
+                                                        debug(failJson);
+                                                    }
+                                                    failJson.httpStatusCode = response.statusCode;
+                                                    failure(failJson);
+                                                }
+                                                catch (jsonErr) {
+                                                    if (IS_DEV) {
+                                                        debug(jsonErr);
+                                                    }
+                                                    failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
+                                                }
+                                            }
+                                            catch (strErr) {
+                                                if (IS_DEV) {
+                                                    debug(strErr);
+                                                }
+                                                failure(response.statusCode);
+                                            }
+                                            return [2];
+                                        case 5:
+                                            _a.trys.push([5, 7, , 8]);
+                                            return [4, (0, BufferUtils_1.streamToBufferPromise)(response)];
+                                        case 6:
+                                            responseData = _a.sent();
+                                            return [3, 8];
+                                        case 7:
+                                            err_1 = _a.sent();
+                                            reject(err_1);
+                                            return [2];
+                                        case 8:
+                                            lcplStr = "-----BEGIN X509 CRL-----\n" +
+                                                responseData.toString("base64") + "\n-----END X509 CRL-----";
+                                            if (IS_DEV) {
+                                                debug(lcplStr);
+                                            }
+                                            resolve(lcplStr);
+                                            return [2];
+                                    }
+                                });
+                            }); };
+                            headers = {};
+                            request.get({
+                                headers: headers,
+                                method: "GET",
+                                timeout: 2000,
+                                uri: crlURL,
+                            })
+                                .on("response", function (res) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                var successError_1;
+                                return tslib_1.__generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            _a.trys.push([0, 2, , 3]);
+                                            return [4, success(res)];
+                                        case 1:
+                                            _a.sent();
+                                            return [3, 3];
+                                        case 2:
+                                            successError_1 = _a.sent();
+                                            failure(successError_1);
+                                            return [2];
+                                        case 3: return [2];
+                                    }
+                                });
+                            }); })
+                                .on("error", failure);
+                            return [2];
                         });
                     }); })];
             });

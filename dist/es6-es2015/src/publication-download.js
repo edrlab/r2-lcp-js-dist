@@ -1,12 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downloadEPUBFromLCPL = void 0;
+exports.downloadEPUBFromLCPL = downloadEPUBFromLCPL;
 const tslib_1 = require("tslib");
 const debug_ = require("debug");
 const fs = require("fs");
 const path = require("path");
 const request = require("request");
-const requestPromise = require("request-promise-native");
 const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/BufferUtils");
 const zipInjector_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/zip/zipInjector");
 const lcp_1 = require("./parser/epub/lcp");
@@ -96,45 +95,25 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                             (0, zipInjector_1.injectFileInZip)(destPathTMP, destPathFINAL, filePath, zipEntryPath, zipError, doneCallback);
                         });
                     });
-                    const needsStreamingResponse = true;
-                    if (needsStreamingResponse) {
-                        request.get({
-                            headers: {},
-                            method: "GET",
-                            timeout: 5000,
-                            uri: pubLink.Href,
-                        })
-                            .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
-                            try {
-                                yield success(res);
-                            }
-                            catch (successError) {
-                                failure(successError);
-                                return;
-                            }
-                        }))
-                            .on("error", failure);
-                    }
-                    else {
-                        let response;
+                    request.get({
+                        headers: {},
+                        method: "GET",
+                        timeout: 5000,
+                        uri: pubLink.Href,
+                    })
+                        .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                         try {
-                            response = yield requestPromise({
-                                headers: {},
-                                method: "GET",
-                                resolveWithFullResponse: true,
-                                uri: pubLink.Href,
-                            });
+                            yield success(res);
                         }
-                        catch (err) {
-                            failure(err);
+                        catch (successError) {
+                            failure(successError);
                             return;
                         }
-                        yield success(response);
-                    }
+                    }))
+                        .on("error", failure);
                 }
             }
         }));
     });
 }
-exports.downloadEPUBFromLCPL = downloadEPUBFromLCPL;
 //# sourceMappingURL=publication-download.js.map

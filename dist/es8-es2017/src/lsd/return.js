@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lsdReturn_ = exports.lsdReturn = void 0;
+exports.lsdReturn = lsdReturn;
+exports.lsdReturn_ = lsdReturn_;
 const debug_ = require("debug");
 const request = require("request");
-const requestPromise = require("request-promise-native");
 const BufferUtils_1 = require("r2-utils-js/dist/es8-es2017/src/_utils/stream/BufferUtils");
 const lsd_1 = require("../parser/epub/lsd");
 const serializable_1 = require("../serializable");
@@ -26,7 +26,6 @@ async function lsdReturn(lsdJSON, deviceIDManager, httpHeaders) {
     const obj = lsdReturn_(lsd, deviceIDManager, httpHeaders);
     return (0, serializable_1.TaJsonSerialize)(obj);
 }
-exports.lsdReturn = lsdReturn;
 async function lsdReturn_(lsd, deviceIDManager, httpHeaders) {
     if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
@@ -148,42 +147,22 @@ async function lsdReturn_(lsd, deviceIDManager, httpHeaders) {
             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
             "User-Agent": "Readium2-LCP",
         }, httpHeaders ? httpHeaders : {});
-        const needsStreamingResponse = true;
-        if (needsStreamingResponse) {
-            request.put({
-                headers,
-                method: "PUT",
-                timeout: 5000,
-                uri: returnURL,
-            })
-                .on("response", async (res) => {
-                try {
-                    await success(res);
-                }
-                catch (successError) {
-                    failure(successError);
-                    return;
-                }
-            })
-                .on("error", failure);
-        }
-        else {
-            let response;
+        request.put({
+            headers,
+            method: "PUT",
+            timeout: 5000,
+            uri: returnURL,
+        })
+            .on("response", async (res) => {
             try {
-                response = await requestPromise({
-                    headers,
-                    method: "PUT",
-                    resolveWithFullResponse: true,
-                    uri: returnURL,
-                });
+                await success(res);
             }
-            catch (err) {
-                failure(err);
+            catch (successError) {
+                failure(successError);
                 return;
             }
-            await success(response);
-        }
+        })
+            .on("error", failure);
     });
 }
-exports.lsdReturn_ = lsdReturn_;
 //# sourceMappingURL=return.js.map

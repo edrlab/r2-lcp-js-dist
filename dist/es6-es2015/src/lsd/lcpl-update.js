@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lsdLcpUpdate = void 0;
+exports.lsdLcpUpdate = lsdLcpUpdate;
 const tslib_1 = require("tslib");
 const debug_ = require("debug");
 const moment = require("moment");
 const request = require("request");
-const requestPromise = require("request-promise-native");
 const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/BufferUtils");
 const debug = debug_("r2:lcp#lsd/lcpl-update");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
@@ -124,41 +123,22 @@ function lsdLcpUpdate(lcp, httpHeaders) {
                             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
                             "User-Agent": "Readium2-LCP",
                         }, httpHeaders ? httpHeaders : {});
-                        const needsStreamingResponse = true;
-                        if (needsStreamingResponse) {
-                            request.get({
-                                headers,
-                                method: "GET",
-                                timeout: 2000,
-                                uri: licenseLink.Href,
-                            })
-                                .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
-                                try {
-                                    yield success(res);
-                                }
-                                catch (successError) {
-                                    failure(successError);
-                                    return;
-                                }
-                            }))
-                                .on("error", failure);
-                        }
-                        else {
-                            let response;
+                        request.get({
+                            headers,
+                            method: "GET",
+                            timeout: 2000,
+                            uri: licenseLink.Href,
+                        })
+                            .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                             try {
-                                response = yield requestPromise({
-                                    headers,
-                                    method: "GET",
-                                    resolveWithFullResponse: true,
-                                    uri: licenseLink.Href,
-                                });
+                                yield success(res);
                             }
-                            catch (err) {
-                                failure(err);
+                            catch (successError) {
+                                failure(successError);
                                 return;
                             }
-                            yield success(response);
-                        }
+                        }))
+                            .on("error", failure);
                     }));
                 }
             }
@@ -166,5 +146,4 @@ function lsdLcpUpdate(lcp, httpHeaders) {
         return Promise.reject("No LSD LCP update.");
     });
 }
-exports.lsdLcpUpdate = lsdLcpUpdate;
 //# sourceMappingURL=lcpl-update.js.map

@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDecryptedSizeStream = exports.transformStream = exports.supports = void 0;
+exports.supports = supports;
+exports.transformStream = transformStream;
+exports.getDecryptedSizeStream = getDecryptedSizeStream;
 var tslib_1 = require("tslib");
 var crypto = require("crypto");
 var debug_ = require("debug");
@@ -55,7 +57,6 @@ function supports(lcp, _linkHref, linkPropertiesEncrypted) {
     }
     return true;
 }
-exports.supports = supports;
 function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isPartialByteRangeRequest, partialByteBegin, partialByteEnd) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var isCompressionNone, isCompressionDeflate, plainTextSize, nativelyDecryptedStream, nativelyInflated, fullEncryptedBuffer, err_1, res, err_2, nativelyDecryptedBuffer, cryptoInfo, cypherBlockPadding, err_3, err_4, destStream, rawDecryptStream, ivBuffer, cypherRangeStream, err_5, decryptStream, cypherUnpaddedStream, inflateStream, fullDeflatedBuffer, err_6, l, rangeStream, sal;
@@ -255,7 +256,6 @@ function transformStream(lcp, linkHref, linkPropertiesEncrypted, stream, isParti
         });
     });
 }
-exports.transformStream = transformStream;
 function getDecryptedSizeStream(lcp, stream) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var _this = this;
@@ -334,5 +334,4 @@ function getDecryptedSizeStream(lcp, stream) {
         });
     });
 }
-exports.getDecryptedSizeStream = getDecryptedSizeStream;
 //# sourceMappingURL=transformer-lcp.js.map

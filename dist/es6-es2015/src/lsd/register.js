@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lsdRegister_ = exports.lsdRegister = void 0;
+exports.lsdRegister = lsdRegister;
+exports.lsdRegister_ = lsdRegister_;
 const tslib_1 = require("tslib");
 const debug_ = require("debug");
 const request = require("request");
-const requestPromise = require("request-promise-native");
 const BufferUtils_1 = require("r2-utils-js/dist/es6-es2015/src/_utils/stream/BufferUtils");
 const lsd_1 = require("../parser/epub/lsd");
 const serializable_1 = require("../serializable");
@@ -29,7 +29,6 @@ function lsdRegister(lsdJSON, deviceIDManager, httpHeaders) {
         return (0, serializable_1.TaJsonSerialize)(obj);
     });
 }
-exports.lsdRegister = lsdRegister;
 function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         if (!lsd) {
@@ -186,43 +185,23 @@ function lsdRegister_(lsd, deviceIDManager, httpHeaders) {
                 "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
                 "User-Agent": "Readium2-LCP",
             }, httpHeaders ? httpHeaders : {});
-            const needsStreamingResponse = true;
-            if (needsStreamingResponse) {
-                request.post({
-                    headers,
-                    method: "POST",
-                    timeout: 2000,
-                    uri: registerURL,
-                })
-                    .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
-                    try {
-                        yield success(res);
-                    }
-                    catch (successError) {
-                        failure(successError);
-                        return;
-                    }
-                }))
-                    .on("error", failure);
-            }
-            else {
-                let response;
+            request.post({
+                headers,
+                method: "POST",
+                timeout: 2000,
+                uri: registerURL,
+            })
+                .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                 try {
-                    response = yield requestPromise({
-                        headers,
-                        method: "POST",
-                        resolveWithFullResponse: true,
-                        uri: registerURL,
-                    });
+                    yield success(res);
                 }
-                catch (err) {
-                    failure(err);
+                catch (successError) {
+                    failure(successError);
                     return;
                 }
-                yield success(response);
-            }
+            }))
+                .on("error", failure);
         }));
     });
 }
-exports.lsdRegister_ = lsdRegister_;
 //# sourceMappingURL=register.js.map

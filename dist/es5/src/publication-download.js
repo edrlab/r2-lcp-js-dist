@@ -1,12 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downloadEPUBFromLCPL = void 0;
+exports.downloadEPUBFromLCPL = downloadEPUBFromLCPL;
 var tslib_1 = require("tslib");
 var debug_ = require("debug");
 var fs = require("fs");
 var path = require("path");
 var request = require("request");
-var requestPromise = require("request-promise-native");
 var BufferUtils_1 = require("r2-utils-js/dist/es5/src/_utils/stream/BufferUtils");
 var zipInjector_1 = require("r2-utils-js/dist/es5/src/_utils/zip/zipInjector");
 var lcp_1 = require("./parser/epub/lcp");
@@ -18,19 +17,17 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
         var _this = this;
         return tslib_1.__generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                    var lcplStr, lcplJson, lcpl, pubLink_1, isAudio_1, isAudioLcp_1, ext, destPathTMP_1, destPathFINAL_1, failure_1, success_1, needsStreamingResponse, response, err_1;
+                    var lcplStr, lcplJson, lcpl, pubLink_1, isAudio_1, isAudioLcp_1, ext, destPathTMP_1, destPathFINAL_1, failure_1, success_1;
                     var _this = this;
                     return tslib_1.__generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
-                                lcplJson = global.JSON.parse(lcplStr);
-                                lcpl = (0, serializable_1.TaJsonDeserialize)(lcplJson, lcp_1.LCP);
-                                if (!lcpl.Links) return [3, 7];
-                                pubLink_1 = lcpl.Links.find(function (link) {
-                                    return link.Rel === "publication";
-                                });
-                                if (!pubLink_1) return [3, 7];
+                        lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
+                        lcplJson = global.JSON.parse(lcplStr);
+                        lcpl = (0, serializable_1.TaJsonDeserialize)(lcplJson, lcp_1.LCP);
+                        if (lcpl.Links) {
+                            pubLink_1 = lcpl.Links.find(function (link) {
+                                return link.Rel === "publication";
+                            });
+                            if (pubLink_1) {
                                 isAudio_1 = pubLink_1.Type === "application/audiobook+zip";
                                 isAudioLcp_1 = pubLink_1.Type === "application/audiobook+lcp";
                                 ext = isAudio_1 ? ".audiobook" : (isAudioLcp_1 ? ".lcpa" : ".epub");
@@ -115,8 +112,6 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                         }
                                     });
                                 }); };
-                                needsStreamingResponse = true;
-                                if (!needsStreamingResponse) return [3, 1];
                                 request.get({
                                     headers: {},
                                     method: "GET",
@@ -142,35 +137,12 @@ function downloadEPUBFromLCPL(filePath, dir, destFileName) {
                                     });
                                 }); })
                                     .on("error", failure_1);
-                                return [3, 7];
-                            case 1:
-                                response = void 0;
-                                _a.label = 2;
-                            case 2:
-                                _a.trys.push([2, 4, , 5]);
-                                return [4, requestPromise({
-                                        headers: {},
-                                        method: "GET",
-                                        resolveWithFullResponse: true,
-                                        uri: pubLink_1.Href,
-                                    })];
-                            case 3:
-                                response = _a.sent();
-                                return [3, 5];
-                            case 4:
-                                err_1 = _a.sent();
-                                failure_1(err_1);
-                                return [2];
-                            case 5: return [4, success_1(response)];
-                            case 6:
-                                _a.sent();
-                                _a.label = 7;
-                            case 7: return [2];
+                            }
                         }
+                        return [2];
                     });
                 }); })];
         });
     });
 }
-exports.downloadEPUBFromLCPL = downloadEPUBFromLCPL;
 //# sourceMappingURL=publication-download.js.map

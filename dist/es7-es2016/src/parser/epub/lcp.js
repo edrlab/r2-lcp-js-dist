@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LCP = exports.setLcpNativePluginPath = void 0;
+exports.LCP = void 0;
+exports.setLcpNativePluginPath = setLcpNativePluginPath;
 const tslib_1 = require("tslib");
 const bind = require("bindings");
 const crypto = require("crypto");
@@ -8,7 +9,6 @@ const debug_ = require("debug");
 const fs = require("fs");
 const path = require("path");
 const request = require("request");
-const requestPromise = require("request-promise-native");
 const ta_json_x_1 = require("ta-json-x");
 const BufferUtils_1 = require("r2-utils-js/dist/es7-es2016/src/_utils/stream/BufferUtils");
 const lcp_certificate_1 = require("./lcp-certificate");
@@ -32,7 +32,6 @@ function setLcpNativePluginPath(filepath) {
     }
     return exists;
 }
-exports.setLcpNativePluginPath = setLcpNativePluginPath;
 let LCP = class LCP {
     constructor() {
         this._usesNativeNodePlugin = undefined;
@@ -255,41 +254,22 @@ let LCP = class LCP {
                     resolve(lcplStr);
                 });
                 const headers = {};
-                const needsStreamingResponse = true;
-                if (needsStreamingResponse) {
-                    request.get({
-                        headers,
-                        method: "GET",
-                        timeout: 2000,
-                        uri: crlURL,
-                    })
-                        .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
-                        try {
-                            yield success(res);
-                        }
-                        catch (successError) {
-                            failure(successError);
-                            return;
-                        }
-                    }))
-                        .on("error", failure);
-                }
-                else {
-                    let response;
+                request.get({
+                    headers,
+                    method: "GET",
+                    timeout: 2000,
+                    uri: crlURL,
+                })
+                    .on("response", (res) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                     try {
-                        response = yield requestPromise({
-                            headers,
-                            method: "GET",
-                            resolveWithFullResponse: true,
-                            uri: crlURL,
-                        });
+                        yield success(res);
                     }
-                    catch (err) {
-                        failure(err);
+                    catch (successError) {
+                        failure(successError);
                         return;
                     }
-                    yield success(response);
-                }
+                }))
+                    .on("error", failure);
             }));
         });
     }
